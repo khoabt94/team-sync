@@ -10,15 +10,15 @@ export type SignupResponse = {
   message: string;
 };
 
-export type UseExampleProps = MutationProps<SignupResponse, SignUpFormType>;
+export type UseSignupProps = MutationProps<SignupResponse, SignUpFormType>;
 
-export async function mutationFn(data: SignupInput): Promise<SignupResponse> {
+export async function signupFn(data: SignupInput): Promise<SignupResponse> {
   return await axiosClient.post("/auth/register", data);
 }
 
-export function useSignup(options: UseExampleProps = {}) {
+export function useSignup(options: UseSignupProps = {}) {
   const mutation = useMutation({
-    mutationFn,
+    mutationFn: signupFn,
     ...options,
   });
 

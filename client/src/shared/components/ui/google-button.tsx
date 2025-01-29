@@ -5,7 +5,7 @@ export const GoogleOauthButton = (props: { label: string }) => {
   const { label } = props;
 
   const handleClick = () => {
-    window.location.href = `${AppConfig.AppSiteUrl}/auth/google`;
+    window.location.href = `${AppConfig.VITE_API_URL}/auth/google`;
   };
   return (
     <Button onClick={handleClick} variant="outline" type="button" className="w-full">

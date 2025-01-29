@@ -2,7 +2,7 @@ import { AccountProviderEnum, AccountProviderEnumType } from "@enums/account-pro
 import AccountModel from "@models/account.model";
 import UserModel from "@models/user.model";
 import { workspaceServices } from "@services";
-import { BadRequestException, NotFoundException } from "@utils/app-error.util";
+import { BadRequestException } from "@utils/app-error.util";
 import mongoose from "mongoose";
 
 type CreateNewAccountePayload = {
@@ -86,15 +86,15 @@ async function verifyUserService({
 }) {
   // find account
   const account = await AccountModel.findOne({ provider, providerId: email });
-  if (!account) throw new NotFoundException("Account not found");
+  if (!account) throw new BadRequestException("Invalid credentials");
 
   // find user
   const user = await UserModel.findById(account.userId).select("+password");
-  if (!user) throw new NotFoundException("User not found");
+  if (!user) throw new BadRequestException("Invalid credentials");
 
   // compare password
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) throw new BadRequestException("Invalid password");
+  if (!isMatch) throw new BadRequestException("Invalid credentials");
 
   return user.omitPassword();
 }

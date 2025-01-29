@@ -9,10 +9,14 @@ import { Logo } from "@shared/components/logo";
 import { Link } from "@tanstack/react-router";
 import { GoogleOauthButton } from "@shared/components/ui/google-button";
 import { loginFormSchema } from "@/login/schemas/login.schema";
+import { useLogin } from "@api/hooks/useLogin";
+import { toast } from "@shared/hooks/use-toast";
+import { Loader } from "lucide-react";
 
-type LoginFormType = z.infer<typeof loginFormSchema>;
+export type LoginFormType = z.infer<typeof loginFormSchema>;
 
 export const Login = () => {
+  const { mutateAsync: login, isPending } = useLogin();
   const form = useForm<LoginFormType>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -21,7 +25,19 @@ export const Login = () => {
     },
   });
 
-  const onSubmit = (values: LoginFormType) => {};
+  const onSubmit = async (values: LoginFormType) => {
+    try {
+      await login(values);
+      toast({
+        description: "Login succesfully, Welcome back!",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description: error.errors?.[0]?.message ?? error.message,
+      });
+    }
+  };
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
@@ -84,12 +100,8 @@ export const Login = () => {
                           )}
                         />
                       </div>
-                      <Button
-                        //   disabled={isPending}
-                        type="submit"
-                        className="w-full"
-                      >
-                        {/* {isPending && <Loader className="animate-spin" />} */}
+                      <Button disabled={isPending} type="submit" className="w-full mt-3">
+                        {isPending && <Loader className="animate-spin" />}
                         Login
                       </Button>
                     </div>
