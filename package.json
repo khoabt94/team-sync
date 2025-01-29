@@ -1,0 +1,10 @@
+{
+  "name": "team-sync",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "spartan-khoatienbui <khoa.bui@c0x12c.com>",
+  "license": "MIT",
+  "scripts": {
+    "server-dev": "cd backend && yarn dev"
+  }
+}
