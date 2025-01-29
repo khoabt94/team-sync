@@ -5,6 +5,8 @@
   "author": "spartan-khoatienbui <khoa.bui@c0x12c.com>",
   "license": "MIT",
   "scripts": {
-    "server-dev": "cd backend && yarn dev"
-  }
+    "server-dev": "cd backend && yarn dev",
+    "client-dev": "cd client && yarn dev"
+  },
+  "dependencies": {}
 }
