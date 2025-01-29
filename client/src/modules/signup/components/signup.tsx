@@ -12,10 +12,12 @@ import { GoogleOauthButton } from "@shared/components/ui/google-button";
 import { useSignup } from "@api/hooks/useSignup";
 import { toast } from "@shared/hooks/use-toast";
 import { Loader } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 export type SignUpFormType = z.infer<typeof signupFormSchema>;
 
 export const SignUp = () => {
+  const navigate = useNavigate();
   const { mutateAsync: signup, isPending } = useSignup();
   const form = useForm<SignUpFormType>({
     resolver: zodResolver(signupFormSchema),
@@ -33,8 +35,10 @@ export const SignUp = () => {
       toast({
         description: "Account created successfully. Please login to continue.",
       });
+      navigate({ to: "/" });
     } catch (error: any) {
       toast({
+        title: "Error",
         variant: "destructive",
         description: error.errors?.[0]?.message ?? error.message,
       });

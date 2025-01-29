@@ -6,16 +6,20 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@shared/components/ui/input";
 import { Button } from "@shared/components/ui/button";
 import { Logo } from "@shared/components/logo";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { GoogleOauthButton } from "@shared/components/ui/google-button";
 import { loginFormSchema } from "@/login/schemas/login.schema";
 import { useLogin } from "@api/hooks/useLogin";
 import { toast } from "@shared/hooks/use-toast";
 import { Loader } from "lucide-react";
+import { Route } from "@routes/login";
 
 export type LoginFormType = z.infer<typeof loginFormSchema>;
 
 export const Login = () => {
+  const navigate = useNavigate();
+  const { returnUrl = "" } = Route.useSearch();
+
   const { mutateAsync: login, isPending } = useLogin();
   const form = useForm<LoginFormType>({
     resolver: zodResolver(loginFormSchema),
@@ -31,8 +35,11 @@ export const Login = () => {
       toast({
         description: "Login succesfully, Welcome back!",
       });
+      const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/";
+      navigate({ to: redirectUrl });
     } catch (error: any) {
       toast({
+        title: "Error",
         variant: "destructive",
         description: error.errors?.[0]?.message ?? error.message,
       });
