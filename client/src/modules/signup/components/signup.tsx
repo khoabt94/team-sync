@@ -9,20 +9,37 @@ import { signupFormSchema } from "@/signup/schemas/signup.schema";
 import { Logo } from "@shared/components/logo";
 import { Link } from "@tanstack/react-router";
 import { GoogleOauthButton } from "@shared/components/ui/google-button";
+import { useSignup } from "@api/hooks/useSignup";
+import { toast } from "@shared/hooks/use-toast";
+import { Loader } from "lucide-react";
 
-type SignUpFormType = z.infer<typeof signupFormSchema>;
+export type SignUpFormType = z.infer<typeof signupFormSchema>;
 
 export const SignUp = () => {
+  const { mutateAsync: signup, isPending } = useSignup();
   const form = useForm<SignUpFormType>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = (values: SignUpFormType) => {};
+  const onSubmit = async (values: SignUpFormType) => {
+    try {
+      await signup(values);
+      toast({
+        description: "Account created successfully. Please login to continue.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description: error.errors?.[0]?.message ?? error.message,
+      });
+    }
+  };
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
@@ -56,7 +73,7 @@ export const SignUp = () => {
                             <FormItem>
                               <FormLabel className="dark:text-[#f1f7feb5] text-sm">Name</FormLabel>
                               <FormControl>
-                                <Input placeholder="Joh Doe" className="!h-[48px]" {...field} />
+                                <Input placeholder="Your name..." className="h-10" {...field} />
                               </FormControl>
 
                               <FormMessage />
@@ -72,7 +89,7 @@ export const SignUp = () => {
                             <FormItem>
                               <FormLabel className="dark:text-[#f1f7feb5] text-sm">Email</FormLabel>
                               <FormControl>
-                                <Input placeholder="m@example.com" className="!h-[48px]" {...field} />
+                                <Input placeholder="Your email..." className="h-10" {...field} />
                               </FormControl>
 
                               <FormMessage />
@@ -88,7 +105,7 @@ export const SignUp = () => {
                             <FormItem>
                               <FormLabel className="dark:text-[#f1f7feb5] text-sm">Password</FormLabel>
                               <FormControl>
-                                <Input type="password" className="!h-[48px]" {...field} />
+                                <Input type="password" className="h-10" placeholder="Your password..." {...field} />
                               </FormControl>
 
                               <FormMessage />
@@ -96,12 +113,29 @@ export const SignUp = () => {
                           )}
                         />
                       </div>
-                      <Button
-                        type="submit"
-                        // disabled={isPending}
-                        className="w-full"
-                      >
-                        {/* {isPending && <Loader className="animate-spin" />} */}
+                      <div className="grid gap-2">
+                        <FormField
+                          control={form.control}
+                          name="confirmPassword"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="dark:text-[#f1f7feb5] text-sm">Confirm password</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="password"
+                                  className="h-10"
+                                  placeholder="Confirm your password"
+                                  {...field}
+                                />
+                              </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <Button type="submit" disabled={isPending} className="w-full mt-3">
+                        {isPending && <Loader className="animate-spin" />}
                         Sign up
                       </Button>
                     </div>

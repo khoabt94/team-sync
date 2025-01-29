@@ -7,6 +7,7 @@ import { errorHandler } from "@middlewares/error-handler.middleware";
 import express from "express";
 import passport from "passport";
 import "@config/passport.config";
+import { NotFoundException } from "@utils/app-error.util";
 
 const app = express();
 
@@ -15,7 +16,10 @@ baseMiddleware(app);
 routesMiddleware(app);
 
 // error handler
-app.use(errorHandler);
+app.all("*", (req, res, next) => {
+  next(new NotFoundException(`Can't find ${req.originalUrl} on this server!`));
+});
+app.use(errorHandler);  
 
 // app start
 app.listen(config.PORT, async () => {
