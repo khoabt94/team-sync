@@ -69,11 +69,7 @@ async function updateUserCurrentWorkspace({ workspaceId, ownerId }: UpdateUserCu
     if (!workspaceId) {
       user.currentWorkspace = null;
     } else {
-      const workspace = await WorkspaceModel.findOne({
-        _id: workspaceId,
-        deleted: false,
-      });
-      if (!workspace) throw new NotFoundException("Workspace not found");
+      const workspace = await getWorkspaceDetail(workspaceId);
 
       user.currentWorkspace = workspace.id;
     }
@@ -161,16 +157,23 @@ async function joinWorkspaceService({ inviteCode, userId }: JoinWorkspaceService
   return { workspaceId: workspace._id, role: memberRole.role };
 }
 
-async function updateWorkspaceService(
-  workspaceId: string,
-  data: Partial<Pick<WorkspaceDocument, "name" | "description">>
-) {
-  let workspace = await WorkspaceModel.findOne({
+async function getWorkspaceDetail(workspaceId: string) {
+  const workspace = await WorkspaceModel.findOne({
     _id: workspaceId,
     deleted: false,
   });
 
   if (!workspace) throw new NotFoundException("Workspace not found");
+
+  return workspace;
+}
+
+async function updateWorkspaceService(
+  workspaceId: string,
+  data: Partial<Pick<WorkspaceDocument, "name" | "description">>
+) {
+  let workspace = await getWorkspaceDetail(workspaceId);
+
   workspace = assign(workspace, data);
 
   await workspace.save();
@@ -179,13 +182,7 @@ async function updateWorkspaceService(
 }
 
 async function deleteWorkspaceService(workspaceId: string) {
-  let workspace = await WorkspaceModel.findOne({
-    _id: workspaceId,
-    deleted: false,
-  });
-
-  if (!workspace) throw new NotFoundException("Workspace not found");
-  workspace.deleted = true;
+  const workspace = await getWorkspaceDetail(workspaceId);
 
   await workspace.save();
 
@@ -196,9 +193,8 @@ export const workspaceServices = {
   createNewWorkspace,
   updateUserCurrentWorkspace,
   getUserWorkspaces,
-  changeMemberRoleService,
   getWorkspaceAnalytics,
-  joinWorkspaceService,
   updateWorkspaceService,
   deleteWorkspaceService,
+  getWorkspaceDetail,
 };

@@ -1,12 +1,13 @@
 import { createProjectSchema, projectIdSchema, updateProjectSchema, workspaceIdSchema } from "@schemas";
 import { projectServices } from "@services";
 import { asyncHandler } from "@utils/async-handler.util";
+import { parseParamsId } from "@utils/request.util";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 const createNewProject = asyncHandler(async (req: Request, res: Response) => {
   const data = createProjectSchema.parse(req.body);
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+  const { workspaceId } = parseParamsId(req);
   const newProject = await projectServices.createNewProject({
     workspaceId,
     userId: req.user?._id,
@@ -19,7 +20,7 @@ const createNewProject = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const getWorkspaceProjects = asyncHandler(async (req: Request, res: Response) => {
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+  const { workspaceId } = parseParamsId(req);
   const projects = await projectServices.getWorkspaceProjects(workspaceId);
   return res.status(StatusCodes.OK).json({
     projects,
@@ -28,8 +29,7 @@ const getWorkspaceProjects = asyncHandler(async (req: Request, res: Response) =>
 });
 
 const getProjectById = asyncHandler(async (req: Request, res: Response) => {
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
-  const projectId = projectIdSchema.parse(req.params.projectId);
+  const { projectId, workspaceId } = parseParamsId(req);
   const project = await projectServices.getProjectDetail({ projectId, workspaceId });
   return res.status(StatusCodes.OK).json({
     project,
@@ -38,8 +38,7 @@ const getProjectById = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const getProjectAnalytics = asyncHandler(async (req: Request, res: Response) => {
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
-  const projectId = projectIdSchema.parse(req.params.projectId);
+  const { projectId, workspaceId } = parseParamsId(req);
   const analytics = await projectServices.getProjectAnalytics({ projectId, workspaceId });
   return res.status(StatusCodes.OK).json({
     analytics,
@@ -50,8 +49,7 @@ const getProjectAnalytics = asyncHandler(async (req: Request, res: Response) => 
 });
 
 const updateProject = asyncHandler(async (req: Request, res: Response) => {
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
-  const projectId = projectIdSchema.parse(req.params.projectId);
+  const { projectId, workspaceId } = parseParamsId(req);
   const data = updateProjectSchema.parse(req.body);
 
   const newProject = await projectServices.updateProjectService(workspaceId, projectId, data);
@@ -62,8 +60,7 @@ const updateProject = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const deleteProject = asyncHandler(async (req: Request, res: Response) => {
-  const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
-  const projectId = projectIdSchema.parse(req.params.projectId);
+  const { projectId, workspaceId } = parseParamsId(req);
   await projectServices.deleteProjectService({ workspaceId, projectId });
   return res.status(StatusCodes.OK).json({
     message: "Delete project successfully",

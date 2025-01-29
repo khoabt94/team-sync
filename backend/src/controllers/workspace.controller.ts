@@ -1,8 +1,5 @@
-import { TaskStatusEnum } from "@enums/task.enum";
 import MemberModel from "@models/member.model";
 import RoleModel from "@models/roles-permission.model";
-import TaskModel from "@models/task.model";
-import UserModel, { UserDocument } from "@models/user.model";
 import {
   changeRoleSchema,
   createWorkspaceSchema,
@@ -11,7 +8,7 @@ import {
   workspaceIdSchema,
 } from "@schemas";
 import { workspaceServices } from "@services";
-import { NotFoundException } from "@utils/app-error.util";
+import { memberServices } from "@services/member.service";
 import { asyncHandler } from "@utils/async-handler.util";
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
@@ -51,12 +48,7 @@ const getWorkspaceById = asyncHandler(async (req: Request, res: Response) => {
 
 const getWorkspaceMembers = asyncHandler(async (req: Request, res: Response) => {
   const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
-  const members = await MemberModel.find({
-    workspaceId,
-  })
-    .populate("userId", "name email profilePicture")
-    .populate("role", "role")
-    .exec();
+  const members = await memberServices.getWorkspaceMember(workspaceId);
   return res.status(StatusCodes.OK).json({
     members,
     workspaceId: req.params.workspaceId,
@@ -85,7 +77,7 @@ const changeMemberRole = asyncHandler(async (req: Request, res: Response) => {
   const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
   const { memberId, roleId } = changeRoleSchema.parse(req.body);
 
-  const newUser = await workspaceServices.changeMemberRoleService({ memberId, roleId, workspaceId });
+  const newUser = await memberServices.changeMemberRole({ memberId, roleId, workspaceId });
 
   return res.status(StatusCodes.OK).json({
     member: newUser,
@@ -97,7 +89,7 @@ const joinWorkspace = asyncHandler(async (req: Request, res: Response) => {
   const inviteCode = inviteCodeSchema.parse(req.params.inviteCode);
   const userId = req.user?._id;
 
-  const { role, workspaceId } = await workspaceServices.joinWorkspaceService({ inviteCode, userId });
+  const { role, workspaceId } = await memberServices.joinWorkspace({ inviteCode, userId });
 
   return res.status(StatusCodes.OK).json({
     workspaceId,

@@ -1,8 +1,10 @@
 import { ErrorCodeEnum } from "@enums/error-code.enum";
 import { PermissionType } from "@enums/role.enum";
 import MemberModel from "@models/member.model";
+import { RoleDocument } from "@models/roles-permission.model";
 import WorkspaceModel from "@models/workspace.model";
 import { workspaceIdSchema } from "@schemas";
+import { workspaceServices } from "@services";
 import { ForbiddenException, NotFoundException, UnauthorizedException } from "@utils/app-error.util";
 import { asyncHandler } from "@utils/async-handler.util";
 import { NextFunction, Request, Response } from "express";
@@ -13,11 +15,7 @@ export const workspaceAuthorizedGuard = asyncHandler(async (req: Request, res: R
     const userId = req.user?._id;
     const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
 
-    const workspace = await WorkspaceModel.findOne({
-      _id: workspaceId,
-      deleted: false,
-    });
-    if (!workspace) throw new NotFoundException("Workspace not found");
+    const workspace = await workspaceServices.getWorkspaceDetail(workspaceId);
 
     const members = await MemberModel.find({
       workspaceId,
@@ -30,10 +28,11 @@ export const workspaceAuthorizedGuard = asyncHandler(async (req: Request, res: R
     if (!myMembership)
       throw new UnauthorizedException("You are not member of this workspace", ErrorCodeEnum.ACCESS_UNAUTHORIZED);
 
+    const role = myMembership?.role as unknown as RoleDocument;
     req.workspace = workspace;
     req.members = members;
-    req.role = myMembership?.role.role;
-    req.permission = myMembership.role.permissions;
+    req.role = role.role;
+    req.permission = role.permissions;
     next();
   } catch (error) {
     next(error);

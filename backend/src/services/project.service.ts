@@ -1,10 +1,12 @@
 import { TaskStatusEnum } from "@enums/task.enum";
 import ProjectModel, { ProjectDocument } from "@models/project.model";
 import TaskModel from "@models/task.model";
+import { createProjectSchema } from "@schemas";
 import { NotFoundException } from "@utils/app-error.util";
 import { assign } from "lodash";
+import { z } from "zod";
 
-type ProjectCreateUpdatePayload = Pick<ProjectDocument, "name" | "description" | "emoji">;
+type ProjectCreateUpdatePayload = z.infer<typeof createProjectSchema>;
 
 type BaseProjectParams = {
   workspaceId: string;
@@ -64,13 +66,13 @@ async function getProjectAnalytics({ workspaceId, projectId }: BaseProjectParams
 
 async function getProjectDetail({ workspaceId, projectId }: BaseProjectParams) {
   const project = await ProjectModel.findOne({
-    workspace: workspaceId,
     _id: projectId,
+    workspace: workspaceId,
     deleted: false,
   })
     .populate("workspace", "name")
     .exec();
-
+  if (!project) throw new NotFoundException("Project not found");
   return project;
 }
 
@@ -80,8 +82,8 @@ async function updateProjectService(workspaceId: string, projectId: string, data
     workspace: workspaceId,
     deleted: false,
   });
-
   if (!project) throw new NotFoundException("Project not found");
+
   project = assign(project, data);
 
   await project.save();
@@ -90,12 +92,13 @@ async function updateProjectService(workspaceId: string, projectId: string, data
 }
 
 async function deleteProjectService({ workspaceId, projectId }: BaseProjectParams) {
-  let project = await ProjectModel.findOne({
+  const project = await ProjectModel.findOne({
     _id: projectId,
     workspace: workspaceId,
     deleted: false,
   });
   if (!project) throw new NotFoundException("Project not found");
+
   project.deleted = true;
   await project.save();
 

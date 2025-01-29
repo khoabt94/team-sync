@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface MemberDocument extends Document {
   userId: mongoose.Types.ObjectId;
-  role: RoleDocument;
+  role: mongoose.Types.ObjectId;
   workspaceId: mongoose.Types.ObjectId;
   joinedAt: Date;
 }
