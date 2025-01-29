@@ -8,6 +8,7 @@ import WorkspaceModel, { WorkspaceDocument } from "@models/workspace.model";
 import { BadRequestException, NotFoundException } from "@utils/app-error.util";
 import mongoose from "mongoose";
 import { ObjectId } from "mongodb";
+import { assign } from "lodash";
 
 type CreateNewWorkspacePayload = {
   workspaceName: string;
@@ -162,34 +163,33 @@ async function joinWorkspaceService({ inviteCode, userId }: JoinWorkspaceService
 
 async function updateWorkspaceService(
   workspaceId: string,
-  { name, description }: Partial<Pick<WorkspaceDocument, "name" | "description">>
+  data: Partial<Pick<WorkspaceDocument, "name" | "description">>
 ) {
-  const workspace = await WorkspaceModel.findOneAndUpdate(
-    {
-      _id: workspaceId,
-      deleted: false,
-    },
-    {
-      name,
-      description,
-    },
-    { returnDocument: "after" }
-  );
+  let workspace = await WorkspaceModel.findOne({
+    _id: workspaceId,
+    deleted: false,
+  });
+
+  if (!workspace) throw new NotFoundException("Workspace not found");
+  workspace = assign(workspace, data);
+
+  await workspace.save();
 
   return workspace;
 }
 
 async function deleteWorkspaceService(workspaceId: string) {
-  await WorkspaceModel.findOneAndUpdate(
-    {
-      _id: workspaceId,
-      deleted: false,
-    },
-    {
-      deleted: true,
-    },
-    { returnDocument: "after" }
-  );
+  let workspace = await WorkspaceModel.findOne({
+    _id: workspaceId,
+    deleted: false,
+  });
+
+  if (!workspace) throw new NotFoundException("Workspace not found");
+  workspace.deleted = true;
+
+  await workspace.save();
+
+  return workspace;
 }
 
 export const workspaceServices = {

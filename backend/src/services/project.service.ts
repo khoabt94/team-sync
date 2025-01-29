@@ -1,6 +1,8 @@
 import { TaskStatusEnum } from "@enums/task.enum";
 import ProjectModel, { ProjectDocument } from "@models/project.model";
 import TaskModel from "@models/task.model";
+import { NotFoundException } from "@utils/app-error.util";
+import { assign } from "lodash";
 
 type ProjectCreateUpdatePayload = Pick<ProjectDocument, "name" | "description" | "emoji">;
 
@@ -72,40 +74,32 @@ async function getProjectDetail({ workspaceId, projectId }: BaseProjectParams) {
   return project;
 }
 
-async function updateProjectService(
-  workspaceId: string,
-  projectId: string,
-  { name, description, emoji }: ProjectCreateUpdatePayload
-) {
-  const project = await ProjectModel.findOneAndUpdate(
-    {
-      _id: projectId,
-      workspace: workspaceId,
-      deleted: false,
-    },
-    {
-      name,
-      description,
-      emoji,
-    },
-    { returnDocument: "after" }
-  );
+async function updateProjectService(workspaceId: string, projectId: string, data: ProjectCreateUpdatePayload) {
+  let project = await ProjectModel.findOne({
+    _id: projectId,
+    workspace: workspaceId,
+    deleted: false,
+  });
+
+  if (!project) throw new NotFoundException("Project not found");
+  project = assign(project, data);
+
+  await project.save();
 
   return project;
 }
 
 async function deleteProjectService({ workspaceId, projectId }: BaseProjectParams) {
-  await ProjectModel.findOneAndUpdate(
-    {
-      _id: projectId,
-      workspace: workspaceId,
-      deleted: false,
-    },
-    {
-      deleted: true,
-    },
-    { returnDocument: "after" }
-  );
+  let project = await ProjectModel.findOne({
+    _id: projectId,
+    workspace: workspaceId,
+    deleted: false,
+  });
+  if (!project) throw new NotFoundException("Project not found");
+  project.deleted = true;
+  await project.save();
+
+  return project;
 }
 
 export const projectServices = {
