@@ -7,6 +7,5 @@
   "scripts": {
     "server-dev": "cd backend && yarn dev",
     "client-dev": "cd client && yarn dev"
-  },
-  "dependencies": {}
+  }
 }

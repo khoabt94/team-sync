@@ -24,7 +24,12 @@
 
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@routes/*": ["./src/routes/*"],
+      "@components/*": ["./src/components/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@routeTree": ["./src/routeTree.gen.ts"],
+      "@/*": ["./src/modules/*"]
     }
   },
   "include": ["src"]
