@@ -10,7 +10,7 @@ const taskRoutes = Router();
 taskRoutes.use(authenticatedGuard);
 taskRoutes.get("/project/:projectId/workspace/:workspaceId/all", workspaceAuthorizedGuard, taskControllers.getTasks);
 taskRoutes.get(
-  ":taskId/project/:projectId/workspace/:workspaceId/detail",
+  "/:taskId/project/:projectId/workspace/:workspaceId/detail",
   workspaceAuthorizedGuard,
   taskControllers.getTaskById
 );
@@ -22,13 +22,13 @@ taskRoutes.post(
   taskControllers.createNewTask
 );
 taskRoutes.put(
-  ":taskId/project/:projectId/workspace/:workspaceId/update",
+  "/:taskId/project/:projectId/workspace/:workspaceId/update",
   workspaceAuthorizedGuard,
   workspacePermissionGuard(Permissions.EDIT_TASK),
   taskControllers.updateTask
 );
 taskRoutes.delete(
-  ":taskId/project/:projectId/workspace/:workspaceId/delete",
+  "/:taskId/project/:projectId/workspace/:workspaceId/delete",
   workspaceAuthorizedGuard,
   workspacePermissionGuard(Permissions.DELETE_TASK),
   taskControllers.deleteTask

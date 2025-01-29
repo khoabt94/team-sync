@@ -7,13 +7,24 @@ export const titleSchema = z
   .trim()
   .min(1, { message: "Please provide task title" })
   .max(255);
-export const descriptionSchema = z.string({ message: "Please provide task description" }).trim();
+
+export const descriptionSchema = z
+  .string({ message: "Please provide task description" })
+  .trim()
+  .min(1, { message: "Please provide task description" })
+  .max(255);
 
 export const assignedToSchema = z.string().trim().min(1).nullable().optional();
 
-export const prioritySchema = z.enum(Object.values(TaskPriorityEnum) as [string, ...string[]]);
+export const prioritySchema = z
+  .enum(Object.values(TaskPriorityEnum) as [string, ...string[]])
+  .nullable()
+  .optional();
 
-export const statusSchema = z.enum(Object.values(TaskStatusEnum) as [string, ...string[]]);
+export const statusSchema = z
+  .enum(Object.values(TaskStatusEnum) as [string, ...string[]])
+  .nullable()
+  .optional();
 
 export const dueDateSchema = z
   .string()

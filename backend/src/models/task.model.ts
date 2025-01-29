@@ -9,7 +9,7 @@ export interface TaskDocument extends Document {
   project: mongoose.Types.ObjectId;
   workspace: mongoose.Types.ObjectId;
   createdBy: mongoose.Types.ObjectId;
-  assignedTo: mongoose.Types.ObjectId;
+  assignedTo: mongoose.Types.ObjectId | null;
   status: TaskStatusEnumType;
   priority: TaskPriorityEnumType;
   dueDate: Date | null;
@@ -71,7 +71,6 @@ const TaskSchema = new Schema<TaskDocument>(
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
   },
   {
