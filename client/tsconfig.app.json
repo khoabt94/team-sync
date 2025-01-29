@@ -26,6 +26,7 @@
     "paths": {
       "@routes/*": ["./src/routes/*"],
       "@components/*": ["./src/components/*"],
+      "@api/*": ["./src/api/*"],
       "@shared/*": ["./src/shared/*"],
       "@utils/*": ["./src/utils/*"],
       "@routeTree": ["./src/routeTree.gen.ts"],
