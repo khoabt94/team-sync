@@ -1,3 +1,4 @@
+import { SettingsWithPermission } from "@/workspace/components/settings/Settings";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/workspace/$workspaceId/settings")({
@@ -5,5 +6,5 @@ export const Route = createFileRoute("/workspace/$workspaceId/settings")({
 });
 
 function RouteComponent() {
-  return <div>Hello "/workspace/$workspaceId/settings"!</div>;
+  return <SettingsWithPermission />;
 }
