@@ -29,7 +29,7 @@ const LogoutDialog = (props: { isOpen: boolean; setIsOpen: React.Dispatch<React.
               {isHandlingLogout && <Loader className="animate-spin" />}
               Sign out
             </Button>
-            <Button type="button" onClick={() => setIsOpen(false)}>
+            <Button type="button" onClick={() => setIsOpen(false)} variant="outline">
               Cancel
             </Button>
           </DialogFooter>

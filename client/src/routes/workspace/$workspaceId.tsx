@@ -1,3 +1,4 @@
+import AppLayout from "@shared/components/layout/app.layout";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/workspace/$workspaceId")({
@@ -5,5 +6,5 @@ export const Route = createFileRoute("/workspace/$workspaceId")({
 });
 
 function RouteComponent() {
-  return <div>Workspace detail</div>;
+  return <AppLayout></AppLayout>;
 }

@@ -1,6 +1,7 @@
-import { useParams } from "@tanstack/react-router";
+import { Route } from "@routes/workspace/$workspaceId";
 
 export function useGetWorkspaceId() {
-  const params = useParams({ from: "/workspace/$workspaceId" });
-  return params.workspaceId as string;
+  const { workspaceId = "" } = Route.useParams();
+
+  return workspaceId;
 }
