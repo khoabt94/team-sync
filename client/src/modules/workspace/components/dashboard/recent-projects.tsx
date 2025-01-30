@@ -3,7 +3,7 @@ import { Loader } from "lucide-react";
 import moment from "moment";
 import { Link } from "@tanstack/react-router";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
-import { getAvatarColor, getAvatarFallbackText } from "@shared/lib/avatar.util";
+import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
 import { useGetProjectsInWorkspace } from "@api/hooks/use-get-projects-in-workspace";
 
 export const RecentProjects = () => {

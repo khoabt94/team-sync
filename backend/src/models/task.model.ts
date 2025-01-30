@@ -1,6 +1,6 @@
-import { TaskPriorityEnum, TaskPriorityEnumType, TaskStatusEnum, TaskStatusEnumType } from '@enums/task.enum';
-import { generateTaskCode } from '@utils/text.util';
-import mongoose, { Document, Schema } from 'mongoose';
+import { TaskPriorityEnum, TaskPriorityEnumType, TaskStatusEnum, TaskStatusEnumType } from "@enums/task.enum";
+import { generateTaskCode } from "@utils/text.util";
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface TaskDocument extends Document {
   taskCode: string;
@@ -24,59 +24,60 @@ const TaskSchema = new Schema<TaskDocument>(
       type: String,
       required: true,
       trim: true,
-      default: generateTaskCode()
+      default: generateTaskCode(),
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     description: {
       type: String,
-      required: true
+      required: true,
     },
     status: {
       type: String,
       enums: Object.values(TaskStatusEnum),
       required: true,
-      default: TaskStatusEnum.TODO
+      default: TaskStatusEnum.TODO,
     },
     priority: {
       type: String,
       enums: Object.values(TaskPriorityEnum),
-      required: false
+      required: false,
+      default: TaskPriorityEnum.MEDIUM,
     },
     dueDate: {
       type: Date,
-      required: false
+      required: false,
     },
     project: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Project',
-      required: true
+      ref: "Project",
+      required: true,
     },
     workspace: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Workspace',
-      required: true
+      ref: "Workspace",
+      required: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
+      ref: "User",
+      required: true,
     },
     deleted: {
       type: Boolean,
-      default: false
+      default: false,
     },
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
+      ref: "User",
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
-const TaskModel = mongoose.model<TaskDocument>('Task', TaskSchema);
+const TaskModel = mongoose.model<TaskDocument>("Task", TaskSchema);
 export default TaskModel;

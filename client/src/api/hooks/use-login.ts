@@ -1,6 +1,6 @@
 import { LoginFormType } from "@/login/components/login";
 import { MutationProps } from "@api/type";
-import { axiosClient } from "@shared/lib/axios.util";
+import { axiosClient } from "@shared/util/axios.util";
 import { User } from "@shared/types/user.type";
 import { useMutation } from "@tanstack/react-query";
 

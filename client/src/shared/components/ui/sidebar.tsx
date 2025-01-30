@@ -11,7 +11,7 @@ import { Separator } from "@shared/components/ui/separator";
 import { Sheet, SheetContent } from "@shared/components/ui/sheet";
 import { Skeleton } from "@shared/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@shared/components/ui/tooltip";
-import { cn } from "@shared/lib/cn.util";
+import { cn } from "@shared/util/cn.util";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

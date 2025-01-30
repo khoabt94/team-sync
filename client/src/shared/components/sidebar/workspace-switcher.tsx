@@ -21,6 +21,7 @@ import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { useEffect, useState } from "react";
 import { useGetUserWorkspaces } from "@api/hooks/use-get-user-workspaces";
 import { Workspace } from "@/workspace/types/workspace.type";
+import { getWorkspaceFirstLetter } from "@shared/util/workspace.util";
 
 export function WorkspaceSwitcher() {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ export function WorkspaceSwitcher() {
                 {activeWorkspace ? (
                   <>
                     <div className="flex aspect-square size-8 items-center font-semibold justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                      {activeWorkspace?.name?.split(" ")?.[0]?.charAt(0)}
+                      {getWorkspaceFirstLetter(activeWorkspace.name)}
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">{activeWorkspace?.name}</span>

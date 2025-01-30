@@ -5,6 +5,7 @@ import { Button } from "@shared/components/ui/button";
 import { WorkspaceAnalytics } from "@/workspace/components/dashboard/workspace-analytics";
 import { RecentProjects } from "@/workspace/components/dashboard/recent-projects";
 import RecentTasks from "@/workspace/components/dashboard/recent-tasks";
+import RecentMembers from "@/workspace/components/dashboard/recent-members";
 
 export const WorkspaceDashboard = () => {
   return (
@@ -41,7 +42,9 @@ export const WorkspaceDashboard = () => {
           <TabsContent value="tasks">
             <RecentTasks />
           </TabsContent>
-          <TabsContent value="members">{/* <RecentMembers /> */}</TabsContent>
+          <TabsContent value="members">
+            <RecentMembers />
+          </TabsContent>
         </Tabs>
       </div>
     </main>

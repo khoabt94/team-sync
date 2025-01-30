@@ -1,7 +1,7 @@
 import { QueryProps } from "@api/type";
 import { User } from "@shared/types/user.type";
 import { useQuery } from "@tanstack/react-query";
-import { axiosClient } from "@shared/lib/axios.util";
+import { axiosClient } from "@shared/util/axios.util";
 
 export type GetCurrentUserResponse = {
   message: string;

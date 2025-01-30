@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@shared/stores/auth.store";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { useGetWorkspaceDetail } from "@api/hooks/use-get-workspace-detail";
-import { Workspace } from "@/workspace/types/workspace.type";
+import { Workspace, WorkspaceMember } from "@/workspace/types/workspace.type";
 import { usePermissions } from "@/workspace/hooks/use-permissions";
 import { useGetWorkspaceMembers } from "@api/hooks/use-get-workspace-members";
 
@@ -15,6 +15,7 @@ type WorkspaceContextType = {
   hasPermission: (permission: PermissionType) => boolean;
   error: any;
   workspaceLoading: boolean;
+  workspaceMembers: WorkspaceMember[];
   membersLoading: boolean;
 };
 
@@ -52,6 +53,7 @@ export function WorkspaceProvider({ children }: PropsWithChildren) {
       value={{
         workspace,
         hasPermission,
+        workspaceMembers,
         error: workspaceError,
         workspaceLoading,
         membersLoading,

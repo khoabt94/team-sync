@@ -1,5 +1,5 @@
 import { MutationProps } from "@api/type";
-import { axiosClient } from "@shared/lib/axios.util";
+import { axiosClient } from "@shared/util/axios.util";
 import { useMutation } from "@tanstack/react-query";
 
 export type LogoutResponse = {

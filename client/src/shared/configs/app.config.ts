@@ -1,4 +1,4 @@
-import { getEnv } from "@shared/lib/get-env.util";
+import { getEnv } from "@shared/util/get-env.util";
 
 export const AppConfig = {
   VITE_SITE_URL: getEnv("VITE_SITE_URL"),

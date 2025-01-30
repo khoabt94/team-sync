@@ -3,8 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@shared/components/ui/avata
 import { Badge } from "@shared/components/ui/badge";
 import { TaskPriorityEnum, TaskStatusEnum } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
-import { getAvatarColor, getAvatarFallbackText } from "@shared/lib/avatar.util";
-import { transformStatusEnum } from "@shared/lib/status.util";
+import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
+import { transformStatusEnum } from "@shared/util/status.util";
 import { Loader } from "lucide-react";
 import moment from "moment";
 
@@ -45,7 +45,10 @@ const RecentTasks = () => {
           const initials = getAvatarFallbackText(name);
           const avatarColor = getAvatarColor(name);
           return (
-            <li key={task._id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+            <li
+              key={task._id}
+              className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
+            >
               {/* Task Info */}
               <div className="flex flex-col space-y-1 flex-grow">
                 <span className="text-sm capitalize text-gray-600 font-medium">{task.taskCode}</span>

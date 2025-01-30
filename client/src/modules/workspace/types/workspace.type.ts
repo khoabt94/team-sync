@@ -1,4 +1,4 @@
-import { PermissionType } from "@shared/constants/task.constant";
+import { Role } from "@shared/types/role.type";
 import { User } from "@shared/types/user.type";
 
 export type Workspace = {
@@ -21,11 +21,7 @@ export type WorkspaceMember = {
   _id: string;
   userId: User;
   workspaceId: string;
-  role: {
-    _id: string;
-    name: string;
-    permissions: PermissionType[];
-  };
+  role: Role;
   joinedAt: string;
   createdAt: string;
 };
