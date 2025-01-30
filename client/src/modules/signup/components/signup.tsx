@@ -15,12 +15,14 @@ import { Input } from "@shared/components/ui/input";
 import { toast } from "@shared/hooks/use-toast";
 import { Link } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
+import { useAuthStore } from "@shared/stores/auth.store";
 
 export type SignUpFormType = z.infer<typeof signupFormSchema>;
 
 export function SignUp() {
   const navigate = useNavigate();
   const { mutateAsync: signup, isPending } = useSignup();
+  const { setUser } = useAuthStore();
   const form = useForm<SignUpFormType>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
@@ -33,11 +35,12 @@ export function SignUp() {
 
   const onSubmit = async (values: SignUpFormType) => {
     try {
-      await signup(values);
+      const { user } = await signup(values);
       toast({
         description: "Account created successfully. Please login to continue.",
       });
-      navigate({ to: "/" });
+      setUser(user);
+      navigate({ to: "/app/workspace/$workspaceId", params: { workspaceId: user.currentWorkspace } });
     } catch (error: unknown) {
       toast({
         title: "Error",
