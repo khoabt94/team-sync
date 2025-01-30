@@ -20,7 +20,7 @@ import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as WorkspaceWorkspaceIdIndexImport } from './routes/workspace/$workspaceId/index'
 import { Route as WorkspaceWorkspaceIdTasksImport } from './routes/workspace/$workspaceId/tasks'
-import { Route as WorkspaceWorkspaceIdSettingsImport } from ./routes/workspace/$workspaceId/settingsgs'
+import { Route as WorkspaceWorkspaceIdSettingsImport } from './routes/workspace/$workspaceId/settings'
 import { Route as WorkspaceWorkspaceIdMembersImport } from './routes/workspace/$workspaceId/members'
 import { Route as WorkspaceWorkspaceIdProjectIdIndexImport } from './routes/workspace/$workspaceId/$projectId/index'
 

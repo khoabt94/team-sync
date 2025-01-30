@@ -1,3 +1,4 @@
+import { TaskPriorityEnum, TaskStatusEnum } from "@shared/constants/task.constant";
 import { cva } from "class-variance-authority";
 
 export const buttonVariants = cva(
@@ -22,6 +23,31 @@ export const buttonVariants = cva(
     defaultVariants: {
       variant: "default",
       size: "default",
+    },
+  },
+);
+
+export const badgeVariants = cva(
+  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default: "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
+        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive: "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
+        outline: "text-foreground",
+        [TaskStatusEnum.BACKLOG]: "bg-gray-100 text-gray-600",
+        [TaskStatusEnum.TODO]: "  bg-[#DEEBFF] text-[#0052CC]",
+        [TaskStatusEnum.IN_PROGRESS]: "bg-yellow-100 text-yellow-600",
+        [TaskStatusEnum.IN_REVIEW]: "bg-purple-100 text-purple-500",
+        [TaskStatusEnum.DONE]: "bg-green-100 text-green-600",
+        [TaskPriorityEnum.HIGH]: "bg-orange-100 text-orange-600",
+        [TaskPriorityEnum.MEDIUM]: "bg-yellow-100 text-yellow-600",
+        [TaskPriorityEnum.LOW]: "bg-gray-100 text-gray-600",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
     },
   },
 );

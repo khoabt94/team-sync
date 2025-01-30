@@ -1,3 +1,4 @@
+import { WorkspaceDashboard } from "@/workspace/components/dashboard/Dashboard";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/workspace/$workspaceId/")({
@@ -5,5 +6,5 @@ export const Route = createFileRoute("/workspace/$workspaceId/")({
 });
 
 function RouteComponent() {
-  return <h1>Dashboard</h1>;
+  return <WorkspaceDashboard />;
 }

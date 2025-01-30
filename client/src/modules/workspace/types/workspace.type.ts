@@ -29,3 +29,9 @@ export type WorkspaceMember = {
   joinedAt: string;
   createdAt: string;
 };
+
+export type WorkspaceAnalytics = {
+  totalTasks: number;
+  overdueTasks: number;
+  completeTasks: number;
+};
