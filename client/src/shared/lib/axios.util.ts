@@ -14,12 +14,12 @@ axiosClient.interceptors.response.use(
     return response.data;
   },
   function (error) {
-    const { status } = error.response;
-    if (status === 401) {
-      //logout first
-      window.location.href = "/login";
-      return;
-    }
+    // const { status, data } = error.response;
+    // if (status === 401) {
+    //   //logout first
+    //   window.location.href = "/login";
+    //   return;
+    // }
     return Promise.reject(error.response.data);
   },
 );

@@ -1,19 +1,9 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/app/")({
-  beforeLoad: ({ context }) => {
-    if (!context.authentication.user) {
-      throw redirect({
-        to: "/login",
-        search: {
-          returnUrl: location.href,
-        },
-      });
-    }
-  },
+export const Route = createFileRoute('/app/')({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  return <div>Hello "/"!</div>;
+  return <div>Hello "/"!</div>
 }

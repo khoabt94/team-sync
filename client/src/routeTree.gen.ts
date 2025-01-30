@@ -11,23 +11,24 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SignupImport } from './routes/signup'
-import { Route as LoginImport } from './routes/login'
+import { Route as AppImport } from './routes/app'
+import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as AppIndexImport } from './routes/app/index'
+import { Route as AuthSignupImport } from './routes/_auth/signup'
+import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AppWorkspaceWorkspaceIdImport } from './routes/app/workspace/$workspaceId'
 
 // Create/Update Routes
 
-const SignupRoute = SignupImport.update({
-  id: '/signup',
-  path: '/signup',
+const AppRoute = AppImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -38,15 +39,27 @@ const IndexRoute = IndexImport.update({
 } as any)
 
 const AppIndexRoute = AppIndexImport.update({
-  id: '/app/',
-  path: '/app/',
-  getParentRoute: () => rootRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AuthSignupRoute = AuthSignupImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthLoginRoute = AuthLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AppWorkspaceWorkspaceIdRoute = AppWorkspaceWorkspaceIdImport.update({
-  id: '/app/workspace/$workspaceId',
-  path: '/app/workspace/$workspaceId',
-  getParentRoute: () => rootRoute,
+  id: '/workspace/$workspaceId',
+  path: '/workspace/$workspaceId',
+  getParentRoute: () => AppRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -60,51 +73,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/signup': {
-      id: '/signup'
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/signup': {
+      id: '/_auth/signup'
       path: '/signup'
       fullPath: '/signup'
-      preLoaderRoute: typeof SignupImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthSignupImport
+      parentRoute: typeof AuthImport
     }
     '/app/': {
       id: '/app/'
-      path: '/app'
-      fullPath: '/app'
+      path: '/'
+      fullPath: '/app/'
       preLoaderRoute: typeof AppIndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AppImport
     }
     '/app/workspace/$workspaceId': {
       id: '/app/workspace/$workspaceId'
-      path: '/app/workspace/$workspaceId'
+      path: '/workspace/$workspaceId'
       fullPath: '/app/workspace/$workspaceId'
       preLoaderRoute: typeof AppWorkspaceWorkspaceIdImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AppImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthLoginRoute: AuthLoginRoute,
+  AuthSignupRoute: AuthSignupRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface AppRouteChildren {
+  AppIndexRoute: typeof AppIndexRoute
+  AppWorkspaceWorkspaceIdRoute: typeof AppWorkspaceWorkspaceIdRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppIndexRoute: AppIndexRoute,
+  AppWorkspaceWorkspaceIdRoute: AppWorkspaceWorkspaceIdRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
-  '/app': typeof AppIndexRoute
+  '': typeof AuthRouteWithChildren
+  '/app': typeof AppRouteWithChildren
+  '/login': typeof AuthLoginRoute
+  '/signup': typeof AuthSignupRoute
+  '/app/': typeof AppIndexRoute
   '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof AuthLoginRoute
+  '/signup': typeof AuthSignupRoute
   '/app': typeof AppIndexRoute
   '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
 }
@@ -112,22 +166,33 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/app': typeof AppRouteWithChildren
+  '/_auth/login': typeof AuthLoginRoute
+  '/_auth/signup': typeof AuthSignupRoute
   '/app/': typeof AppIndexRoute
   '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/app' | '/app/workspace/$workspaceId'
+  fullPaths:
+    | '/'
+    | ''
+    | '/app'
+    | '/login'
+    | '/signup'
+    | '/app/'
+    | '/app/workspace/$workspaceId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/app' | '/app/workspace/$workspaceId'
+  to: '/' | '' | '/login' | '/signup' | '/app' | '/app/workspace/$workspaceId'
   id:
     | '__root__'
     | '/'
-    | '/login'
-    | '/signup'
+    | '/_auth'
+    | '/app'
+    | '/_auth/login'
+    | '/_auth/signup'
     | '/app/'
     | '/app/workspace/$workspaceId'
   fileRoutesById: FileRoutesById
@@ -135,18 +200,14 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LoginRoute: typeof LoginRoute
-  SignupRoute: typeof SignupRoute
-  AppIndexRoute: typeof AppIndexRoute
-  AppWorkspaceWorkspaceIdRoute: typeof AppWorkspaceWorkspaceIdRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LoginRoute: LoginRoute,
-  SignupRoute: SignupRoute,
-  AppIndexRoute: AppIndexRoute,
-  AppWorkspaceWorkspaceIdRoute: AppWorkspaceWorkspaceIdRoute,
+  AuthRoute: AuthRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -160,26 +221,42 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/login",
-        "/signup",
-        "/app/",
-        "/app/workspace/$workspaceId"
+        "/_auth",
+        "/app"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/login": {
-      "filePath": "login.tsx"
+    "/_auth": {
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/login",
+        "/_auth/signup"
+      ]
     },
-    "/signup": {
-      "filePath": "signup.tsx"
+    "/app": {
+      "filePath": "app.tsx",
+      "children": [
+        "/app/",
+        "/app/workspace/$workspaceId"
+      ]
+    },
+    "/_auth/login": {
+      "filePath": "_auth/login.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/signup": {
+      "filePath": "_auth/signup.tsx",
+      "parent": "/_auth"
     },
     "/app/": {
-      "filePath": "app/index.tsx"
+      "filePath": "app/index.tsx",
+      "parent": "/app"
     },
     "/app/workspace/$workspaceId": {
-      "filePath": "app/workspace/$workspaceId.tsx"
+      "filePath": "app/workspace/$workspaceId.tsx",
+      "parent": "/app"
     }
   }
 }

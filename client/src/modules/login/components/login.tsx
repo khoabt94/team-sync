@@ -6,7 +6,7 @@ import { loginFormSchema } from "@/login/schemas/login.schema";
 import { useLogin } from "@api/hooks/use-login";
 import { BaseError } from "@api/type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Route } from "@routes/login";
+import { Route } from "@routes/_auth/login";
 import { Logo } from "@shared/components/logo";
 import { Button } from "@shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
