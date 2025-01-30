@@ -1,11 +1,9 @@
 import { getCurrentUserFn } from "@api/hooks/use-get-current-user";
-import { User } from "@shared/types/user.type";
-import { useEffect, useState } from "react";
+import { useAuthStore } from "@shared/stores/auth.store";
+import { useEffect } from "react";
 
 export const useAuth = () => {
-  // const { data, isLoading } = useGetCurrentUser({});
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { setUser, setIsFetchingUser } = useAuthStore();
 
   useEffect(() => {
     (async () => {
@@ -16,12 +14,8 @@ export const useAuth = () => {
         }
       } catch (error) {
       } finally {
-        setIsLoading(false);
+        setIsFetchingUser(false);
       }
     })();
   }, []);
-  return {
-    user,
-    isLoadingAuth: isLoading,
-  };
 };

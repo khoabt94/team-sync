@@ -1,11 +1,13 @@
 import { LoginFormType } from "@/login/components/login";
 import { MutationProps } from "@api/type";
 import { axiosClient } from "@shared/lib/axios.util";
+import { User } from "@shared/types/user.type";
 import { useMutation } from "@tanstack/react-query";
 
 export type LoginInput = LoginFormType;
 
 export type LoginResponse = {
+  user: User;
   message: string;
 };
 

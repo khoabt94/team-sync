@@ -5,7 +5,7 @@ import { AppConfig } from "@shared/configs/app.config";
 export const axiosClient = axios.create({
   baseURL: AppConfig.VITE_API_URL,
   withCredentials: true,
-  timeout: 10000,
+  timeout: 2000,
 });
 
 // Add a response interceptor
@@ -14,12 +14,9 @@ axiosClient.interceptors.response.use(
     return response.data;
   },
   function (error) {
-    // const { status, data } = error.response;
-    // if (status === 401) {
-    //   //logout first
-    //   window.location.href = "/login";
-    //   return;
-    // }
+    if (error.code === "ERR_NETWORK") {
+      return Promise.reject({ message: "Network error" });
+    }
     return Promise.reject(error.response.data);
   },
 );

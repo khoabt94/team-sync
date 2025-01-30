@@ -1,9 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Button } from "@shared/components/ui/button";
+import { useHandleLogout } from "@shared/hooks/use-handle-logout";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/app/')({
+export const Route = createFileRoute("/app/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <div>Hello "/"!</div>
+  const handleLogout = useHandleLogout();
+  return (
+    <div>
+      <Button onClick={handleLogout}>Logout</Button>
+    </div>
+  );
 }

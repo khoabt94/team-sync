@@ -15,13 +15,14 @@ import { GoogleOauthButton } from "@shared/components/ui/google-button";
 import { Input } from "@shared/components/ui/input";
 import { toast } from "@shared/hooks/use-toast";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuthStore } from "@shared/stores/auth.store";
 
 export type LoginFormType = z.infer<typeof loginFormSchema>;
 
 export function Login() {
   const navigate = useNavigate();
   const { returnUrl = "" } = Route.useSearch();
-
+  const { setUser } = useAuthStore();
   const { mutateAsync: login, isPending } = useLogin();
   const form = useForm<LoginFormType>({
     resolver: zodResolver(loginFormSchema),
@@ -33,12 +34,13 @@ export function Login() {
 
   const onSubmit = async (values: LoginFormType) => {
     try {
-      await login(values);
+      const { user } = await login(values);
       toast({
         description: "Login succesfully, Welcome back!",
       });
-      const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/";
-      navigate({ to: redirectUrl });
+      setUser(user);
+      const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/app/workspace/$workspaceId";
+      navigate({ to: redirectUrl, params: { workspaceId: user.currentWorkspace } });
     } catch (error: unknown) {
       toast({
         title: "Error",
@@ -88,20 +90,20 @@ export function Login() {
                           )}
                         />
                       </div>
-                      <div className="grid gap-2">
+                      <div className="grid gap-2" tabIndex={-1}>
                         <FormField
                           control={form.control}
                           name="password"
                           render={({ field }) => (
-                            <FormItem>
-                              <div className="flex items-center">
+                            <FormItem tabIndex={-1}>
+                              <div className="flex items-center" tabIndex={-1}>
                                 <FormLabel className="text-sm dark:text-[#f1f7feb5]">Password</FormLabel>
                                 <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
                                   Forgot your password?
                                 </a>
                               </div>
                               <FormControl>
-                                <Input type="password" className="!h-[48px]" {...field} />
+                                <Input type="password" placeholder="Your password" className="!h-[48px]" {...field} />
                               </FormControl>
 
                               <FormMessage />
