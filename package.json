@@ -6,6 +6,10 @@
   "license": "MIT",
   "scripts": {
     "server-dev": "cd backend && yarn dev",
-    "client-dev": "cd client && yarn dev"
+    "server-build": "cd backend && yarn build",
+    "client-dev": "cd client && yarn dev",
+    "client-build": "cd client && yarn build",
+    "client-lint": "cd client && yarn lint",
+    "client-preview": "cd client && yarn preview"
   }
 }

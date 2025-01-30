@@ -1,5 +1,5 @@
-import { AccountProviderEnum, AccountProviderEnumType } from "@enums/account-provider.enum";
-import mongoose, { Document, Schema } from "mongoose";
+import { AccountProviderEnum, AccountProviderEnumType } from '@enums/account-provider.enum';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface AccountDocument extends Document {
   provider: AccountProviderEnumType;
@@ -15,33 +15,33 @@ const AccountSchema = new Schema<AccountDocument>(
     provider: {
       type: String,
       enum: Object.values(AccountProviderEnum),
-      required: true,
+      required: true
     },
     providerId: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: 'User',
+      required: true
     },
     refreshToken: {
       type: String,
       default: null,
-      select: false,
+      select: false
     },
     tokenExpire: {
       type: Date,
       default: null,
-      select: false,
-    },
+      select: false
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-const AccountModel = mongoose.model<AccountDocument>("Account", AccountSchema);
+const AccountModel = mongoose.model<AccountDocument>('Account', AccountSchema);
 export default AccountModel;

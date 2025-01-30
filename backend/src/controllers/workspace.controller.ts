@@ -1,33 +1,33 @@
-import MemberModel from "@models/member.model";
-import RoleModel from "@models/roles-permission.model";
+import MemberModel from '@models/member.model';
+import RoleModel from '@models/roles-permission.model';
 import {
   changeRoleSchema,
   createWorkspaceSchema,
   inviteCodeSchema,
   updateWorkspaceSchema,
-  workspaceIdSchema,
-} from "@schemas";
-import { workspaceServices } from "@services";
-import { memberServices } from "@services/member.service";
-import { asyncHandler } from "@utils/async-handler.util";
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+  workspaceIdSchema
+} from '@schemas';
+import { workspaceServices } from '@services';
+import { memberServices } from '@services/member.service';
+import { asyncHandler } from '@utils/async-handler.util';
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 const createNewWorkspace = asyncHandler(async (req: Request, res: Response) => {
   const data = createWorkspaceSchema.parse(req.body);
   const newWorkspace = await workspaceServices.createNewWorkspace({
     ownerId: req.user?._id,
     workspaceName: data.name,
-    workspaceDescription: data.description,
+    workspaceDescription: data.description
   });
 
   workspaceServices.updateUserCurrentWorkspace({
     ownerId: req.user?._id,
-    workspaceId: newWorkspace?.id,
+    workspaceId: newWorkspace?.id
   });
   return res.status(StatusCodes.OK).json({
     workspace: newWorkspace,
-    message: "Create new workspace successfully",
+    message: 'Create new workspace successfully'
   });
 });
 
@@ -35,14 +35,14 @@ const getUserWorkspaces = asyncHandler(async (req: Request, res: Response) => {
   const workspaces = await workspaceServices.getUserWorkspaces(req.user?._id);
   return res.status(StatusCodes.OK).json({
     workspaces,
-    message: "Get user workspaces successfully",
+    message: 'Get user workspaces successfully'
   });
 });
 
 const getWorkspaceById = asyncHandler(async (req: Request, res: Response) => {
   return res.status(StatusCodes.OK).json({
     workspace: { ...req.workspace?.toObject(), role: req.role },
-    message: "Get workspace successfully",
+    message: 'Get workspace successfully'
   });
 });
 
@@ -52,7 +52,7 @@ const getWorkspaceMembers = asyncHandler(async (req: Request, res: Response) => 
   return res.status(StatusCodes.OK).json({
     members,
     workspaceId: req.params.workspaceId,
-    message: "Get workspace members successfully",
+    message: 'Get workspace members successfully'
   });
 });
 
@@ -60,7 +60,7 @@ const getWorkspaceRoles = asyncHandler(async (req: Request, res: Response) => {
   const roles = await RoleModel.find({}, { role: 1, _id: 1 }).lean();
   return res.status(StatusCodes.OK).json({
     roles,
-    message: "Get workspace roles successfully",
+    message: 'Get workspace roles successfully'
   });
 });
 
@@ -69,7 +69,7 @@ const getWorkspaceAnalytics = asyncHandler(async (req: Request, res: Response) =
   const analytics = await workspaceServices.getWorkspaceAnalytics(workspaceId);
   return res.status(StatusCodes.OK).json({
     analytics,
-    message: "Get workspace analytics successfully",
+    message: 'Get workspace analytics successfully'
   });
 });
 
@@ -81,7 +81,7 @@ const changeMemberRole = asyncHandler(async (req: Request, res: Response) => {
 
   return res.status(StatusCodes.OK).json({
     member: newUser,
-    message: "Change role successfully",
+    message: 'Change role successfully'
   });
 });
 
@@ -94,7 +94,7 @@ const joinWorkspace = asyncHandler(async (req: Request, res: Response) => {
   return res.status(StatusCodes.OK).json({
     workspaceId,
     role,
-    message: "Join workspace successfully",
+    message: 'Join workspace successfully'
   });
 });
 
@@ -106,7 +106,7 @@ const updateWorkspace = asyncHandler(async (req: Request, res: Response) => {
 
   return res.status(StatusCodes.OK).json({
     workspace: newWorkspace,
-    message: "Update workspace successfully",
+    message: 'Update workspace successfully'
   });
 });
 
@@ -116,10 +116,10 @@ const deleteWorkspace = asyncHandler(async (req: Request, res: Response) => {
   await workspaceServices.deleteWorkspaceService(workspaceId);
   await workspaceServices.updateUserCurrentWorkspace({
     workspaceId: null,
-    ownerId: req.user?._id,
+    ownerId: req.user?._id
   });
   return res.status(StatusCodes.OK).json({
-    message: "Delete workspace successfully",
+    message: 'Delete workspace successfully'
   });
 });
 
@@ -133,5 +133,5 @@ export const workspaceControllers = {
   changeMemberRole,
   joinWorkspace,
   updateWorkspace,
-  deleteWorkspace,
+  deleteWorkspace
 };

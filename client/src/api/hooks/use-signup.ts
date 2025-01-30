@@ -1,8 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-
-import { MutationProps } from "@api/type";
 import { SignUpFormType } from "@/signup/components/signup";
+import { MutationProps } from "@api/type";
 import { axiosClient } from "@shared/lib/axios.util";
+import { useMutation } from "@tanstack/react-query";
 
 export type SignupInput = SignUpFormType;
 

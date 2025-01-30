@@ -1,13 +1,13 @@
-import { ErrorCodeEnum } from "@enums/error-code.enum";
-import { PermissionType } from "@enums/role.enum";
-import MemberModel from "@models/member.model";
-import { RoleDocument } from "@models/roles-permission.model";
-import WorkspaceModel from "@models/workspace.model";
-import { workspaceIdSchema } from "@schemas";
-import { workspaceServices } from "@services";
-import { ForbiddenException, NotFoundException, UnauthorizedException } from "@utils/app-error.util";
-import { asyncHandler } from "@utils/async-handler.util";
-import { NextFunction, Request, Response } from "express";
+import { ErrorCodeEnum } from '@enums/error-code.enum';
+import { PermissionType } from '@enums/role.enum';
+import MemberModel from '@models/member.model';
+import { RoleDocument } from '@models/roles-permission.model';
+import WorkspaceModel from '@models/workspace.model';
+import { workspaceIdSchema } from '@schemas';
+import { workspaceServices } from '@services';
+import { ForbiddenException, NotFoundException, UnauthorizedException } from '@utils/app-error.util';
+import { asyncHandler } from '@utils/async-handler.util';
+import { NextFunction, Request, Response } from 'express';
 
 // use in workspaceId route
 export const workspaceAuthorizedGuard = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -18,15 +18,16 @@ export const workspaceAuthorizedGuard = asyncHandler(async (req: Request, res: R
     const workspace = await workspaceServices.getWorkspaceDetail(workspaceId);
 
     const members = await MemberModel.find({
-      workspaceId,
+      workspaceId
     })
-      .populate("role")
+      .populate('role')
       .exec();
 
     const myMembership = members.find((member) => member.userId.toString() === userId);
 
-    if (!myMembership)
-      throw new UnauthorizedException("You are not member of this workspace", ErrorCodeEnum.ACCESS_UNAUTHORIZED);
+    if (!myMembership) {
+      throw new UnauthorizedException('You are not member of this workspace', ErrorCodeEnum.ACCESS_UNAUTHORIZED);
+    }
 
     const role = myMembership?.role as unknown as RoleDocument;
     req.workspace = workspace;
@@ -44,7 +45,7 @@ export const workspacePermissionGuard = (permission: PermissionType) =>
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.permission?.includes(permission)) {
-        throw new ForbiddenException("You are not allowed to perform this action");
+        throw new ForbiddenException('You are not allowed to perform this action');
       }
 
       next();

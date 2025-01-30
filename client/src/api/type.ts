@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import {
   InfiniteData,
   QueryFunctionContext,
@@ -6,7 +8,6 @@ import {
   UseMutationOptions,
   UseQueryOptions,
 } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 
 export type Pagination = {
   total: number;
@@ -14,9 +15,10 @@ export type Pagination = {
   size: number;
 };
 
-type BaseError = {
+export type BaseError = {
   errorCode: string;
   message: string;
+  errors?: Array<{ message: string }>;
 };
 
 export type QueryFunctionCtx = QueryFunctionContext<QueryKey, Pick<Pagination, "page" | "size">>;

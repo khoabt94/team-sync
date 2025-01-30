@@ -1,20 +1,13 @@
-import { routeTree } from "@routeTree";
-import { Toast } from "@shared/components/ui/toast";
+import { router } from "@router";
 import { Toaster } from "@shared/components/ui/toaster";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
-
-const router = createRouter({ routeTree });
-
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
+import { useAuth } from "@shared/hooks/use-auth";
+import { RouterProvider } from "@tanstack/react-router";
 
 function App() {
+  const authentication = useAuth();
   return (
     <>
-      <RouterProvider router={router}></RouterProvider>
+      <RouterProvider router={router} context={{ authentication }}></RouterProvider>
       <Toaster />
     </>
   );

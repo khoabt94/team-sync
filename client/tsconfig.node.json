@@ -27,6 +27,7 @@
       "@shared/*": ["./src/shared/*"],
       "@utils/*": ["./src/utils/*"],
       "@routeTree": ["./src/routeTree.gen.ts"],
+      "@router": ["./src/router.ts"],
       "@/*": ["./src/modules/*"]
     }
   },

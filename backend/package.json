@@ -8,7 +8,8 @@
     "seed-roles": "ts-node --files -r tsconfig-paths/register src/seeds/role.seed.ts",
     "reset-users": "ts-node --files -r tsconfig-paths/register src/seeds/reset-users.seed.ts",
     "build": "tsc & cp /package.json ./dist",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "lint": "tslint 'src/**/*.ts' --fix"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -42,6 +43,8 @@
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-local": "^1.0.38",
-    "tsconfig-paths": "^4.2.0"
+    "eslint-plugin-import": "^2.31.0",
+    "tsconfig-paths": "^4.2.0",
+    "tslint": "^6.1.3"
   }
 }

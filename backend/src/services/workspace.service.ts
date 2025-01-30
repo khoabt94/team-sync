@@ -1,14 +1,14 @@
-import { Roles } from "@enums/role.enum";
-import { TaskStatusEnum } from "@enums/task.enum";
-import MemberModel from "@models/member.model";
-import RoleModel from "@models/roles-permission.model";
-import TaskModel from "@models/task.model";
-import UserModel from "@models/user.model";
-import WorkspaceModel, { WorkspaceDocument } from "@models/workspace.model";
-import { BadRequestException, NotFoundException } from "@utils/app-error.util";
-import mongoose from "mongoose";
-import { ObjectId } from "mongodb";
-import { assign } from "lodash";
+import { Roles } from '@enums/role.enum';
+import { TaskStatusEnum } from '@enums/task.enum';
+import MemberModel from '@models/member.model';
+import RoleModel from '@models/roles-permission.model';
+import TaskModel from '@models/task.model';
+import UserModel from '@models/user.model';
+import WorkspaceModel, { WorkspaceDocument } from '@models/workspace.model';
+import { BadRequestException, NotFoundException } from '@utils/app-error.util';
+import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
+import { assign } from 'lodash';
 
 type CreateNewWorkspacePayload = {
   workspaceName: string;
@@ -19,7 +19,7 @@ type CreateNewWorkspacePayload = {
 async function createNewWorkspace({
   workspaceName,
   workspaceDescription,
-  ownerId,
+  ownerId
 }: CreateNewWorkspacePayload): Promise<WorkspaceDocument | null> {
   const session = await mongoose.startSession();
   try {
@@ -28,7 +28,7 @@ async function createNewWorkspace({
     const newWorkspace = new WorkspaceModel({
       name: workspaceName,
       description: workspaceDescription ?? workspaceName,
-      owner: ownerId,
+      owner: ownerId
     });
 
     await newWorkspace.save({ session });
@@ -36,13 +36,15 @@ async function createNewWorkspace({
     // add user as OWNER of workspace
     // find owner role
     const ownerRole = await RoleModel.findOne({ role: Roles.OWNER }).session(session);
-    if (!ownerRole) throw new NotFoundException("Owner role not found");
+    if (!ownerRole) {
+      throw new NotFoundException('Owner role not found');
+    }
 
     // create member in workspace
     const member = new MemberModel({
       userId: ownerId,
       role: ownerRole._id,
-      workspaceId: newWorkspace._id,
+      workspaceId: newWorkspace._id
     });
     await member.save({ session });
 
@@ -65,7 +67,9 @@ type UpdateUserCurrentWorkspacePayload = {
 async function updateUserCurrentWorkspace({ workspaceId, ownerId }: UpdateUserCurrentWorkspacePayload): Promise<void> {
   try {
     const user = await UserModel.findById(ownerId);
-    if (!user) throw new NotFoundException("User not found");
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     if (!workspaceId) {
       user.currentWorkspace = null;
     } else {
@@ -79,12 +83,12 @@ async function updateUserCurrentWorkspace({ workspaceId, ownerId }: UpdateUserCu
   }
 }
 
-//User must be a member in that workspace
+// User must be a member in that workspace
 async function getUserWorkspaces(userId: string) {
   const memberships = await MemberModel.find({
-    userId,
+    userId
   })
-    .populate("workspaceId")
+    .populate('workspaceId')
     .exec();
 
   return memberships
@@ -98,11 +102,11 @@ async function getWorkspaceAnalytics(workspaceId: string) {
   const overdueTasks = await TaskModel.countDocuments({
     workspace: workspaceId,
     dueDate: { $lt: currentDate },
-    status: { $ne: TaskStatusEnum.DONE },
+    status: { $ne: TaskStatusEnum.DONE }
   });
   const completeTasks = await TaskModel.countDocuments({
     workspace: workspaceId,
-    status: TaskStatusEnum.DONE,
+    status: TaskStatusEnum.DONE
   });
   return { totalTasks, overdueTasks, completeTasks };
 }
@@ -117,12 +121,12 @@ async function changeMemberRoleService({ workspaceId, memberId, roleId }: Change
   const user = await MemberModel.findOneAndUpdate(
     {
       workspaceId,
-      userId: memberId,
+      userId: memberId
     },
     {
-      role: new ObjectId(roleId),
+      role: new ObjectId(roleId)
     },
-    { returnDocument: "after" }
+    { returnDocument: 'after' }
   );
 
   return user;
@@ -136,20 +140,26 @@ type JoinWorkspaceServicePayload = {
 async function joinWorkspaceService({ inviteCode, userId }: JoinWorkspaceServicePayload) {
   // check invite code valid
   const workspace = await WorkspaceModel.findOne({ inviteCode, deleted: false });
-  if (!workspace) throw new NotFoundException("Invite Code is not existing");
+  if (!workspace) {
+    throw new NotFoundException('Invite Code is not existing');
+  }
 
   // check whether already member
   const isMember = await MemberModel.findOne({ workspaceId: workspace._id, userId });
-  if (isMember) throw new BadRequestException("You are already a member of that workspace");
+  if (isMember) {
+    throw new BadRequestException('You are already a member of that workspace');
+  }
 
   // find MEMBER role id
   const memberRole = await RoleModel.findOne({ role: Roles.MEMBER });
-  if (!memberRole) throw new NotFoundException("Member role ID not found");
+  if (!memberRole) {
+    throw new NotFoundException('Member role ID not found');
+  }
 
   const newMember = new MemberModel({
     workspaceId: workspace._id,
     userId,
-    role: memberRole._id,
+    role: memberRole._id
   });
 
   await newMember.save();
@@ -160,17 +170,19 @@ async function joinWorkspaceService({ inviteCode, userId }: JoinWorkspaceService
 async function getWorkspaceDetail(workspaceId: string) {
   const workspace = await WorkspaceModel.findOne({
     _id: workspaceId,
-    deleted: false,
+    deleted: false
   });
 
-  if (!workspace) throw new NotFoundException("Workspace not found");
+  if (!workspace) {
+    throw new NotFoundException('Workspace not found');
+  }
 
   return workspace;
 }
 
 async function updateWorkspaceService(
   workspaceId: string,
-  data: Partial<Pick<WorkspaceDocument, "name" | "description">>
+  data: Partial<Pick<WorkspaceDocument, 'name' | 'description'>>
 ) {
   let workspace = await getWorkspaceDetail(workspaceId);
 
@@ -196,5 +208,5 @@ export const workspaceServices = {
   getWorkspaceAnalytics,
   updateWorkspaceService,
   deleteWorkspaceService,
-  getWorkspaceDetail,
+  getWorkspaceDetail
 };

@@ -1,22 +1,24 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { loginFormSchema } from "@/login/schemas/login.schema";
+import { useLogin } from "@api/hooks/use-login";
+import { BaseError } from "@api/type";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Route } from "@routes/login";
+import { Logo } from "@shared/components/logo";
+import { Button } from "@shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@shared/components/ui/form";
-import { Input } from "@shared/components/ui/input";
-import { Button } from "@shared/components/ui/button";
-import { Logo } from "@shared/components/logo";
-import { Link, useNavigate } from "@tanstack/react-router";
 import { GoogleOauthButton } from "@shared/components/ui/google-button";
-import { loginFormSchema } from "@/login/schemas/login.schema";
-import { useLogin } from "@api/hooks/useLogin";
+import { Input } from "@shared/components/ui/input";
 import { toast } from "@shared/hooks/use-toast";
-import { Loader } from "lucide-react";
-import { Route } from "@routes/login";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 export type LoginFormType = z.infer<typeof loginFormSchema>;
 
-export const Login = () => {
+export function Login() {
   const navigate = useNavigate();
   const { returnUrl = "" } = Route.useSearch();
 
@@ -37,11 +39,11 @@ export const Login = () => {
       });
       const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/";
       navigate({ to: redirectUrl });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: error.errors?.[0]?.message ?? error.message,
+        description: (error as BaseError).errors?.[0]?.message ?? (error as BaseError).message,
       });
     }
   };
@@ -76,7 +78,7 @@ export const Login = () => {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-[#f1f7feb5] text-sm">Email</FormLabel>
+                              <FormLabel className="text-sm dark:text-[#f1f7feb5]">Email</FormLabel>
                               <FormControl>
                                 <Input placeholder="m@example.com" className="!h-[48px]" {...field} />
                               </FormControl>
@@ -93,7 +95,7 @@ export const Login = () => {
                           render={({ field }) => (
                             <FormItem>
                               <div className="flex items-center">
-                                <FormLabel className="dark:text-[#f1f7feb5] text-sm">Password</FormLabel>
+                                <FormLabel className="text-sm dark:text-[#f1f7feb5]">Password</FormLabel>
                                 <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
                                   Forgot your password?
                                 </a>
@@ -107,7 +109,7 @@ export const Login = () => {
                           )}
                         />
                       </div>
-                      <Button disabled={isPending} type="submit" className="w-full mt-3">
+                      <Button disabled={isPending} type="submit" className="mt-3 w-full">
                         {isPending && <Loader className="animate-spin" />}
                         Login
                       </Button>
@@ -130,4 +132,4 @@ export const Login = () => {
       </div>
     </div>
   );
-};
+}

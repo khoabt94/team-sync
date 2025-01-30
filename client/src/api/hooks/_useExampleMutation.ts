@@ -1,6 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-
 import { MutationProps } from "@api/type";
+import { useMutation } from "@tanstack/react-query";
 
 export type ExampleInput = {
   name: string;

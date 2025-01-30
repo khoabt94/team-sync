@@ -1,7 +1,7 @@
 import { Button } from "@shared/components/ui/button";
 import { AppConfig } from "@shared/configs/app.config";
 
-export const GoogleOauthButton = (props: { label: string }) => {
+export function GoogleOauthButton(props: { label: string }) {
   const { label } = props;
 
   const handleClick = () => {
@@ -18,4 +18,4 @@ export const GoogleOauthButton = (props: { label: string }) => {
       {label} with Google
     </Button>
   );
-};
+}

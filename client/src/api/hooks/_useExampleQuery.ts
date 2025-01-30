@@ -1,6 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-
 import { QueryProps } from "@api/type";
+import { useQuery } from "@tanstack/react-query";
 
 export type ExampleInput = {
   name: string;

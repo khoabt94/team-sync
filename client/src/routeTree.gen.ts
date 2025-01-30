@@ -14,6 +14,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
 import { Route as LoginImport } from './routes/login'
 import { Route as IndexImport } from './routes/index'
+import { Route as AppIndexImport } from './routes/app/index'
+import { Route as AppWorkspaceWorkspaceIdImport } from './routes/app/workspace/$workspaceId'
 
 // Create/Update Routes
 
@@ -32,6 +34,18 @@ const LoginRoute = LoginImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppIndexRoute = AppIndexImport.update({
+  id: '/app/',
+  path: '/app/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppWorkspaceWorkspaceIdRoute = AppWorkspaceWorkspaceIdImport.update({
+  id: '/app/workspace/$workspaceId',
+  path: '/app/workspace/$workspaceId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -60,6 +74,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
     }
+    '/app/': {
+      id: '/app/'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/app/workspace/$workspaceId': {
+      id: '/app/workspace/$workspaceId'
+      path: '/app/workspace/$workspaceId'
+      fullPath: '/app/workspace/$workspaceId'
+      preLoaderRoute: typeof AppWorkspaceWorkspaceIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -69,12 +97,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app': typeof AppIndexRoute
+  '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app': typeof AppIndexRoute
+  '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
 }
 
 export interface FileRoutesById {
@@ -82,14 +114,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/app/': typeof AppIndexRoute
+  '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup'
+  fullPaths: '/' | '/login' | '/signup' | '/app' | '/app/workspace/$workspaceId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup'
-  id: '__root__' | '/' | '/login' | '/signup'
+  to: '/' | '/login' | '/signup' | '/app' | '/app/workspace/$workspaceId'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/app/'
+    | '/app/workspace/$workspaceId'
   fileRoutesById: FileRoutesById
 }
 
@@ -97,12 +137,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppWorkspaceWorkspaceIdRoute: typeof AppWorkspaceWorkspaceIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppWorkspaceWorkspaceIdRoute: AppWorkspaceWorkspaceIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +161,9 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/login",
-        "/signup"
+        "/signup",
+        "/app/",
+        "/app/workspace/$workspaceId"
       ]
     },
     "/": {
@@ -128,6 +174,12 @@ export const routeTree = rootRoute
     },
     "/signup": {
       "filePath": "signup.tsx"
+    },
+    "/app/": {
+      "filePath": "app/index.tsx"
+    },
+    "/app/workspace/$workspaceId": {
+      "filePath": "app/workspace/$workspaceId.tsx"
     }
   }
 }

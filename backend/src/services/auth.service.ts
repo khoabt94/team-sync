@@ -1,9 +1,9 @@
-import { AccountProviderEnum, AccountProviderEnumType } from "@enums/account-provider.enum";
-import AccountModel from "@models/account.model";
-import UserModel from "@models/user.model";
-import { workspaceServices } from "@services";
-import { BadRequestException } from "@utils/app-error.util";
-import mongoose from "mongoose";
+import { AccountProviderEnum, AccountProviderEnumType } from '@enums/account-provider.enum';
+import AccountModel from '@models/account.model';
+import UserModel from '@models/user.model';
+import { workspaceServices } from '@services';
+import { BadRequestException } from '@utils/app-error.util';
+import mongoose from 'mongoose';
 
 type CreateNewAccountePayload = {
   provider: AccountProviderEnumType;
@@ -20,7 +20,7 @@ async function createNewUser({
   email,
   provider,
   providerId,
-  password,
+  password
 }: CreateNewAccountePayload) {
   const session = await mongoose.startSession();
   try {
@@ -30,23 +30,25 @@ async function createNewUser({
       name: displayName,
       email: email,
       profilePicture: avatarUrl,
-      password,
+      password
     });
 
     // create a new account
     const newAccount = new AccountModel({
       provider: provider,
       providerId: providerId,
-      userId: user._id,
+      userId: user._id
     });
     await newAccount.save({ session });
 
     const newWorkspace = await workspaceServices.createNewWorkspace({
-      workspaceName: "My workspace",
+      workspaceName: 'My workspace',
       workspaceDescription: `Workspace created for ${user.name}`,
-      ownerId: user._id as string,
+      ownerId: user._id as string
     });
-    if (!newWorkspace) throw new Error("Can not create a workspace");
+    if (!newWorkspace) {
+      throw new Error('Can not create a workspace');
+    }
     user.currentWorkspace = newWorkspace.id;
 
     await user.save({ session });
@@ -68,7 +70,9 @@ async function loginAndCreateAccountWithProviderService({ email, ...payload }: C
       const newUser = await createNewUser({ email, ...payload });
       user = newUser.user;
     }
-    if (!user) throw new BadRequestException("Fail to create user");
+    if (!user) {
+      throw new BadRequestException('Fail to create user');
+    }
     return { user: user };
   } catch (error) {
     throw error;
@@ -78,7 +82,7 @@ async function loginAndCreateAccountWithProviderService({ email, ...payload }: C
 async function verifyUserService({
   email,
   password,
-  provider = AccountProviderEnum.EMAIL,
+  provider = AccountProviderEnum.EMAIL
 }: {
   email: string;
   password: string;
@@ -86,15 +90,21 @@ async function verifyUserService({
 }) {
   // find account
   const account = await AccountModel.findOne({ provider, providerId: email });
-  if (!account) throw new BadRequestException("Invalid credentials");
+  if (!account) {
+    throw new BadRequestException('Invalid credentials');
+  }
 
   // find user
-  const user = await UserModel.findById(account.userId).select("+password");
-  if (!user) throw new BadRequestException("Invalid credentials");
+  const user = await UserModel.findById(account.userId).select('+password');
+  if (!user) {
+    throw new BadRequestException('Invalid credentials');
+  }
 
   // compare password
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) throw new BadRequestException("Invalid credentials");
+  if (!isMatch) {
+    throw new BadRequestException('Invalid credentials');
+  }
 
   return user.omitPassword();
 }

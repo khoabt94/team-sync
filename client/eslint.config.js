@@ -5,8 +5,6 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tslint from "typescript-eslint";
 import perfectionist from "eslint-plugin-perfectionist";
 import react from "eslint-plugin-react";
-import tailwind from "eslint-plugin-tailwindcss";
-import storybook from "eslint-plugin-storybook";
 import prettier from "eslint-plugin-prettier";
 
 export default tslint.config(
@@ -30,16 +28,7 @@ export default tslint.config(
         "error",
         {
           type: "alphabetical",
-          internalPattern: [
-            "@/**",
-            "@icons",
-            "@images",
-            "@router",
-            "@shared/**",
-            "@configs/**",
-            "@api/**",
-            "@styles/**",
-          ],
+          internalPattern: ["@routes/*", "@components/*", "@api/*", "@shared/*", "@utils/*", "@router", "@/*"],
           groups: [
             "type",
             ["builtin", "external"],
@@ -100,7 +89,6 @@ export default tslint.config(
   },
   {
     files: ["**/*.{ts,tsx}"],
-    extends: [...tailwind.configs["flat/recommended"]],
     plugins: { prettier, "react-refresh": reactRefresh },
     rules: {
       "prettier/prettier": ["error"],

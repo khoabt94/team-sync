@@ -1,5 +1,5 @@
-import { generateRandomCode } from "@utils/text.util";
-import mongoose, { Document, Schema } from "mongoose";
+import { generateRandomCode } from '@utils/text.util';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface WorkspaceDocument extends Document {
   name: string;
@@ -17,31 +17,31 @@ const WorkspaceSchema = new Schema<WorkspaceDocument>(
     name: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     description: {
       type: String,
       required: false,
-      default: "",
+      default: ''
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: 'User',
+      required: true
     },
     deleted: {
       type: Boolean,
-      default: false,
+      default: false
     },
     inviteCode: {
       type: String,
       unique: true,
       select: true,
-      default: generateRandomCode(8),
-    },
+      default: generateRandomCode(8)
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
@@ -50,5 +50,5 @@ WorkspaceSchema.methods.resetInviteCode = function () {
   this.save();
 };
 
-const WorkspaceModel = mongoose.model<WorkspaceDocument>("Workspace", WorkspaceSchema);
+const WorkspaceModel = mongoose.model<WorkspaceDocument>('Workspace', WorkspaceSchema);
 export default WorkspaceModel;

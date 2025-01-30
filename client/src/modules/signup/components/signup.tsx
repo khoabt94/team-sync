@@ -1,22 +1,24 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { signupFormSchema } from "@/signup/schemas/signup.schema";
+import { useSignup } from "@api/hooks/use-signup";
+import { BaseError } from "@api/type";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Logo } from "@shared/components/logo";
 import { Button } from "@shared/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@shared/components/ui/form";
-import { Input } from "@shared/components/ui/input";
-import { signupFormSchema } from "@/signup/schemas/signup.schema";
-import { Logo } from "@shared/components/logo";
-import { Link } from "@tanstack/react-router";
 import { GoogleOauthButton } from "@shared/components/ui/google-button";
-import { useSignup } from "@api/hooks/useSignup";
+import { Input } from "@shared/components/ui/input";
 import { toast } from "@shared/hooks/use-toast";
-import { Loader } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 
 export type SignUpFormType = z.infer<typeof signupFormSchema>;
 
-export const SignUp = () => {
+export function SignUp() {
   const navigate = useNavigate();
   const { mutateAsync: signup, isPending } = useSignup();
   const form = useForm<SignUpFormType>({
@@ -36,11 +38,11 @@ export const SignUp = () => {
         description: "Account created successfully. Please login to continue.",
       });
       navigate({ to: "/" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: error.errors?.[0]?.message ?? error.message,
+        description: (error as BaseError).errors?.[0]?.message ?? (error as BaseError).message,
       });
     }
   };
@@ -75,7 +77,7 @@ export const SignUp = () => {
                           name="name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-[#f1f7feb5] text-sm">Name</FormLabel>
+                              <FormLabel className="text-sm dark:text-[#f1f7feb5]">Name</FormLabel>
                               <FormControl>
                                 <Input placeholder="Your name..." className="h-10" {...field} />
                               </FormControl>
@@ -91,7 +93,7 @@ export const SignUp = () => {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-[#f1f7feb5] text-sm">Email</FormLabel>
+                              <FormLabel className="text-sm dark:text-[#f1f7feb5]">Email</FormLabel>
                               <FormControl>
                                 <Input placeholder="Your email..." className="h-10" {...field} />
                               </FormControl>
@@ -107,7 +109,7 @@ export const SignUp = () => {
                           name="password"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-[#f1f7feb5] text-sm">Password</FormLabel>
+                              <FormLabel className="text-sm dark:text-[#f1f7feb5]">Password</FormLabel>
                               <FormControl>
                                 <Input type="password" className="h-10" placeholder="Your password..." {...field} />
                               </FormControl>
@@ -123,7 +125,7 @@ export const SignUp = () => {
                           name="confirmPassword"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="dark:text-[#f1f7feb5] text-sm">Confirm password</FormLabel>
+                              <FormLabel className="text-sm dark:text-[#f1f7feb5]">Confirm password</FormLabel>
                               <FormControl>
                                 <Input
                                   type="password"
@@ -138,7 +140,7 @@ export const SignUp = () => {
                           )}
                         />
                       </div>
-                      <Button type="submit" disabled={isPending} className="w-full mt-3">
+                      <Button type="submit" disabled={isPending} className="mt-3 w-full">
                         {isPending && <Loader className="animate-spin" />}
                         Sign up
                       </Button>
@@ -161,4 +163,4 @@ export const SignUp = () => {
       </div>
     </div>
   );
-};
+}
