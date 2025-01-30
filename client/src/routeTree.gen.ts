@@ -14,10 +14,14 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as WorkspaceImport } from './routes/workspace'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
+import { Route as WorkspaceWorkspaceIdImport } from './routes/workspace/$workspaceId'
 import { Route as GoogleCallbackImport } from './routes/google/callback'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as WorkspaceWorkspaceIdIndexImport } from './routes/workspace/$workspaceId/index'
+import { Route as WorkspaceWorkspaceIdTasksImport } from './routes/workspace/$workspaceId/tasks'
+import { Route as WorkspaceWorkspaceIdSettingsImport } from ./routes/workspace/$workspaceId/settingsgs'
+import { Route as WorkspaceWorkspaceIdMembersImport } from './routes/workspace/$workspaceId/members'
 import { Route as WorkspaceWorkspaceIdProjectIdIndexImport } from './routes/workspace/$workspaceId/$projectId/index'
 
 // Create/Update Routes
@@ -39,6 +43,12 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const WorkspaceWorkspaceIdRoute = WorkspaceWorkspaceIdImport.update({
+  id: '/$workspaceId',
+  path: '/$workspaceId',
+  getParentRoute: () => WorkspaceRoute,
+} as any)
+
 const GoogleCallbackRoute = GoogleCallbackImport.update({
   id: '/google/callback',
   path: '/google/callback',
@@ -58,16 +68,36 @@ const AuthLoginRoute = AuthLoginImport.update({
 } as any)
 
 const WorkspaceWorkspaceIdIndexRoute = WorkspaceWorkspaceIdIndexImport.update({
-  id: '/$workspaceId/',
-  path: '/$workspaceId/',
-  getParentRoute: () => WorkspaceRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => WorkspaceWorkspaceIdRoute,
 } as any)
+
+const WorkspaceWorkspaceIdTasksRoute = WorkspaceWorkspaceIdTasksImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => WorkspaceWorkspaceIdRoute,
+} as any)
+
+const WorkspaceWorkspaceIdSettingsRoute =
+  WorkspaceWorkspaceIdSettingsImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => WorkspaceWorkspaceIdRoute,
+  } as any)
+
+const WorkspaceWorkspaceIdMembersRoute =
+  WorkspaceWorkspaceIdMembersImport.update({
+    id: '/members',
+    path: '/members',
+    getParentRoute: () => WorkspaceWorkspaceIdRoute,
+  } as any)
 
 const WorkspaceWorkspaceIdProjectIdIndexRoute =
   WorkspaceWorkspaceIdProjectIdIndexImport.update({
-    id: '/$workspaceId/$projectId/',
-    path: '/$workspaceId/$projectId/',
-    getParentRoute: () => WorkspaceRoute,
+    id: '/$projectId/',
+    path: '/$projectId/',
+    getParentRoute: () => WorkspaceWorkspaceIdRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -116,19 +146,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GoogleCallbackImport
       parentRoute: typeof rootRoute
     }
-    '/workspace/$workspaceId/': {
-      id: '/workspace/$workspaceId/'
+    '/workspace/$workspaceId': {
+      id: '/workspace/$workspaceId'
       path: '/$workspaceId'
       fullPath: '/workspace/$workspaceId'
-      preLoaderRoute: typeof WorkspaceWorkspaceIdIndexImport
+      preLoaderRoute: typeof WorkspaceWorkspaceIdImport
       parentRoute: typeof WorkspaceImport
+    }
+    '/workspace/$workspaceId/members': {
+      id: '/workspace/$workspaceId/members'
+      path: '/members'
+      fullPath: '/workspace/$workspaceId/members'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdMembersImport
+      parentRoute: typeof WorkspaceWorkspaceIdImport
+    }
+    '/workspace/$workspaceId/settings': {
+      id: '/workspace/$workspaceId/settings'
+      path: '/settings'
+      fullPath: '/workspace/$workspaceId/settings'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdSettingsImport
+      parentRoute: typeof WorkspaceWorkspaceIdImport
+    }
+    '/workspace/$workspaceId/tasks': {
+      id: '/workspace/$workspaceId/tasks'
+      path: '/tasks'
+      fullPath: '/workspace/$workspaceId/tasks'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdTasksImport
+      parentRoute: typeof WorkspaceWorkspaceIdImport
+    }
+    '/workspace/$workspaceId/': {
+      id: '/workspace/$workspaceId/'
+      path: '/'
+      fullPath: '/workspace/$workspaceId/'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdIndexImport
+      parentRoute: typeof WorkspaceWorkspaceIdImport
     }
     '/workspace/$workspaceId/$projectId/': {
       id: '/workspace/$workspaceId/$projectId/'
-      path: '/$workspaceId/$projectId'
+      path: '/$projectId'
       fullPath: '/workspace/$workspaceId/$projectId'
       preLoaderRoute: typeof WorkspaceWorkspaceIdProjectIdIndexImport
-      parentRoute: typeof WorkspaceImport
+      parentRoute: typeof WorkspaceWorkspaceIdImport
     }
   }
 }
@@ -147,15 +205,32 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface WorkspaceRouteChildren {
+interface WorkspaceWorkspaceIdRouteChildren {
+  WorkspaceWorkspaceIdMembersRoute: typeof WorkspaceWorkspaceIdMembersRoute
+  WorkspaceWorkspaceIdSettingsRoute: typeof WorkspaceWorkspaceIdSettingsRoute
+  WorkspaceWorkspaceIdTasksRoute: typeof WorkspaceWorkspaceIdTasksRoute
   WorkspaceWorkspaceIdIndexRoute: typeof WorkspaceWorkspaceIdIndexRoute
   WorkspaceWorkspaceIdProjectIdIndexRoute: typeof WorkspaceWorkspaceIdProjectIdIndexRoute
 }
 
-const WorkspaceRouteChildren: WorkspaceRouteChildren = {
+const WorkspaceWorkspaceIdRouteChildren: WorkspaceWorkspaceIdRouteChildren = {
+  WorkspaceWorkspaceIdMembersRoute: WorkspaceWorkspaceIdMembersRoute,
+  WorkspaceWorkspaceIdSettingsRoute: WorkspaceWorkspaceIdSettingsRoute,
+  WorkspaceWorkspaceIdTasksRoute: WorkspaceWorkspaceIdTasksRoute,
   WorkspaceWorkspaceIdIndexRoute: WorkspaceWorkspaceIdIndexRoute,
   WorkspaceWorkspaceIdProjectIdIndexRoute:
     WorkspaceWorkspaceIdProjectIdIndexRoute,
+}
+
+const WorkspaceWorkspaceIdRouteWithChildren =
+  WorkspaceWorkspaceIdRoute._addFileChildren(WorkspaceWorkspaceIdRouteChildren)
+
+interface WorkspaceRouteChildren {
+  WorkspaceWorkspaceIdRoute: typeof WorkspaceWorkspaceIdRouteWithChildren
+}
+
+const WorkspaceRouteChildren: WorkspaceRouteChildren = {
+  WorkspaceWorkspaceIdRoute: WorkspaceWorkspaceIdRouteWithChildren,
 }
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
@@ -169,7 +244,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/google/callback': typeof GoogleCallbackRoute
-  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdIndexRoute
+  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteWithChildren
+  '/workspace/$workspaceId/members': typeof WorkspaceWorkspaceIdMembersRoute
+  '/workspace/$workspaceId/settings': typeof WorkspaceWorkspaceIdSettingsRoute
+  '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
+  '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
   '/workspace/$workspaceId/$projectId': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
 }
 
@@ -180,6 +259,9 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/google/callback': typeof GoogleCallbackRoute
+  '/workspace/$workspaceId/members': typeof WorkspaceWorkspaceIdMembersRoute
+  '/workspace/$workspaceId/settings': typeof WorkspaceWorkspaceIdSettingsRoute
+  '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdIndexRoute
   '/workspace/$workspaceId/$projectId': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
 }
@@ -192,6 +274,10 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/google/callback': typeof GoogleCallbackRoute
+  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteWithChildren
+  '/workspace/$workspaceId/members': typeof WorkspaceWorkspaceIdMembersRoute
+  '/workspace/$workspaceId/settings': typeof WorkspaceWorkspaceIdSettingsRoute
+  '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
   '/workspace/$workspaceId/$projectId/': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
 }
@@ -206,6 +292,10 @@ export interface FileRouteTypes {
     | '/signup'
     | '/google/callback'
     | '/workspace/$workspaceId'
+    | '/workspace/$workspaceId/members'
+    | '/workspace/$workspaceId/settings'
+    | '/workspace/$workspaceId/tasks'
+    | '/workspace/$workspaceId/'
     | '/workspace/$workspaceId/$projectId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -215,6 +305,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/google/callback'
+    | '/workspace/$workspaceId/members'
+    | '/workspace/$workspaceId/settings'
+    | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId'
     | '/workspace/$workspaceId/$projectId'
   id:
@@ -225,6 +318,10 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/signup'
     | '/google/callback'
+    | '/workspace/$workspaceId'
+    | '/workspace/$workspaceId/members'
+    | '/workspace/$workspaceId/settings'
+    | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId/'
     | '/workspace/$workspaceId/$projectId/'
   fileRoutesById: FileRoutesById
@@ -273,8 +370,7 @@ export const routeTree = rootRoute
     "/workspace": {
       "filePath": "workspace.tsx",
       "children": [
-        "/workspace/$workspaceId/",
-        "/workspace/$workspaceId/$projectId/"
+        "/workspace/$workspaceId"
       ]
     },
     "/_auth/login": {
@@ -288,13 +384,36 @@ export const routeTree = rootRoute
     "/google/callback": {
       "filePath": "google/callback.tsx"
     },
+    "/workspace/$workspaceId": {
+      "filePath": "workspace/$workspaceId.tsx",
+      "parent": "/workspace",
+      "children": [
+        "/workspace/$workspaceId/members",
+        "/workspace/$workspaceId/settings",
+        "/workspace/$workspaceId/tasks",
+        "/workspace/$workspaceId/",
+        "/workspace/$workspaceId/$projectId/"
+      ]
+    },
+    "/workspace/$workspaceId/members": {
+      "filePath": "workspace/$workspaceId/members.tsx",
+      "parent": "/workspace/$workspaceId"
+    },
+    "/workspace/$workspaceId/settings": {
+      "filePath": "workspace/$workspaceId/settings.tsx",
+      "parent": "/workspace/$workspaceId"
+    },
+    "/workspace/$workspaceId/tasks": {
+      "filePath": "workspace/$workspaceId/tasks.tsx",
+      "parent": "/workspace/$workspaceId"
+    },
     "/workspace/$workspaceId/": {
       "filePath": "workspace/$workspaceId/index.tsx",
-      "parent": "/workspace"
+      "parent": "/workspace/$workspaceId"
     },
     "/workspace/$workspaceId/$projectId/": {
       "filePath": "workspace/$workspaceId/$projectId/index.tsx",
-      "parent": "/workspace"
+      "parent": "/workspace/$workspaceId"
     }
   }
 }

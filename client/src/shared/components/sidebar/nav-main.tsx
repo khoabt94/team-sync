@@ -49,7 +49,7 @@ export function NavMain() {
       : []),
   ];
   return (
-    <SidebarGroup>
+    <SidebarGroup className="px-0">
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>

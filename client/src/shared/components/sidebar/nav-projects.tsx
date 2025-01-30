@@ -37,7 +37,7 @@ export function NavProjects() {
 
   return (
     <>
-      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden px-0">
         <SidebarGroupLabel className="w-full justify-between pr-0">
           <span>Projects</span>
 
@@ -92,7 +92,7 @@ export function NavProjects() {
                       }}
                     >
                       {item.emoji}
-                      <span>{item.name}</span>
+                      <span className="w-full truncate">{item.name}</span>
                     </Link>
                   </SidebarMenuButton>
                   <DropdownMenu>
