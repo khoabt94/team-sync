@@ -6,6 +6,7 @@ import { authServices } from "@services";
 import { asyncHandler } from "@utils/async-handler.util";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes as HttpStatusCode, StatusCodes } from "http-status-codes";
+import WorkspaceModel from "@models/workspace.model";
 
 const googleLoginCallback = asyncHandler(async (req: Request, res: Response) => {
   const currentWorkspace = req.user?.currentWorkspace;
@@ -13,7 +14,11 @@ const googleLoginCallback = asyncHandler(async (req: Request, res: Response) => 
   if (!currentWorkspace) {
     return res.redirect(`${config.CLIENT_GOOGLE_CALLBACK_URL}?status=failure`);
   }
-  return res.redirect(`${config.CLIENT_URL}/app/workspace/${currentWorkspace}`);
+  const findWorkspace = await WorkspaceModel.findById(currentWorkspace);
+  if (!findWorkspace) {
+    return res.redirect(`${config.CLIENT_GOOGLE_CALLBACK_URL}?status=failure`);
+  }
+  return res.redirect(`${config.CLIENT_URL}/app/workspace/${findWorkspace.slug}`);
 });
 
 const registerUserByEmail = asyncHandler(async (req: Request, res: Response) => {
