@@ -24,25 +24,6 @@ export default tslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react/jsx-curly-brace-presence": ["error", { props: "never", children: "ignore", propElementValues: "always" }],
-      "perfectionist/sort-imports": [
-        "error",
-        {
-          type: "alphabetical",
-          internalPattern: ["@routes/*", "@components/*", "@api/*", "@shared/*", "@utils/*", "@router", "@/*"],
-          groups: [
-            "type",
-            ["builtin", "external"],
-            "internal-type",
-            "internal",
-            "side-effect",
-            ["parent-type", "sibling-type", "index-type"],
-            ["parent", "sibling", "index"],
-            "object",
-            "unknown",
-          ],
-        },
-      ],
-      "perfectionist/sort-exports": ["error", { type: "alphabetical" }],
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -55,10 +36,11 @@ export default tslint.config(
           ignoreRestSiblings: true,
         },
       ],
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "@typescript-eslint/no-unused-expressions": "error",
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-      "@typescript-eslint/array-type": ["error", { default: "generic" }],
-      "react/function-component-definition": ["error", { namedComponents: "function-declaration" }],
+      "@typescript-eslint/array-type": ["off", { default: "generic" }],
       "prefer-template": "error",
       "react/jsx-key": "error",
       "react/no-array-index-key": "error",

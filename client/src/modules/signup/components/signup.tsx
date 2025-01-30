@@ -40,7 +40,7 @@ export function SignUp() {
         description: "Account created successfully. Please login to continue.",
       });
       setUser(user);
-      navigate({ to: "/app/workspace/$workspaceId", params: { workspaceId: user.currentWorkspace } });
+      navigate({ to: "/workspace/$workspaceId", params: { workspaceId: user.currentWorkspace } });
     } catch (error: unknown) {
       toast({
         title: "Error",

@@ -11,20 +11,20 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as AppImport } from './routes/app'
+import { Route as WorkspaceImport } from './routes/workspace'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
-import { Route as AppIndexImport } from './routes/app/index'
+import { Route as WorkspaceIndexImport } from './routes/workspace/index'
+import { Route as WorkspaceWorkspaceIdImport } from './routes/workspace/$workspaceId'
 import { Route as GoogleCallbackImport } from './routes/google/callback'
 import { Route as AuthSignupImport } from './routes/_auth/signup'
 import { Route as AuthLoginImport } from './routes/_auth/login'
-import { Route as AppWorkspaceWorkspaceIdImport } from './routes/app/workspace/$workspaceId'
 
 // Create/Update Routes
 
-const AppRoute = AppImport.update({
-  id: '/app',
-  path: '/app',
+const WorkspaceRoute = WorkspaceImport.update({
+  id: '/workspace',
+  path: '/workspace',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,10 +39,16 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AppIndexRoute = AppIndexImport.update({
+const WorkspaceIndexRoute = WorkspaceIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => WorkspaceRoute,
+} as any)
+
+const WorkspaceWorkspaceIdRoute = WorkspaceWorkspaceIdImport.update({
+  id: '/$workspaceId',
+  path: '/$workspaceId',
+  getParentRoute: () => WorkspaceRoute,
 } as any)
 
 const GoogleCallbackRoute = GoogleCallbackImport.update({
@@ -63,12 +69,6 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AppWorkspaceWorkspaceIdRoute = AppWorkspaceWorkspaceIdImport.update({
-  id: '/workspace/$workspaceId',
-  path: '/workspace/$workspaceId',
-  getParentRoute: () => AppRoute,
-} as any)
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -87,11 +87,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppImport
+    '/workspace': {
+      id: '/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof WorkspaceImport
       parentRoute: typeof rootRoute
     }
     '/_auth/login': {
@@ -115,19 +115,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GoogleCallbackImport
       parentRoute: typeof rootRoute
     }
-    '/app/': {
-      id: '/app/'
-      path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AppIndexImport
-      parentRoute: typeof AppImport
+    '/workspace/$workspaceId': {
+      id: '/workspace/$workspaceId'
+      path: '/$workspaceId'
+      fullPath: '/workspace/$workspaceId'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdImport
+      parentRoute: typeof WorkspaceImport
     }
-    '/app/workspace/$workspaceId': {
-      id: '/app/workspace/$workspaceId'
-      path: '/workspace/$workspaceId'
-      fullPath: '/app/workspace/$workspaceId'
-      preLoaderRoute: typeof AppWorkspaceWorkspaceIdImport
-      parentRoute: typeof AppImport
+    '/workspace/': {
+      id: '/workspace/'
+      path: '/'
+      fullPath: '/workspace/'
+      preLoaderRoute: typeof WorkspaceIndexImport
+      parentRoute: typeof WorkspaceImport
     }
   }
 }
@@ -146,27 +146,29 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface AppRouteChildren {
-  AppIndexRoute: typeof AppIndexRoute
-  AppWorkspaceWorkspaceIdRoute: typeof AppWorkspaceWorkspaceIdRoute
+interface WorkspaceRouteChildren {
+  WorkspaceWorkspaceIdRoute: typeof WorkspaceWorkspaceIdRoute
+  WorkspaceIndexRoute: typeof WorkspaceIndexRoute
 }
 
-const AppRouteChildren: AppRouteChildren = {
-  AppIndexRoute: AppIndexRoute,
-  AppWorkspaceWorkspaceIdRoute: AppWorkspaceWorkspaceIdRoute,
+const WorkspaceRouteChildren: WorkspaceRouteChildren = {
+  WorkspaceWorkspaceIdRoute: WorkspaceWorkspaceIdRoute,
+  WorkspaceIndexRoute: WorkspaceIndexRoute,
 }
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
+  WorkspaceRouteChildren,
+)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
-  '/app': typeof AppRouteWithChildren
+  '/workspace': typeof WorkspaceRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/google/callback': typeof GoogleCallbackRoute
-  '/app/': typeof AppIndexRoute
-  '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
+  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRoute
+  '/workspace/': typeof WorkspaceIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -175,20 +177,20 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/google/callback': typeof GoogleCallbackRoute
-  '/app': typeof AppIndexRoute
-  '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
+  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRoute
+  '/workspace': typeof WorkspaceIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
-  '/app': typeof AppRouteWithChildren
+  '/workspace': typeof WorkspaceRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/google/callback': typeof GoogleCallbackRoute
-  '/app/': typeof AppIndexRoute
-  '/app/workspace/$workspaceId': typeof AppWorkspaceWorkspaceIdRoute
+  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRoute
+  '/workspace/': typeof WorkspaceIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -196,12 +198,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
-    | '/app'
+    | '/workspace'
     | '/login'
     | '/signup'
     | '/google/callback'
-    | '/app/'
-    | '/app/workspace/$workspaceId'
+    | '/workspace/$workspaceId'
+    | '/workspace/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,32 +211,32 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/google/callback'
-    | '/app'
-    | '/app/workspace/$workspaceId'
+    | '/workspace/$workspaceId'
+    | '/workspace'
   id:
     | '__root__'
     | '/'
     | '/_auth'
-    | '/app'
+    | '/workspace'
     | '/_auth/login'
     | '/_auth/signup'
     | '/google/callback'
-    | '/app/'
-    | '/app/workspace/$workspaceId'
+    | '/workspace/$workspaceId'
+    | '/workspace/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
-  AppRoute: typeof AppRouteWithChildren
+  WorkspaceRoute: typeof WorkspaceRouteWithChildren
   GoogleCallbackRoute: typeof GoogleCallbackRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
-  AppRoute: AppRouteWithChildren,
+  WorkspaceRoute: WorkspaceRouteWithChildren,
   GoogleCallbackRoute: GoogleCallbackRoute,
 }
 
@@ -250,7 +252,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_auth",
-        "/app",
+        "/workspace",
         "/google/callback"
       ]
     },
@@ -264,11 +266,11 @@ export const routeTree = rootRoute
         "/_auth/signup"
       ]
     },
-    "/app": {
-      "filePath": "app.tsx",
+    "/workspace": {
+      "filePath": "workspace.tsx",
       "children": [
-        "/app/",
-        "/app/workspace/$workspaceId"
+        "/workspace/$workspaceId",
+        "/workspace/"
       ]
     },
     "/_auth/login": {
@@ -282,13 +284,13 @@ export const routeTree = rootRoute
     "/google/callback": {
       "filePath": "google/callback.tsx"
     },
-    "/app/": {
-      "filePath": "app/index.tsx",
-      "parent": "/app"
+    "/workspace/$workspaceId": {
+      "filePath": "workspace/$workspaceId.tsx",
+      "parent": "/workspace"
     },
-    "/app/workspace/$workspaceId": {
-      "filePath": "app/workspace/$workspaceId.tsx",
-      "parent": "/app"
+    "/workspace/": {
+      "filePath": "workspace/index.tsx",
+      "parent": "/workspace"
     }
   }
 }

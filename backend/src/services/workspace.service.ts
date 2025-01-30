@@ -111,12 +111,6 @@ async function getWorkspaceAnalytics(workspaceId: string) {
   return { totalTasks, overdueTasks, completeTasks };
 }
 
-type ChangeMemberRoleServicePayload = {
-  workspaceId: string;
-  memberId: string;
-  roleId: string;
-};
-
 async function getWorkspaceDetail(workspaceId: string) {
   const workspace = await WorkspaceModel.findOne({
     _id: workspaceId,

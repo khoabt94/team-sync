@@ -18,7 +18,7 @@ const googleLoginCallback = asyncHandler(async (req: Request, res: Response) => 
   if (!findWorkspace) {
     return res.redirect(`${config.CLIENT_GOOGLE_CALLBACK_URL}?status=failure`);
   }
-  return res.redirect(`${config.CLIENT_URL}/app/workspace/${findWorkspace.slug}`);
+  return res.redirect(`${config.CLIENT_URL}/workspace/${findWorkspace.slug}`);
 });
 
 const registerUserByEmail = asyncHandler(async (req: Request, res: Response) => {

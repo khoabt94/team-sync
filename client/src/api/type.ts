@@ -26,7 +26,7 @@ export type QueryFunctionCtx = QueryFunctionContext<QueryKey, Pick<Pagination, "
 export type QueryProps<
   Response,
   Input = null,
-  OmittedProps = Omit<UseQueryOptions<Response, AxiosError>, "queryKey" | "queryFn">,
+  OmittedProps = Omit<UseQueryOptions<Response, BaseError>, "queryKey" | "queryFn">,
 > = Input extends null ? OmittedProps : OmittedProps & { input: Input };
 
 export type InfiniteQueryProps<Response, Input = never> = Omit<

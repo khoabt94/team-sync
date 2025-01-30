@@ -39,7 +39,7 @@ export function Login() {
         description: "Login succesfully, Welcome back!",
       });
       setUser(user);
-      const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/app/workspace/$workspaceId";
+      const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/workspace/$workspaceId";
       navigate({ to: redirectUrl, params: { workspaceId: user.currentWorkspace } });
     } catch (error: unknown) {
       toast({

@@ -4,13 +4,10 @@ export const Route = createFileRoute("/_auth")({
   beforeLoad: ({ context }) => {
     if (context.authentication.user && !context.authentication.isLoadingAuth) {
       throw redirect({
-        to: "/app/workspace/$workspaceId",
+        to: "/workspace/$workspaceId",
         params: {
           workspaceId: context.authentication.user.currentWorkspace,
         },
-        // search: {
-        //   returnUrl: location.href,
-        // },
       });
     }
   },

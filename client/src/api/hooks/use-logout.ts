@@ -2,19 +2,17 @@ import { MutationProps } from "@api/type";
 import { axiosClient } from "@shared/lib/axios.util";
 import { useMutation } from "@tanstack/react-query";
 
-export type LogoutInput = {};
-
 export type LogoutResponse = {
   message: string;
 };
 
-export type UseLogoutProps = MutationProps<LogoutResponse, any>;
+export type UseLogoutProps = MutationProps<LogoutResponse>;
 
 export async function logoutFn(): Promise<LogoutResponse> {
   return await axiosClient.post("/auth/logout");
 }
 
-export function useLogout(options: UseLogoutProps = {}) {
+export function useLogout(options: UseLogoutProps) {
   const mutation = useMutation({
     mutationFn: logoutFn,
     ...options,

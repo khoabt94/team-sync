@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 export function useHandleLogout() {
-  const { mutateAsync: logout } = useLogout();
+  const { mutateAsync: logout, isPending } = useLogout();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { clearUser } = useAuthStore();
@@ -15,5 +15,5 @@ export function useHandleLogout() {
     navigate({ to: "/login" });
   };
 
-  return handleLogout;
+  return { handleLogout, isHandlingLogout: isPending };
 }
