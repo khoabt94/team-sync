@@ -5,11 +5,19 @@
   "author": "spartan-khoatienbui <khoa.bui@c0x12c.com>",
   "license": "MIT",
   "scripts": {
-    "server-dev": "cd backend && yarn dev",
-    "server-build": "cd backend && yarn build",
-    "client-dev": "cd client && yarn dev",
-    "client-build": "cd client && yarn build",
-    "client-lint": "cd client && yarn lint",
-    "client-preview": "cd client && yarn preview"
+    "backend": "npm run dev --prefix backend",
+    "client": "npm run dev --prefix client",
+    "build-backend": "npm run build --prefix backend",
+    "build-client": "npm run build --prefix client",
+    "preview-client": "npm run build-client & npm run preview --prefix client",
+    "dev": "concurrently --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run backend\" \"npm run client\"",
+    "build-all": "npm run build-backend & npm run build-client",
+    "install-all": "npm i && concurrently \"cd ./client & npm i\" \"cd ./backend & npm i\"",
+    "preview-all": "concurrently \"npm run preview-backend\" \"npm run preview-client\"",
+    "client-fix": "npm run lint --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
   }
 }
