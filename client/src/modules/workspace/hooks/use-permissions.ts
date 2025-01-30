@@ -8,7 +8,7 @@ export const usePermissions = (user: User | null, members: WorkspaceMember[]) =>
 
   useEffect(() => {
     if (user) {
-      const myMembership = members.find((member) => member.userId === user._id);
+      const myMembership = members.find((member) => member.userId._id === user._id);
       if (myMembership) {
         setPermissions(myMembership.role.permissions);
       }

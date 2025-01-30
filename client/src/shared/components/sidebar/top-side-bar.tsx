@@ -30,6 +30,7 @@ import { useAuthStore } from "@shared/stores/auth.store";
 import LogoutDialog from "@shared/components/dialogs/logout-dialog";
 import { NavMain } from "@shared/components/sidebar/nav-main";
 import { WorkspaceSwitcher } from "@shared/components/sidebar/workspace-switcher";
+import { NavProjects } from "@shared/components/sidebar/nav-projects";
 
 export const TopSideBar = () => {
   const { isFetchingUser, user } = useAuthStore();
@@ -58,12 +59,12 @@ export const TopSideBar = () => {
         </SidebarHeader>
         <SidebarContent className=" !mt-0 dark:bg-background">
           <SidebarGroup className="!py-0">
-            <SidebarGroupContent>
+            <SidebarGroupContent className="space-y-1">
               <WorkspaceSwitcher />
               <Separator />
               <NavMain />
               <Separator />
-              {/* <NavProjects /> */}
+              <NavProjects />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>

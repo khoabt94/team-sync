@@ -21,10 +21,8 @@ export const WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS";
 export async function getWorkspaceMembersFn({
   workspaceId,
 }: GetWorkspaceMembersInput): Promise<UserGetWorkspaceMembersReturnType> {
-  const {
-    data: { members },
-  } = await axiosClient.get<GetWorkspaceMembersResponse>(`/workspace/${workspaceId}/members`);
-  return members;
+  const response: GetWorkspaceMembersResponse = await axiosClient.get(`/workspace/${workspaceId}/members`);
+  return response.members;
 }
 
 export function useGetWorkspaceMembers({ input, ...options }: UseGetWorkspaceMembersProps) {

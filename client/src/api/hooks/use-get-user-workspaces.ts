@@ -15,10 +15,8 @@ export type UseGetUserWorkspacesProps = QueryProps<UserGetUserWorkspacesReturnTy
 export const USER_WORKSPACES = "USER_WORKSPACES";
 
 export async function getUserWorkspacesFn(): Promise<UserGetUserWorkspacesReturnType> {
-  const {
-    data: { workspaces },
-  } = await axiosClient.get<GetUserWorkspacesResponse>(`/workspace/all`);
-  return workspaces;
+  const response: GetUserWorkspacesResponse = await axiosClient.get(`/workspace/all`);
+  return response.workspaces;
 }
 
 export function useGetUserWorkspaces(options?: UseGetUserWorkspacesProps) {

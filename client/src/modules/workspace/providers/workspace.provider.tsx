@@ -23,7 +23,6 @@ const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefin
 export function WorkspaceProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate();
   const workspaceId = useGetWorkspaceId();
-  console.log("🚀 ~ WorkspaceProvider ~ workspaceId:", workspaceId);
 
   const { user } = useAuthStore();
 

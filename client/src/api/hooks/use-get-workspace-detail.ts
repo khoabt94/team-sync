@@ -17,10 +17,8 @@ export type UseGetWorkspaceDetailProps = QueryProps<Workspace, GetWorkspaceDetai
 export const WORKSPACE_DETAIL = "WORKSPACE_DETAIL";
 
 export async function getWorkspaceDetailFn({ workspaceId }: GetWorkspaceDetailInput): Promise<Workspace> {
-  const {
-    data: { workspace },
-  } = await axiosClient.get<GetWorkspaceDetailResponse>(`/workspace/${workspaceId}/members`);
-  return workspace;
+  const response: GetWorkspaceDetailResponse = await axiosClient.get(`/workspace/${workspaceId}/detail`);
+  return response.workspace;
 }
 
 export function useGetWorkspaceDetail({ input, ...options }: UseGetWorkspaceDetailProps) {
