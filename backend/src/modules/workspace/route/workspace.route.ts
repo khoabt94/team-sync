@@ -1,7 +1,7 @@
-import { workspaceControllers } from '@controllers';
 import { Permissions } from '@enums/role.enum';
 import { authenticatedGuard } from '@guards/authenticated.guard';
 import { workspacePermissionGuard, workspaceAuthorizedGuard } from '@guards/workspace.guard';
+import { workspaceControllers } from '@modules/workspace';
 import { Router } from 'express';
 
 // '/workspace'

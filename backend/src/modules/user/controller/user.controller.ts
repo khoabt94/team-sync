@@ -1,5 +1,4 @@
-import { userServices } from '@services';
-import { UnauthorizedException } from '@utils/app-error.util';
+import { userServices } from '@modules/user';
 import { asyncHandler } from '@utils/async-handler.util';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';

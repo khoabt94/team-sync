@@ -2,7 +2,7 @@ import { Roles } from '@enums/role.enum';
 import { MemberModel } from '@modules/member';
 import { RoleModel } from '@modules/role';
 import { WorkspaceModel } from '@modules/workspace';
-import { workspaceServices } from '@services/workspace.service';
+import { workspaceServices } from '@modules/workspace';
 import { BadRequestException, NotFoundException } from '@utils/app-error.util';
 import { ObjectId } from 'mongodb';
 

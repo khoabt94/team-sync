@@ -7,7 +7,6 @@ import { UserModel } from '@modules/user';
 import { WorkspaceDocument, WorkspaceModel } from '@modules/workspace';
 import { NotFoundException } from '@utils/app-error.util';
 import mongoose from 'mongoose';
-import { ObjectId } from 'mongodb';
 import { assign } from 'lodash';
 
 type CreateNewWorkspacePayload = {

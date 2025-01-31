@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { config } from '@config/app.config';
-import { authControllers } from '@controllers';
 import { Router } from 'express';
+import { authControllers } from '@modules/auth';
 
 // '/auth'
 const authRoutes = Router();
