@@ -1,4 +1,4 @@
-import { userServices } from '@modules/user';
+import { userServices } from '@/user';
 import { asyncHandler } from '@utils/async-handler.util';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';

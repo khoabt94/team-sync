@@ -1,6 +1,6 @@
-import { MemberModel } from '@modules/member';
-import { createTaskSchema, TaskDocument, TaskModel } from '@modules/task';
-import { projectServices } from '@modules/project';
+import { MemberModel } from '@/member';
+import { createTaskSchema, TaskDocument, TaskModel } from '@/task';
+import { projectServices } from '@/project';
 import { BadRequestException, NotFoundException } from '@utils/app-error.util';
 import { assign } from 'lodash';
 import { z } from 'zod';

@@ -1,8 +1,8 @@
 import { ErrorCodeEnum } from '@enums/error-code.enum';
 import { PermissionType } from '@enums/role.enum';
-import { MemberModel } from '@modules/member';
-import { RoleDocument } from '@modules/role';
-import { workspaceIdSchema, workspaceServices } from '@modules/workspace';
+import { MemberModel } from '@/member';
+import { RoleDocument } from '@/role';
+import { workspaceIdSchema, workspaceServices } from '@/workspace';
 import { ForbiddenException, UnauthorizedException } from '@utils/app-error.util';
 import { asyncHandler } from '@utils/async-handler.util';
 import { NextFunction, Request, Response } from 'express';

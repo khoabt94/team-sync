@@ -1,7 +1,7 @@
 import { Permissions } from '@enums/role.enum';
-import { authenticatedGuard } from '@modules/auth';
-import { workspaceAuthorizedGuard, workspacePermissionGuard } from '@modules/workspace';
-import { taskControllers } from '@modules/task';
+import { authenticatedGuard } from '@/auth';
+import { workspaceAuthorizedGuard, workspacePermissionGuard } from '@/workspace';
+import { taskControllers } from '@/task';
 import { Router } from 'express';
 
 // '/task'

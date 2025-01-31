@@ -1,7 +1,7 @@
 import { AccountProviderEnum, AccountProviderEnumType } from '@enums/account-provider.enum';
-import { AccountModel } from '@modules/auth';
-import { UserModel } from '@modules/user';
-import { workspaceServices } from '@modules/workspace';
+import { AccountModel } from '@/auth';
+import { UserModel } from '@/user';
+import { workspaceServices } from '@/workspace';
 import { BadRequestException } from '@utils/app-error.util';
 import mongoose from 'mongoose';
 

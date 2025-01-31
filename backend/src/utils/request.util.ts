@@ -1,6 +1,6 @@
-import { projectIdSchema } from '@modules/project';
-import { taskIdSchema } from '@modules/task';
-import { workspaceIdSchema } from '@modules/workspace';
+import { projectIdSchema } from '@/project';
+import { taskIdSchema } from '@/task';
+import { workspaceIdSchema } from '@/workspace';
 import { Request } from 'express';
 
 export const parseParamsId = (req: Request) => {

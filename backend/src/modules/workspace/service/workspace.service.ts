@@ -1,10 +1,10 @@
 import { Roles } from '@enums/role.enum';
 import { TaskStatusEnum } from '@enums/task.enum';
-import { MemberModel } from '@modules/member';
-import { RoleModel } from '@modules/role';
-import { TaskModel } from '@modules/task';
-import { UserModel } from '@modules/user';
-import { WorkspaceDocument, WorkspaceModel } from '@modules/workspace';
+import { MemberModel } from '@/member';
+import { RoleModel } from '@/role';
+import { TaskModel } from '@/task';
+import { UserModel } from '@/user';
+import { WorkspaceDocument, WorkspaceModel } from '@/workspace';
 import { NotFoundException } from '@utils/app-error.util';
 import mongoose from 'mongoose';
 import { assign } from 'lodash';

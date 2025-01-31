@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { config } from '@config/app.config';
 import { AccountProviderEnum } from '@enums/account-provider.enum';
-import { authServices } from '@modules/auth';
+import { authServices } from '@/auth';
 import { NotFoundException } from '@utils/app-error.util';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as LocalStrategy } from 'passport-local';

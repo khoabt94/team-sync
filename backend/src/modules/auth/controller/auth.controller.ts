@@ -1,12 +1,12 @@
 import passport from 'passport';
 import { config } from '@config/app.config';
 import { AccountProviderEnum } from '@enums/account-provider.enum';
-import { authServices } from '@modules/auth';
+import { authServices } from '@/auth';
 import { asyncHandler } from '@utils/async-handler.util';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes as HttpStatusCode, StatusCodes } from 'http-status-codes';
-import { WorkspaceModel } from '@modules/workspace';
-import { userSchema } from '@modules/user';
+import { WorkspaceModel } from '@/workspace';
+import { userSchema } from '@/user';
 
 const googleLoginCallback = asyncHandler(async (req: Request, res: Response) => {
   const currentWorkspace = req.user?.currentWorkspace;

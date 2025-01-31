@@ -1,6 +1,6 @@
 import { TaskStatusEnum } from '@enums/task.enum';
-import { createProjectSchema, ProjectDocument, ProjectModel } from '@modules/project';
-import { TaskModel } from '@modules/task';
+import { createProjectSchema, ProjectDocument, ProjectModel } from '@/project';
+import { TaskModel } from '@/task';
 import { NotFoundException } from '@utils/app-error.util';
 import { assign } from 'lodash';
 import { z } from 'zod';

@@ -1,8 +1,8 @@
 import { Roles } from '@enums/role.enum';
-import { MemberModel } from '@modules/member';
-import { RoleModel } from '@modules/role';
-import { WorkspaceModel } from '@modules/workspace';
-import { workspaceServices } from '@modules/workspace';
+import { MemberModel } from '@/member';
+import { RoleModel } from '@/role';
+import { WorkspaceModel } from '@/workspace';
+import { workspaceServices } from '@/workspace';
 import { BadRequestException, NotFoundException } from '@utils/app-error.util';
 import { ObjectId } from 'mongodb';
 

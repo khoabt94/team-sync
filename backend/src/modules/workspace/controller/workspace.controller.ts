@@ -1,4 +1,4 @@
-import { RoleModel } from '@modules/role';
+import { RoleModel } from '@/role';
 import {
   changeRoleSchema,
   createWorkspaceSchema,
@@ -6,9 +6,9 @@ import {
   updateWorkspaceSchema,
   workspaceIdSchema,
   workspaceServices
-} from '@modules/workspace';
+} from '@/workspace';
 
-import { memberServices } from '@modules/member';
+import { memberServices } from '@/member';
 import { asyncHandler } from '@utils/async-handler.util';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';

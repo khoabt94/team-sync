@@ -16,7 +16,8 @@
     /* Completeness */
     "baseUrl": ".",
     "paths": {
-      "@*": ["src/*"]
+      "@*": ["src/*"],
+      "@/*": ["src/modules/*"]
     },
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },

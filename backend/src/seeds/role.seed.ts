@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import connectMongoDB from '@config/mongo-database.config';
 import { RolePermissions } from '@constants/role-permission.constant';
-import { RoleModel } from '@modules/role';
+import { RoleModel } from '@/role';
 import mongoose from 'mongoose';
 export async function seedRoles() {
   try {

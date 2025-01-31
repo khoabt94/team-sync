@@ -1,4 +1,4 @@
-import { createProjectSchema, projectServices, updateProjectSchema } from '@modules/project';
+import { createProjectSchema, projectServices, updateProjectSchema } from '@/project';
 import { asyncHandler } from '@utils/async-handler.util';
 import { parseParamsId } from '@utils/request.util';
 import { Request, Response } from 'express';

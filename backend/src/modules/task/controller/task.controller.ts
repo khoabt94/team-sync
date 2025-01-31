@@ -1,4 +1,4 @@
-import { createTaskSchema, taskServices, updateTaskSchema } from '@modules/task';
+import { createTaskSchema, taskServices, updateTaskSchema } from '@/task';
 import { asyncHandler } from '@utils/async-handler.util';
 import { parseParamsId } from '@utils/request.util';
 import { Request, Response } from 'express';

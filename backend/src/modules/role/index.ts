@@ -1,1 +1,1 @@
-export * from '@modules/role/model/roles-permission.model';
+export * from '@/role/model/roles-permission.model';

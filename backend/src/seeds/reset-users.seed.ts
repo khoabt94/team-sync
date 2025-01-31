@@ -1,10 +1,10 @@
 import 'dotenv/config';
 import connectMongoDB from '@config/mongo-database.config';
-import { AccountModel } from '@modules/auth';
-import { MemberModel } from '@modules/member';
-import { UserModel } from '@modules/user';
+import { AccountModel } from '@/auth';
+import { MemberModel } from '@/member';
+import { UserModel } from '@/user';
 import mongoose from 'mongoose';
-import { WorkspaceModel } from '@modules/workspace';
+import { WorkspaceModel } from '@/workspace';
 
 export async function resetAccountData() {
   try {
