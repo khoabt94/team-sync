@@ -1,8 +1,8 @@
-import { createProjectSchema, getProjectsSchema, projectServices, updateProjectSchema } from "@/project";
-import { asyncHandler } from "@utils/async-handler.util";
-import { parseParamsId } from "@utils/request.util";
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import { createProjectSchema, getProjectsSchema, projectServices, updateProjectSchema } from '@/project';
+import { asyncHandler } from '@utils/async-handler.util';
+import { parseParamsId } from '@utils/request.util';
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 const createNewProject = asyncHandler(async (req: Request, res: Response) => {
   const data = createProjectSchema.parse(req.body);
@@ -10,11 +10,11 @@ const createNewProject = asyncHandler(async (req: Request, res: Response) => {
   const newProject = await projectServices.createNewProject({
     workspaceId,
     userId: req.user?._id,
-    ...data,
+    ...data
   });
   return res.status(StatusCodes.OK).json({
     project: newProject,
-    message: "Create new project successfully",
+    message: 'Create new project successfully'
   });
 });
 
@@ -27,7 +27,7 @@ const getWorkspaceProjects = asyncHandler(async (req: Request, res: Response) =>
     total,
     page,
     limit,
-    message: "Get workspace projects successfully",
+    message: 'Get workspace projects successfully'
   });
 });
 
@@ -36,7 +36,7 @@ const getProjectById = asyncHandler(async (req: Request, res: Response) => {
   const project = await projectServices.getProjectDetail({ projectId, workspaceId });
   return res.status(StatusCodes.OK).json({
     project,
-    message: "Get project successfully",
+    message: 'Get project successfully'
   });
 });
 
@@ -47,7 +47,7 @@ const getProjectAnalytics = asyncHandler(async (req: Request, res: Response) => 
     analytics,
     workspaceId,
     projectId,
-    message: "Get project analytics successfully",
+    message: 'Get project analytics successfully'
   });
 });
 
@@ -58,7 +58,7 @@ const updateProject = asyncHandler(async (req: Request, res: Response) => {
   const newProject = await projectServices.updateProjectService(workspaceId, projectId, data);
   return res.status(StatusCodes.OK).json({
     project: newProject,
-    message: "Update project successfully",
+    message: 'Update project successfully'
   });
 });
 
@@ -66,7 +66,7 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
   const { projectId, workspaceId } = parseParamsId(req);
   await projectServices.deleteProjectService({ workspaceId, projectId });
   return res.status(StatusCodes.OK).json({
-    message: "Delete project successfully",
+    message: 'Delete project successfully'
   });
 });
 
@@ -76,5 +76,5 @@ export const projectControllers = {
   getProjectById,
   getProjectAnalytics,
   updateProject,
-  deleteProject,
+  deleteProject
 };

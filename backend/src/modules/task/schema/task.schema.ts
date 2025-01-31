@@ -1,17 +1,17 @@
-import { z } from "zod";
-import mongoose from "mongoose";
-import { TaskPriorityEnum, TaskStatusEnum } from "@enums/task.enum";
+import { z } from 'zod';
+import mongoose from 'mongoose';
+import { TaskPriorityEnum, TaskStatusEnum } from '@enums/task.enum';
 
 const titleSchema = z
-  .string({ message: "Please provide task title" })
+  .string({ message: 'Please provide task title' })
   .trim()
-  .min(1, { message: "Please provide task title" })
+  .min(1, { message: 'Please provide task title' })
   .max(255);
 
 export const descriptionSchema = z
-  .string({ message: "Please provide task description" })
+  .string({ message: 'Please provide task description' })
   .trim()
-  .min(1, { message: "Please provide task description" });
+  .min(1, { message: 'Please provide task description' });
 
 const assignedToSchema = z.array(z.string().trim()).nullable().optional();
 
@@ -34,15 +34,15 @@ const dueDateSchema = z
       return !val || !isNaN(Date.parse(val));
     },
     {
-      message: "Invalid date format. Please provide a valid date string.",
-    },
+      message: 'Invalid date format. Please provide a valid date string.'
+    }
   );
 
-export const taskIdSchema = z.string({ message: "Task ID is required" }).refine(
+export const taskIdSchema = z.string({ message: 'Task ID is required' }).refine(
   (val) => {
     return mongoose.Types.ObjectId.isValid(val);
   },
-  { message: "Task ID is invalid", path: ["taskId"] },
+  { message: 'Task ID is invalid', path: ['taskId'] }
 );
 
 export const createTaskSchema = z.object({
@@ -51,16 +51,16 @@ export const createTaskSchema = z.object({
   priority: prioritySchema,
   status: statusSchema,
   assignedTo: assignedToSchema,
-  dueDate: dueDateSchema,
+  dueDate: dueDateSchema
 });
 
 export const updateTaskSchema = z.object({
-  title: z.string().trim().min(1, { message: "Please provide task title" }).max(255).optional(),
-  description: z.string().trim().min(1, { message: "Please provide task description" }).optional(),
+  title: z.string().trim().min(1, { message: 'Please provide task title' }).max(255).optional(),
+  description: z.string().trim().min(1, { message: 'Please provide task description' }).optional(),
   priority: prioritySchema,
   status: statusSchema,
   assignedTo: assignedToSchema,
-  dueDate: dueDateSchema,
+  dueDate: dueDateSchema
 });
 
 export const getTasksSchema = z.object({
@@ -70,5 +70,5 @@ export const getTasksSchema = z.object({
   dueDate: z.string().trim().optional(),
   sort: z.string().trim().optional(),
   page: z.string().trim().optional(),
-  limit: z.string().trim().optional(),
+  limit: z.string().trim().optional()
 });

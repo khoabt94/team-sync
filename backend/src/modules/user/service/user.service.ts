@@ -1,16 +1,16 @@
-import { UserModel } from "@/user";
-import { MemberModel } from "@/member";
-import { workspaceServices } from "@/workspace";
-import { NotFoundException, UnauthorizedException } from "@utils/app-error.util";
-import { ObjectId } from "mongodb";
+import { UserModel } from '@/user';
+import { MemberModel } from '@/member';
+import { workspaceServices } from '@/workspace';
+import { NotFoundException, UnauthorizedException } from '@utils/app-error.util';
+import { ObjectId } from 'mongodb';
 
 const fetchUserById = async (userId: string) => {
   if (!userId) {
-    throw new UnauthorizedException("Unauthorized action");
+    throw new UnauthorizedException('Unauthorized action');
   }
   const user = await UserModel.findById(userId);
   if (!user) {
-    throw new NotFoundException("User not found");
+    throw new NotFoundException('User not found');
   }
   return user;
 };
@@ -26,7 +26,7 @@ type ChangeWorkspacePayload = {
 const changeWorkspace = async ({ userId, workspaceId }: ChangeWorkspacePayload) => {
   const user = await UserModel.findById(userId);
   if (!user) {
-    throw new NotFoundException("User not found");
+    throw new NotFoundException('User not found');
   }
   if (!workspaceId) {
     // for the case delete current workspace and switch to random workspace
@@ -35,7 +35,7 @@ const changeWorkspace = async ({ userId, workspaceId }: ChangeWorkspacePayload) 
     if (!currentWorkspace) {
       currentWorkspace = await workspaceServices.createNewWorkspace({
         ownerId: userId,
-        workspaceName: "My workspace",
+        workspaceName: 'My workspace'
       });
       currentWorkspaceId = currentWorkspace._id;
     } else {

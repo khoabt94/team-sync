@@ -41,7 +41,7 @@ const RecentMembers = () => {
               {/* Member Details */}
               <div className="flex flex-col">
                 <p className="text-sm font-medium text-gray-900">{member.userId.name}</p>
-                <p className="text-sm text-gray-500">{member.role.name}</p>
+                <p className="text-sm text-gray-500">{member.role.role}</p>
               </div>
 
               {/* Joined Date */}

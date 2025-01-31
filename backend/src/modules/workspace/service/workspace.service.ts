@@ -1,13 +1,13 @@
-import { Roles } from "@enums/role.enum";
-import { TaskStatusEnum } from "@enums/task.enum";
-import { MemberModel } from "@/member";
-import { RoleModel } from "@/role";
-import { TaskModel } from "@/task";
-import { UserModel } from "@/user";
-import { WorkspaceDocument, WorkspaceModel } from "@/workspace";
-import { NotFoundException } from "@utils/app-error.util";
-import mongoose from "mongoose";
-import { assign } from "lodash";
+import { Roles } from '@enums/role.enum';
+import { TaskStatusEnum } from '@enums/task.enum';
+import { MemberModel } from '@/member';
+import { RoleModel } from '@/role';
+import { TaskModel } from '@/task';
+import { UserModel } from '@/user';
+import { WorkspaceDocument, WorkspaceModel } from '@/workspace';
+import { NotFoundException } from '@utils/app-error.util';
+import mongoose from 'mongoose';
+import { assign } from 'lodash';
 
 type CreateNewWorkspacePayload = {
   workspaceName: string;
@@ -18,7 +18,7 @@ type CreateNewWorkspacePayload = {
 async function createNewWorkspace({
   workspaceName,
   workspaceDescription,
-  ownerId,
+  ownerId
 }: CreateNewWorkspacePayload): Promise<WorkspaceDocument | null> {
   const session = await mongoose.startSession();
   try {
@@ -27,7 +27,7 @@ async function createNewWorkspace({
     const newWorkspace = new WorkspaceModel({
       name: workspaceName,
       description: workspaceDescription ?? workspaceName,
-      owner: ownerId,
+      owner: ownerId
     });
 
     await newWorkspace.save({ session });
@@ -36,14 +36,14 @@ async function createNewWorkspace({
     // find owner role
     const ownerRole = await RoleModel.findOne({ role: Roles.OWNER }).session(session);
     if (!ownerRole) {
-      throw new NotFoundException("Owner role not found");
+      throw new NotFoundException('Owner role not found');
     }
 
     // create member in workspace
     const member = new MemberModel({
       userId: ownerId,
       role: ownerRole._id,
-      workspaceId: newWorkspace._id,
+      workspaceId: newWorkspace._id
     });
     await member.save({ session });
 
@@ -61,9 +61,9 @@ async function createNewWorkspace({
 // User must be a member in that workspace
 async function getUserWorkspaces(userId: string) {
   const memberships = await MemberModel.find({
-    userId,
+    userId
   })
-    .populate("workspaceId")
+    .populate('workspaceId')
     .exec();
 
   return memberships
@@ -77,11 +77,11 @@ async function getWorkspaceAnalytics(workspaceId: string) {
   const overdueTasks = await TaskModel.countDocuments({
     workspace: workspaceId,
     dueDate: { $lt: currentDate },
-    status: { $ne: TaskStatusEnum.DONE },
+    status: { $ne: TaskStatusEnum.DONE }
   });
   const completeTasks = await TaskModel.countDocuments({
     workspace: workspaceId,
-    status: TaskStatusEnum.DONE,
+    status: TaskStatusEnum.DONE
   });
   return { totalTasks, overdueTasks, completeTasks };
 }
@@ -89,11 +89,11 @@ async function getWorkspaceAnalytics(workspaceId: string) {
 async function getWorkspaceDetail(workspaceId: string) {
   const workspace = await WorkspaceModel.findOne({
     _id: workspaceId,
-    deleted: false,
+    deleted: false
   }).exec();
 
   if (!workspace) {
-    throw new NotFoundException("Workspace not found");
+    throw new NotFoundException('Workspace not found');
   }
 
   return workspace;
@@ -101,7 +101,7 @@ async function getWorkspaceDetail(workspaceId: string) {
 
 async function updateWorkspaceService(
   workspaceId: string,
-  data: Partial<Pick<WorkspaceDocument, "name" | "description">>,
+  data: Partial<Pick<WorkspaceDocument, 'name' | 'description'>>
 ) {
   let workspace = await getWorkspaceDetail(workspaceId);
 
@@ -117,11 +117,11 @@ async function deleteWorkspaceService(workspaceId: string) {
   session.startTransaction();
   const workspace = await WorkspaceModel.findOne({
     _id: workspaceId,
-    deleted: false,
+    deleted: false
   }).session(session);
 
   if (!workspace) {
-    throw new NotFoundException("Workspace not found");
+    throw new NotFoundException('Workspace not found');
   }
 
   workspace.deleted = true;
@@ -130,9 +130,9 @@ async function deleteWorkspaceService(workspaceId: string) {
 
   await MemberModel.updateMany(
     {
-      workspaceId,
+      workspaceId
     },
-    { deletedWorkspace: true },
+    { deletedWorkspace: true }
   ).session(session);
 
   await session.commitTransaction();
@@ -145,5 +145,5 @@ export const workspaceServices = {
   getWorkspaceAnalytics,
   updateWorkspaceService,
   deleteWorkspaceService,
-  getWorkspaceDetail,
+  getWorkspaceDetail
 };

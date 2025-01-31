@@ -1,7 +1,7 @@
-import { assign } from "lodash";
-import { Model, Query } from "mongoose";
+import { assign } from 'lodash';
+import { Model, Query } from 'mongoose';
 
-const excludeFields = ["page", "sort", "limit"];
+const excludeFields = ['page', 'sort', 'limit'];
 
 export class QueryPipeline {
   public queryString: Record<string, any>;
@@ -35,10 +35,10 @@ export class QueryPipeline {
 
   sort() {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(",").join(" ");
+      const sortBy = this.queryString.sort.split(',').join(' ');
       this.queryObject.sort(sortBy);
     } else {
-      this.queryObject.sort("-createdAt");
+      this.queryObject.sort('-createdAt');
     }
     return this;
   }
