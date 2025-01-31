@@ -1,5 +1,5 @@
-import { ErrorCodeEnum, ErrorCodeEnumType } from '@enums/error-code.enum';
-import { StatusCodes as HttpStatusCode } from 'http-status-codes';
+import { ErrorCodeEnum, ErrorCodeEnumType } from "@enums/error-code.enum";
+import { StatusCodes as HttpStatusCode } from "http-status-codes";
 
 export class AppError extends Error {
   public statusCode: HttpStatusCode;
@@ -15,7 +15,7 @@ export class AppError extends Error {
 
 export class UnauthorizedException extends AppError {
   constructor(message: string, errorCode?: ErrorCodeEnumType) {
-    super(message, HttpStatusCode.UNAUTHORIZED, errorCode ?? ErrorCodeEnum.AUTH_UNAUTHORIZED_ACCESS);
+    super(message, HttpStatusCode.UNAUTHORIZED, errorCode ?? ErrorCodeEnum.ACCESS_UNAUTHORIZED);
   }
 }
 

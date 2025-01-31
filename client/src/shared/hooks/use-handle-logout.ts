@@ -9,7 +9,7 @@ export function useHandleLogout() {
   const queryClient = useQueryClient();
   const { clearUser } = useAuthStore();
   const handleLogout = async () => {
-    await logout({});
+    await logout({} as never);
     queryClient.clear();
     clearUser();
     navigate({ to: "/login" });

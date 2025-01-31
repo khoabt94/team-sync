@@ -9,7 +9,7 @@ type CreateWorkspaceDialogProps = {
 export const CreateWorkspaceDialog = ({ open = true, onClose }: CreateWorkspaceDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={() => onClose?.()}>
-      <DialogContent className="sm:max-w-5xl !p-0 overflow-hidden border-0">
+      <DialogContent className="sm:max-w-5xl max-w-[80vw] !p-0 overflow-hidden border-0">
         <CreateWorkspaceForm onSubmitSuccess={() => onClose?.()} />
       </DialogContent>
     </Dialog>

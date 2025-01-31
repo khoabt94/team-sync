@@ -8,12 +8,19 @@ import { z } from "zod";
 import { workspaceEditSchema } from "@/workspace/schemas/workspace.schema";
 import { Permissions } from "@shared/constants/task.constant";
 import { useWorkspaceContext } from "@/workspace/providers/workspace.provider";
+import { useUpdateWorkspace } from "@api/hooks/use-update-workspace";
+import { Loader } from "lucide-react";
+import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
+import { toast } from "@shared/hooks/use-toast";
+import { BaseError } from "@api/type";
 
 type EditWorkspaceForm = z.infer<typeof workspaceEditSchema>;
 
 export function EditWorkspaceForm() {
   const { workspace, hasPermission } = useWorkspaceContext();
+  const workspaceId = useGetWorkspaceId();
   const canEditWorkspace = hasPermission(Permissions.EDIT_WORKSPACE);
+  const { mutateAsync: updateWorkspace, isPending: isUpdatingWorkspace } = useUpdateWorkspace();
 
   const form = useForm<EditWorkspaceForm>({
     resolver: zodResolver(workspaceEditSchema),
@@ -23,8 +30,28 @@ export function EditWorkspaceForm() {
     },
   });
 
-  const onSubmit = (values: EditWorkspaceForm) => {
-    console.log("🚀 ~ EditWorkspaceForm ~ values:", values);
+  const onSubmit = (data: EditWorkspaceForm) => {
+    updateWorkspace(
+      {
+        workspaceId,
+        data,
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Success",
+            description: "Workspace created!. You will be redirected to new workspace shortly!",
+          });
+        },
+        onError: (error: unknown) => {
+          toast({
+            title: "Error",
+            variant: "destructive",
+            description: (error as BaseError).errors?.[0]?.message ?? (error as BaseError).message,
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -87,10 +114,10 @@ export function EditWorkspaceForm() {
             {canEditWorkspace && (
               <Button
                 className="flex place-self-end  h-[40px] text-white font-semibold"
-                // disabled={isPending}
+                disabled={isUpdatingWorkspace}
                 type="submit"
               >
-                {/* {isPending && <Loader className="animate-spin" />} */}
+                {isUpdatingWorkspace && <Loader className="animate-spin" />}
                 Update Workspace
               </Button>
             )}

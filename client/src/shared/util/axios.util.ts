@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { AppConfig } from "@shared/configs/app.config";
+import { ErrorCodeEnum } from "@shared/enums/error-code.enum";
 
 export const axiosClient = axios.create({
   baseURL: AppConfig.VITE_API_URL,
@@ -14,6 +15,10 @@ axiosClient.interceptors.response.use(
     return response.data;
   },
   function (error) {
+    if (error.errorCode === ErrorCodeEnum.ACCESS_UNAUTHORIZED) {
+      window.location.href = "/";
+      return;
+    }
     if (error.code === "ERR_NETWORK") {
       return Promise.reject({ message: "Network error" });
     }
