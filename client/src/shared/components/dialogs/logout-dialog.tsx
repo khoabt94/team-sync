@@ -7,16 +7,18 @@ import {
   DialogTitle,
 } from "@shared/components/ui/dialog";
 import { Button } from "@shared/components/ui/button";
-import { Loader } from "lucide-react";
-import { useHandleLogout } from "@shared/hooks/use-handle-logout";
 
-const LogoutDialog = (props: { isOpen: boolean; setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
-  const { isOpen, setIsOpen } = props;
-  const { handleLogout, isHandlingLogout } = useHandleLogout();
+type LogoutDialogProps = {
+  open?: boolean;
+  onOpenChange: (flag: boolean) => void;
+  onClose?: () => void;
+  onSubmit?: () => void;
+};
 
+const LogoutDialog = ({ onOpenChange, open = true, onClose, onSubmit }: LogoutDialogProps) => {
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you sure you want to log out?</DialogTitle>
@@ -25,11 +27,10 @@ const LogoutDialog = (props: { isOpen: boolean; setIsOpen: React.Dispatch<React.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button disabled={isHandlingLogout} type="button" onClick={handleLogout}>
-              {isHandlingLogout && <Loader className="animate-spin" />}
+            <Button type="button" onClick={() => onSubmit?.()}>
               Sign out
             </Button>
-            <Button type="button" onClick={() => setIsOpen(false)} variant="outline">
+            <Button type="button" onClick={() => onClose?.()} variant="outline">
               Cancel
             </Button>
           </DialogFooter>
