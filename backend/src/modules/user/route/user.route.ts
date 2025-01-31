@@ -1,4 +1,4 @@
-import { authenticatedGuard } from '@guards/authenticated.guard';
+import { authenticatedGuard } from '@modules/auth';
 import { userControllers } from '@modules/user';
 import { Router } from 'express';
 
