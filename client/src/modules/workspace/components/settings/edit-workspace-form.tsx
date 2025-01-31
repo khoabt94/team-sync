@@ -5,7 +5,7 @@ import { Input } from "@shared/components/ui/input";
 import { Button } from "@shared/components/ui/button";
 import { Textarea } from "@shared/components/ui/textarea";
 import { z } from "zod";
-import { workspaceEditSchema } from "@/workspace/schemas/workspace-edit.schema";
+import { workspaceEditSchema } from "@/workspace/schemas/workspace.schema";
 import { Permissions } from "@shared/constants/task.constant";
 import { useWorkspaceContext } from "@/workspace/providers/workspace.provider";
 

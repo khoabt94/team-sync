@@ -1,3 +1,4 @@
+import { DialogProvider } from "@shared/providers/dialog.provider";
 import { User } from "@shared/types/user.type";
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 
@@ -9,5 +10,10 @@ type RouterContext = {
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  component: () => <Outlet />,
+  component: () => (
+    <>
+      <Outlet />
+      <DialogProvider />
+    </>
+  ),
 });

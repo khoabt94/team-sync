@@ -31,12 +31,11 @@ import { NavMain } from "@shared/components/sidebar/nav-main";
 import { WorkspaceSwitcher } from "@shared/components/sidebar/workspace-switcher";
 import { NavProjects } from "@shared/components/sidebar/nav-projects";
 import { useOpenDialog } from "@shared/hooks/use-open-dialog";
-import { useHandleLogout } from "@shared/hooks/use-handle-logout";
 
 export const TopSideBar = () => {
   const { isFetchingUser, user } = useAuthStore();
   const { open: openDialog } = useOpenDialog();
-  const { handleLogout } = useHandleLogout();
+
   const { open } = useSidebar();
   const workspaceId = useGetWorkspaceId();
 
@@ -106,9 +105,7 @@ export const TopSideBar = () => {
                       openDialog({
                         id: "logout-confirm",
                         Component: LogoutDialog,
-                        modalProps: {
-                          onSubmit: handleLogout,
-                        },
+                        modalProps: {},
                       })
                     }
                   >

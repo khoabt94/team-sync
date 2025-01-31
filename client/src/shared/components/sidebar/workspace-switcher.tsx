@@ -24,12 +24,15 @@ import { Workspace } from "@/workspace/types/workspace.type";
 import { getWorkspaceFirstLetter } from "@shared/util/workspace.util";
 import { useSwitchWorkspace } from "@api/hooks/use-switch-workspace";
 import { useAuthStore } from "@shared/stores/auth.store";
+import { useOpenDialog } from "@shared/hooks/use-open-dialog";
+import { CreateWorkspaceDialog } from "@shared/components/dialogs/create-workspace-dialog";
 
 export function WorkspaceSwitcher() {
   const navigate = useNavigate();
   const { isMobile } = useSidebar();
   const { user } = useAuthStore();
   const { data: workspaces, isLoading: isLoadingUserWorkspaces } = useGetUserWorkspaces();
+  const { open: openDialog } = useOpenDialog();
 
   const workspaceId = useGetWorkspaceId();
 
@@ -57,12 +60,20 @@ export function WorkspaceSwitcher() {
     navigate({ to: "/workspace/$workspaceId", params: { workspaceId: selectedWorkspaceId } });
   };
 
+  const handleOpenCreateWorkspaceDialog = () => {
+    openDialog({
+      id: "create-workspace-dialog",
+      Component: CreateWorkspaceDialog,
+      modalProps: {},
+    });
+  };
+
   return (
     <>
       <SidebarGroupLabel className="w-full justify-between pr-0">
         <span>Workspaces</span>
         <button
-          // onClick={onOpen}
+          onClick={handleOpenCreateWorkspaceDialog}
           className="flex size-5 items-center justify-center rounded-full border"
         >
           <Plus className="size-3.5" />
@@ -122,10 +133,7 @@ export function WorkspaceSwitcher() {
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="gap-2 p-2 !cursor-pointer"
-                // onClick={onOpen}
-              >
+              <DropdownMenuItem className="gap-2 p-2 !cursor-pointer" onClick={handleOpenCreateWorkspaceDialog}>
                 <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                   <Plus className="size-4" />
                 </div>
