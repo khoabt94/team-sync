@@ -1,10 +1,10 @@
-import { TaskStatusEnum } from "@enums/task.enum";
-import ProjectModel, { ProjectDocument } from "@models/project.model";
-import TaskModel from "@models/task.model";
-import { createProjectSchema } from "@schemas";
-import { NotFoundException } from "@utils/app-error.util";
-import { assign } from "lodash";
-import { z } from "zod";
+import { TaskStatusEnum } from '@enums/task.enum';
+import { ProjectDocument, ProjectModel } from '@modules/project';
+import { TaskModel } from '@modules/task';
+import { createProjectSchema } from '@schemas';
+import { NotFoundException } from '@utils/app-error.util';
+import { assign } from 'lodash';
+import { z } from 'zod';
 
 type ProjectCreateUpdatePayload = z.infer<typeof createProjectSchema>;
 
@@ -23,14 +23,14 @@ async function createNewProject({
   description,
   emoji,
   workspaceId,
-  userId,
+  userId
 }: CreateNewProjectPayload): Promise<ProjectDocument> {
   const project = new ProjectModel({
     name,
     description,
     emoji,
     workspace: workspaceId,
-    createdBy: userId,
+    createdBy: userId
   });
 
   await project.save();
@@ -39,10 +39,10 @@ async function createNewProject({
 
 async function getWorkspaceProjects(workspaceId: string) {
   const projects = await ProjectModel.find({
-    workspace: workspaceId,
+    workspace: workspaceId
   })
-    .populate("workspace", "name")
-    .populate("createdBy", "name _id profilePicture")
+    .populate('workspace', 'name')
+    .populate('createdBy', 'name _id profilePicture')
     .exec();
 
   return projects.filter((project) => project && !project.deleted);
@@ -55,12 +55,12 @@ async function getProjectAnalytics({ workspaceId, projectId }: BaseProjectParams
     workspace: workspaceId,
     project: projectId,
     dueDate: { $lt: currentDate },
-    status: { $ne: TaskStatusEnum.DONE },
+    status: { $ne: TaskStatusEnum.DONE }
   });
   const completeTasks = await TaskModel.countDocuments({
     workspace: workspaceId,
     project: projectId,
-    status: TaskStatusEnum.DONE,
+    status: TaskStatusEnum.DONE
   });
   return { totalTasks, overdueTasks, completeTasks };
 }
@@ -69,12 +69,12 @@ async function getProjectDetail({ workspaceId, projectId }: BaseProjectParams) {
   const project = await ProjectModel.findOne({
     _id: projectId,
     workspace: workspaceId,
-    deleted: false,
+    deleted: false
   })
-    .populate("workspace", "name")
+    .populate('workspace', 'name')
     .exec();
   if (!project) {
-    throw new NotFoundException("Project not found");
+    throw new NotFoundException('Project not found');
   }
   return project;
 }
@@ -83,10 +83,10 @@ async function updateProjectService(workspaceId: string, projectId: string, data
   let project = await ProjectModel.findOne({
     _id: projectId,
     workspace: workspaceId,
-    deleted: false,
+    deleted: false
   });
   if (!project) {
-    throw new NotFoundException("Project not found");
+    throw new NotFoundException('Project not found');
   }
 
   project = assign(project, data);
@@ -100,10 +100,10 @@ async function deleteProjectService({ workspaceId, projectId }: BaseProjectParam
   const project = await ProjectModel.findOne({
     _id: projectId,
     workspace: workspaceId,
-    deleted: false,
+    deleted: false
   });
   if (!project) {
-    throw new NotFoundException("Project not found");
+    throw new NotFoundException('Project not found');
   }
 
   project.deleted = true;
@@ -118,5 +118,5 @@ export const projectServices = {
   getProjectAnalytics,
   getProjectDetail,
   updateProjectService,
-  deleteProjectService,
+  deleteProjectService
 };

@@ -1,4 +1,3 @@
-import { RoleDocument } from '@models/roles-permission.model';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface MemberDocument extends Document {
@@ -35,5 +34,4 @@ const MemberSchema = new Schema<MemberDocument>(
   }
 );
 
-const MemberModel = mongoose.model<MemberDocument>('Member', MemberSchema);
-export default MemberModel;
+export const MemberModel = mongoose.model<MemberDocument>('Member', MemberSchema);

@@ -1,11 +1,10 @@
 import { ErrorCodeEnum } from '@enums/error-code.enum';
 import { PermissionType } from '@enums/role.enum';
-import MemberModel from '@models/member.model';
-import { RoleDocument } from '@models/roles-permission.model';
-import WorkspaceModel from '@models/workspace.model';
+import { MemberModel } from '@modules/member';
+import { RoleDocument } from '@modules/role';
 import { workspaceIdSchema } from '@schemas';
 import { workspaceServices } from '@services';
-import { ForbiddenException, NotFoundException, UnauthorizedException } from '@utils/app-error.util';
+import { ForbiddenException, UnauthorizedException } from '@utils/app-error.util';
 import { asyncHandler } from '@utils/async-handler.util';
 import { NextFunction, Request, Response } from 'express';
 

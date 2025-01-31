@@ -1,4 +1,4 @@
-import UserModel from '@models/user.model';
+import { UserModel } from '@modules/user';
 import { NotFoundException, UnauthorizedException } from '@utils/app-error.util';
 
 const fetchUserByIdService = async (userId: string) => {

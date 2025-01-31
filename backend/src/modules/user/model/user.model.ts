@@ -63,5 +63,4 @@ UserSchema.methods.omitPassword = async function () {
   return omit(this.toObject(), 'password');
 };
 
-const UserModel = mongoose.model<UserDocument>('User', UserSchema);
-export default UserModel;
+export const UserModel = mongoose.model<UserDocument>('User', UserSchema);

@@ -43,5 +43,4 @@ const AccountSchema = new Schema<AccountDocument>(
   }
 );
 
-const AccountModel = mongoose.model<AccountDocument>('Account', AccountSchema);
-export default AccountModel;
+export const AccountModel = mongoose.model<AccountDocument>('Account', AccountSchema);

@@ -1,7 +1,7 @@
 import { PermissionType } from '@enums/role.enum';
-import { MemberDocument } from '@models/member.model';
-import { UserDocument } from '@models/user.model';
-import { WorkspaceDocument } from '@models/workspace.model';
+import { MemberDocument } from '@modules/member';
+import { UserDocument } from '@modules/user';
+import { WorkspaceDocument } from '@modules/workspace';
 
 declare global {
   namespace Express {
