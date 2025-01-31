@@ -12,11 +12,16 @@ const RecentTasks = () => {
   const workspaceId = useGetWorkspaceId();
 
   const { data: tasks = [], isLoading } = useGetWorkspacTasks({
-    input: { workspaceId },
+    input: {
+      workspaceId,
+      filters: {
+        sort: "-createdAt",
+        page: 1,
+        limit: 5,
+      },
+    },
     enabled: !!workspaceId,
   });
-
-  const sortTasks = tasks.sort((a, b) => moment(b.updatedAt).diff(moment(a.updatedAt))).slice(0, 10);
 
   return (
     <div className="flex flex-col space-y-6">
@@ -29,7 +34,7 @@ const RecentTasks = () => {
         />
       ) : null}
 
-      {sortTasks?.length === 0 && (
+      {tasks?.length === 0 && (
         <div
           className="font-semibold
          text-sm text-muted-foreground
@@ -40,7 +45,7 @@ const RecentTasks = () => {
       )}
 
       <ul role="list" className="divide-y divide-gray-200">
-        {sortTasks.map((task) => {
+        {tasks.map((task) => {
           const name = task?.assignedTo?.name || "";
           const initials = getAvatarFallbackText(name);
           const avatarColor = getAvatarColor(name);

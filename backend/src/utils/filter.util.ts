@@ -7,10 +7,10 @@ export class QueryPipeline {
   public queryString: Record<string, any>;
   public queryObject: Query<any, any, any>;
   public filterObject: Record<string, any> = {};
-  public page: number = 0;
-  public limit: number = 10;
+  public page?: number;
+  public limit?: number;
 
-  constructor(model: Model<any>, queryString: Record<string, any>, popOptions?: [string, string][]) {
+  constructor(model: Model<any>, queryString: Record<string, any>) {
     this.queryObject = model.find();
     this.queryString = queryString;
   }
@@ -44,13 +44,16 @@ export class QueryPipeline {
   }
 
   paginate() {
-    const page = (this.queryString.page ?? "1") * 1;
-    const limit = (this.queryString.limit ?? "10") * 1;
-    const skip = (page - 1) * limit;
+    if (this.queryString.page && this.queryString.limit) {
+      const page = this.queryString.page * 1;
+      const limit = this.queryString.limit * 1;
+      const skip = (page - 1) * limit;
 
-    this.queryObject.skip(skip).limit(limit);
-    this.page = page;
-    this.limit = limit;
+      this.queryObject.skip(skip).limit(limit);
+      this.page = page;
+      this.limit = limit;
+    }
+
     return this;
   }
 }

@@ -32,7 +32,7 @@ export function NavProjects() {
   const { isMobile } = useSidebar();
 
   const { data: projects = [], isLoading: isLoadingProjects } = useGetProjectsInWorkspace({
-    input: { workspaceId },
+    input: { workspaceId, filters: { sort: "-createdAt" } },
   });
 
   return (

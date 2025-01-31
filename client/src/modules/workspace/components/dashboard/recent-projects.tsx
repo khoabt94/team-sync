@@ -10,10 +10,15 @@ export const RecentProjects = () => {
   const workspaceId = useGetWorkspaceId();
 
   const { data: projects = [], isLoading: isLoadingProject } = useGetProjectsInWorkspace({
-    input: { workspaceId },
+    input: {
+      workspaceId,
+      filters: {
+        sort: "-createdAt",
+        page: 1,
+        limit: 5,
+      },
+    },
   });
-
-  const sortProjects = projects.sort((a, b) => moment(b.updatedAt).diff(moment(a.updatedAt))).slice(0, 10);
 
   return (
     <div className="flex flex-col pt-2">
@@ -25,7 +30,7 @@ export const RecentProjects = () => {
          flex"
         />
       ) : null}
-      {sortProjects?.length === 0 && (
+      {projects?.length === 0 && (
         <div
           className="font-semibold
          text-sm text-muted-foreground
@@ -36,7 +41,7 @@ export const RecentProjects = () => {
       )}
 
       <ul role="list" className="space-y-2">
-        {sortProjects.map((project) => {
+        {projects.map((project) => {
           const name = project.createdBy.name;
           const initials = getAvatarFallbackText(name);
           const avatarColor = getAvatarColor(name);
