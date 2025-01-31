@@ -22,15 +22,20 @@ import { useEffect, useState } from "react";
 import { useGetUserWorkspaces } from "@api/hooks/use-get-user-workspaces";
 import { Workspace } from "@/workspace/types/workspace.type";
 import { getWorkspaceFirstLetter } from "@shared/util/workspace.util";
+import { useSwitchWorkspace } from "@api/hooks/use-switch-workspace";
+import { useAuthStore } from "@shared/stores/auth.store";
 
 export function WorkspaceSwitcher() {
   const navigate = useNavigate();
   const { isMobile } = useSidebar();
+  const { user } = useAuthStore();
   const { data: workspaces, isLoading: isLoadingUserWorkspaces } = useGetUserWorkspaces();
 
   const workspaceId = useGetWorkspaceId();
 
   const [activeWorkspace, setActiveWorkspace] = useState<Workspace>();
+
+  const { mutate: changeWorkspace } = useSwitchWorkspace();
 
   useEffect(() => {
     if (!workspaces?.length) return;
@@ -45,6 +50,7 @@ export function WorkspaceSwitcher() {
   const handleSelect = (selectedWorkspace: Workspace) => {
     setActiveWorkspace(selectedWorkspace);
     handleNavigateToWorkspace(selectedWorkspace._id);
+    changeWorkspace({ selectedWorkspaceId: selectedWorkspace._id, userId: user?._id as string });
   };
 
   const handleNavigateToWorkspace = (selectedWorkspaceId: string) => {
