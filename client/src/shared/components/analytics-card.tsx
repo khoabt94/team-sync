@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@shared/components/ui/card";
 import { Activity, ArrowBigUp, ArrowBigDown, Loader } from "lucide-react";
 
-const AnalyticsCard = (props: { title: string; value: number; isLoading: boolean }) => {
+export const AnalyticsCard = (props: { title: string; value: number; isLoading: boolean }) => {
   const { title, value, isLoading } = props;
 
   const getArrowIcon = () => {
@@ -37,5 +37,3 @@ const AnalyticsCard = (props: { title: string; value: number; isLoading: boolean
     </Card>
   );
 };
-
-export default AnalyticsCard;

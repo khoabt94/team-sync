@@ -1,5 +1,5 @@
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
-import AnalyticsCard from "@/workspace/components/dashboard/analytics-card";
+import { AnalyticsCard } from "@shared/components/analytics-card";
 import { useGetWorkspaceAnalytics } from "@api/hooks/use-get-workspace-analytics";
 
 export const WorkspaceAnalytics = () => {

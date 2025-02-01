@@ -13,3 +13,9 @@ export type Project = {
   deleted: boolean;
   _id: string;
 };
+
+export type ProjectAnalytics = {
+  totalTasks: number;
+  overdueTasks: number;
+  completeTasks: number;
+};

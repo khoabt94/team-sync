@@ -1,6 +1,5 @@
 import { useGetProjectDetail } from "@api/hooks/use-get-project-detail";
 import { Route } from "@routes/workspace/$workspaceId/project/$projectId";
-import { AppLoading } from "@shared/components/app-loading";
 import { EditProjectDialog } from "@shared/components/dialogs/edit-project-dialog";
 import { PermissionsGuard } from "@shared/components/permission-guard";
 import { Button } from "@shared/components/ui/button";
@@ -14,13 +13,11 @@ export const ProjectHeader = () => {
   const { open: openDialog } = useOpenDialog();
   const workspaceId = useGetWorkspaceId();
 
-  const { data: project, isLoading: isLoadingProject } = useGetProjectDetail({
+  const { data: project } = useGetProjectDetail({
     input: { workspaceId, projectId },
   });
 
   const { emoji: projectEmoji = "📊", name: projectName = "Untitled project" } = project ?? {};
-
-  if (isLoadingProject) return <AppLoading className="w-full h-[300px]" />;
 
   const onOpenEditProjectDialog = () => {
     openDialog({
