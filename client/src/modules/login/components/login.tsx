@@ -118,7 +118,7 @@ export function Login() {
                     </div>
                     <div className="text-center text-sm">
                       Don&apos;t have an account?{" "}
-                      <Link to="/signup" className="underline underline-offset-4">
+                      <Link to="/signup" className="underline underline-offset-4" search={{ returnUrl }}>
                         Sign up
                       </Link>
                     </div>

@@ -16,11 +16,13 @@ import { toast } from "@shared/hooks/use-toast";
 import { Link } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@shared/stores/auth.store";
+import { Route } from "@routes/_auth/signup";
 
 export type SignUpFormType = z.infer<typeof signupFormSchema>;
 
 export function SignUp() {
   const navigate = useNavigate();
+  const { returnUrl = "" } = Route.useSearch();
   const { mutateAsync: signup, isPending } = useSignup();
   const { setUser } = useAuthStore();
   const form = useForm<SignUpFormType>({
@@ -40,7 +42,8 @@ export function SignUp() {
         description: "Account created successfully. Please login to continue.",
       });
       setUser(user);
-      navigate({ to: "/workspace/$workspaceId", params: { workspaceId: user.currentWorkspace } });
+      const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : "/workspace/$workspaceId";
+      navigate({ to: redirectUrl, params: { workspaceId: user.currentWorkspace } });
     } catch (error: unknown) {
       toast({
         title: "Error",
@@ -150,7 +153,7 @@ export function SignUp() {
                     </div>
                     <div className="text-center text-sm">
                       Already have an account?{" "}
-                      <Link to="/login" className="underline underline-offset-4">
+                      <Link to="/login" className="underline underline-offset-4" search={{ returnUrl }}>
                         Sign in
                       </Link>
                     </div>

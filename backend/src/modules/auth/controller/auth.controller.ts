@@ -32,9 +32,11 @@ const registerUserByEmail = asyncHandler(async (req: Request, res: Response) => 
     password: data.password
   });
 
-  return res.status(HttpStatusCode.CREATED).json({
-    user,
-    message: 'User registered successfully'
+  req.logIn(user, () => {
+    return res.status(HttpStatusCode.CREATED).json({
+      user,
+      message: 'User registered successfully'
+    });
   });
 });
 

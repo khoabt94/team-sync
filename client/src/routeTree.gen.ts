@@ -24,6 +24,7 @@ import { Route as WorkspaceWorkspaceIdTasksImport } from './routes/workspace/$wo
 import { Route as WorkspaceWorkspaceIdSettingsImport } from './routes/workspace/$workspaceId/settings'
 import { Route as WorkspaceWorkspaceIdMembersImport } from './routes/workspace/$workspaceId/members'
 import { Route as WorkspaceWorkspaceIdProjectIdIndexImport } from './routes/workspace/$workspaceId/$projectId/index'
+import { Route as InviteWorkspaceInviteCodeJoinImport } from './routes/invite/workspace/$inviteCode/join'
 
 // Create/Update Routes
 
@@ -105,6 +106,13 @@ const WorkspaceWorkspaceIdProjectIdIndexRoute =
     id: '/$projectId/',
     path: '/$projectId/',
     getParentRoute: () => WorkspaceWorkspaceIdRoute,
+  } as any)
+
+const InviteWorkspaceInviteCodeJoinRoute =
+  InviteWorkspaceInviteCodeJoinImport.update({
+    id: '/invite/workspace/$inviteCode/join',
+    path: '/invite/workspace/$inviteCode/join',
+    getParentRoute: () => rootRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -195,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceWorkspaceIdIndexImport
       parentRoute: typeof WorkspaceWorkspaceIdImport
     }
+    '/invite/workspace/$inviteCode/join': {
+      id: '/invite/workspace/$inviteCode/join'
+      path: '/invite/workspace/$inviteCode/join'
+      fullPath: '/invite/workspace/$inviteCode/join'
+      preLoaderRoute: typeof InviteWorkspaceInviteCodeJoinImport
+      parentRoute: typeof rootRoute
+    }
     '/workspace/$workspaceId/$projectId/': {
       id: '/workspace/$workspaceId/$projectId/'
       path: '/$projectId'
@@ -266,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/workspace/$workspaceId/settings': typeof WorkspaceWorkspaceIdSettingsRoute
   '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
+  '/invite/workspace/$inviteCode/join': typeof InviteWorkspaceInviteCodeJoinRoute
   '/workspace/$workspaceId/$projectId': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
 }
 
@@ -280,6 +296,7 @@ export interface FileRoutesByTo {
   '/workspace/$workspaceId/settings': typeof WorkspaceWorkspaceIdSettingsRoute
   '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdIndexRoute
+  '/invite/workspace/$inviteCode/join': typeof InviteWorkspaceInviteCodeJoinRoute
   '/workspace/$workspaceId/$projectId': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
 }
 
@@ -297,6 +314,7 @@ export interface FileRoutesById {
   '/workspace/$workspaceId/settings': typeof WorkspaceWorkspaceIdSettingsRoute
   '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
+  '/invite/workspace/$inviteCode/join': typeof InviteWorkspaceInviteCodeJoinRoute
   '/workspace/$workspaceId/$projectId/': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
 }
 
@@ -315,6 +333,7 @@ export interface FileRouteTypes {
     | '/workspace/$workspaceId/settings'
     | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId/'
+    | '/invite/workspace/$inviteCode/join'
     | '/workspace/$workspaceId/$projectId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -328,6 +347,7 @@ export interface FileRouteTypes {
     | '/workspace/$workspaceId/settings'
     | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId'
+    | '/invite/workspace/$inviteCode/join'
     | '/workspace/$workspaceId/$projectId'
   id:
     | '__root__'
@@ -343,6 +363,7 @@ export interface FileRouteTypes {
     | '/workspace/$workspaceId/settings'
     | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId/'
+    | '/invite/workspace/$inviteCode/join'
     | '/workspace/$workspaceId/$projectId/'
   fileRoutesById: FileRoutesById
 }
@@ -352,6 +373,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   WorkspaceRoute: typeof WorkspaceRouteWithChildren
   GoogleCallbackRoute: typeof GoogleCallbackRoute
+  InviteWorkspaceInviteCodeJoinRoute: typeof InviteWorkspaceInviteCodeJoinRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -359,6 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   WorkspaceRoute: WorkspaceRouteWithChildren,
   GoogleCallbackRoute: GoogleCallbackRoute,
+  InviteWorkspaceInviteCodeJoinRoute: InviteWorkspaceInviteCodeJoinRoute,
 }
 
 export const routeTree = rootRoute
@@ -374,7 +397,8 @@ export const routeTree = rootRoute
         "/",
         "/_auth",
         "/workspace",
-        "/google/callback"
+        "/google/callback",
+        "/invite/workspace/$inviteCode/join"
       ]
     },
     "/": {
@@ -435,6 +459,9 @@ export const routeTree = rootRoute
     "/workspace/$workspaceId/": {
       "filePath": "workspace/$workspaceId/index.tsx",
       "parent": "/workspace/$workspaceId"
+    },
+    "/invite/workspace/$inviteCode/join": {
+      "filePath": "invite/workspace/$inviteCode/join.tsx"
     },
     "/workspace/$workspaceId/$projectId/": {
       "filePath": "workspace/$workspaceId/$projectId/index.tsx",

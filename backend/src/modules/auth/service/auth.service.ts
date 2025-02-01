@@ -25,6 +25,11 @@ async function createNewUser({
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
+
+    // check if email already exists
+    const isExistingUser = await UserModel.exists({ email });
+    if (isExistingUser) { throw new BadRequestException('Email already exists'); }
+
     // create a new user
     const user = new UserModel({
       name: displayName,
@@ -42,12 +47,12 @@ async function createNewUser({
     await newAccount.save({ session });
 
     const newWorkspace = await workspaceServices.createNewWorkspace({
-      workspaceName: 'My workspace',
+      workspaceName: `${displayName.split(' ')[0] ?? 'My'}'s workspace`,
       workspaceDescription: `Workspace created for ${user.name}`,
       ownerId: user._id as string
     });
     if (!newWorkspace) {
-      throw new Error('Can not create a workspace');
+      throw new BadRequestException('Can not create a workspace');
     }
     user.currentWorkspace = newWorkspace.id;
 

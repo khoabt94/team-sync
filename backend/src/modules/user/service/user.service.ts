@@ -35,7 +35,7 @@ const changeWorkspace = async ({ userId, workspaceId }: ChangeWorkspacePayload) 
     if (!currentWorkspace) {
       currentWorkspace = await workspaceServices.createNewWorkspace({
         ownerId: userId,
-        workspaceName: 'My workspace'
+        workspaceName: `${user.name?.split(' ')[0] ?? 'My'}'s workspace`
       });
       currentWorkspaceId = currentWorkspace._id;
     } else {
