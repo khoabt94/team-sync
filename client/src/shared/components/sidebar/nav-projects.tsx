@@ -21,19 +21,72 @@ import { Button } from "@shared/components/ui/button";
 import { Permissions } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { useGetProjectsInWorkspace } from "@api/hooks/use-get-projects-in-workspace";
+import { useOpenDialog } from "@shared/hooks/use-open-dialog";
+import CreateProjectDialog from "@shared/components/dialogs/create-project-dialog";
+import { ConfirmDialog } from "@shared/components/dialogs/confirm-dialog";
+import { toast } from "@shared/hooks/use-toast";
+import { Project } from "@/project/types/project.type";
+import { useDeleteProject } from "@api/hooks/use-delete-project";
+import { useState } from "react";
 
 export function NavProjects() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { open: openDialog } = useOpenDialog();
   const pathname = location.pathname;
-
+  const [deletingProjectId, setDeletingProjectId] = useState<string>();
   const workspaceId = useGetWorkspaceId();
 
   const { isMobile } = useSidebar();
-
+  const { mutateAsync: deleteProject, isPending: isDeletingProject } = useDeleteProject();
   const { data: projects = [], isLoading: isLoadingProjects } = useGetProjectsInWorkspace({
     input: { workspaceId, filters: { sort: "-createdAt" } },
   });
+
+  const handleOpenCreateProjectDialog = () => {
+    openDialog({
+      id: "create-project-dialog",
+      Component: CreateProjectDialog,
+      modalProps: {},
+    });
+  };
+
+  const handleOpenDeleteProjectDialog = (project: Project) => {
+    openDialog({
+      id: "confirm-delete-project",
+      Component: ConfirmDialog,
+      modalProps: {
+        onSubmit: async () => {
+          setDeletingProjectId(project._id);
+          await deleteProject(
+            { workspaceId, projectId: project._id },
+            {
+              onSuccess: () => {
+                toast({
+                  title: "Success",
+                  description: `Deleted project "${project.name}" successfully`,
+                });
+                navigate({ to: `/workspace/$workspaceId`, params: { workspaceId } });
+                setDeletingProjectId(undefined);
+              },
+              onError: (error) => {
+                toast({
+                  title: "Error",
+                  description: error.message,
+                  variant: "destructive",
+                });
+                setDeletingProjectId(undefined);
+              },
+            },
+          );
+        },
+        title: `Delete  "${project.name}" workspace`,
+        description: `Are you sure you want to delete? This action cannot be undone.`,
+        confirmText: "Delete",
+        cancelText: "Cancel",
+      },
+    });
+  };
 
   return (
     <>
@@ -43,7 +96,7 @@ export function NavProjects() {
 
           <PermissionsGuard requiredPermission={Permissions.CREATE_PROJECT}>
             <button
-              // onClick={onOpen}
+              onClick={handleOpenCreateProjectDialog}
               type="button"
               className="flex size-5 items-center justify-center rounded-full border"
             >
@@ -70,7 +123,7 @@ export function NavProjects() {
                   variant="link"
                   type="button"
                   className="h-0 p-0 text-[13px] underline font-semibold mt-4"
-                  // onClick={onOpen}
+                  onClick={handleOpenCreateProjectDialog}
                 >
                   Create a project
                   <ArrowRight />
@@ -83,7 +136,11 @@ export function NavProjects() {
 
               return (
                 <SidebarMenuItem key={item._id}>
-                  <SidebarMenuButton asChild isActive={projectUrl === pathname}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={projectUrl === pathname}
+                    disabled={isDeletingProject && deletingProjectId === item._id}
+                  >
                     <Link
                       to="/workspace/$workspaceId/project/$projectId"
                       params={{
@@ -124,10 +181,7 @@ export function NavProjects() {
 
                       <PermissionsGuard requiredPermission={Permissions.DELETE_PROJECT}>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                        // disabled={isLoading}
-                        // onClick={() => onOpenDialog(item)}
-                        >
+                        <DropdownMenuItem onClick={() => handleOpenDeleteProjectDialog(item)}>
                           <Trash2 className="text-muted-foreground" />
                           <span>Delete Project</span>
                         </DropdownMenuItem>

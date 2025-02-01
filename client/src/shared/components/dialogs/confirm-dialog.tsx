@@ -7,11 +7,9 @@ import {
   DialogTitle,
 } from "@shared/components/ui/dialog";
 import { Button } from "@shared/components/ui/button";
-import { Loader } from "lucide-react";
 
 type ConfirmDialogProps = {
   open?: boolean;
-  isPending: boolean;
   onClose: () => void;
   onSubmit: () => void;
   title?: string;
@@ -23,7 +21,6 @@ type ConfirmDialogProps = {
 
 export const ConfirmDialog = ({
   open = true,
-  isPending,
   onClose,
   onSubmit,
   title = "Confirm Action",
@@ -32,10 +29,6 @@ export const ConfirmDialog = ({
   cancelText = "Cancel",
   children,
 }: ConfirmDialogProps) => {
-  const handleClose = () => {
-    if (isPending) return;
-    onClose();
-  };
   return (
     <Dialog open={open} onOpenChange={() => onClose?.()}>
       <DialogContent className="sm:max-w-md">
@@ -45,11 +38,15 @@ export const ConfirmDialog = ({
         </DialogHeader>
         {children && <div className="py-4">{children}</div>}
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={() => onClose?.()}>
             {cancelText}
           </Button>
-          <Button onClick={onSubmit} disabled={isPending}>
-            {isPending && <Loader className="w-4 h-4 animate-spin" />}
+          <Button
+            onClick={() => {
+              onSubmit();
+              onClose?.();
+            }}
+          >
             {confirmText}
           </Button>
         </DialogFooter>

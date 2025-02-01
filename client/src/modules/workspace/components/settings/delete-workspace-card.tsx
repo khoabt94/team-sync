@@ -8,9 +8,10 @@ import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { useOpenDialog } from "@shared/hooks/use-open-dialog";
 import { toast } from "@shared/hooks/use-toast";
 import { useNavigate } from "@tanstack/react-router";
+import { Loader } from "lucide-react";
 
 export const DeleteWorkspaceCard = () => {
-  const { mutateAsync: deleteWorkspace } = useDeleteWorkspace();
+  const { mutateAsync: deleteWorkspace, isPending: isDeletingWorkspace } = useDeleteWorkspace();
   const navigate = useNavigate();
   const { workspace } = useWorkspaceContext();
   const workspaceId = useGetWorkspaceId();
@@ -24,6 +25,12 @@ export const DeleteWorkspaceCard = () => {
           const newWorkspace = await deleteWorkspace(
             { workspaceId },
             {
+              onSuccess: () => {
+                toast({
+                  title: "Success",
+                  description: `Deleted "${workspace?.name}" workspace successfully`,
+                });
+              },
               onError: (error) => {
                 toast({
                   title: "Error",
@@ -35,7 +42,7 @@ export const DeleteWorkspaceCard = () => {
           );
           navigate({ to: `/workspace/$workspaceId`, params: { workspaceId: newWorkspace } });
         },
-        title: `Delete  ${workspace?.name} Workspace`,
+        title: `Delete  "${workspace?.name}" workspace`,
         description: `Are you sure you want to delete? This action cannot be undone.`,
         confirmText: "Delete",
         cancelText: "Cancel",
@@ -64,7 +71,13 @@ export const DeleteWorkspaceCard = () => {
                 proceed with caution and ensure this action is intentional.
               </p>
             </div>
-            <Button className="shrink-0 flex place-self-end h-[40px]" variant="destructive" onClick={onOpenDialog}>
+            <Button
+              disabled={isDeletingWorkspace}
+              className="shrink-0 flex place-self-end h-[40px]"
+              variant="destructive"
+              onClick={onOpenDialog}
+            >
+              {isDeletingWorkspace && <Loader className="w-5 h-5 animate-spin" />}
               Delete Workspace
             </Button>
           </div>
