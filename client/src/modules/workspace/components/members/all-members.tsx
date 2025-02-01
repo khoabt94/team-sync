@@ -13,6 +13,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { useRef } from "react";
 import { toast } from "@shared/hooks/use-toast";
+import { useOpenDialog } from "@shared/hooks/use-open-dialog";
+import { ConfirmDialog } from "@shared/components/dialogs/confirm-dialog";
+import { useRemoveMember } from "@api/hooks/use-remove-member";
 
 export const AllMembers = () => {
   const { hasPermission, membersLoading, workspaceMembers } = useWorkspaceContext();
@@ -22,7 +25,9 @@ export const AllMembers = () => {
   const { mutateAsync: changeMemberRole } = useChangeMemberRole();
   const workspaceId = useGetWorkspaceId();
   const { data: roles = [], isLoading: isLoadingRoles } = useGetWorkspaceRoles({ input: { workspaceId } });
+  const { mutateAsync: removeMember } = useRemoveMember();
   const debounceChangeMemberRole = useRef(debounce(changeMemberRole, 300));
+  const { open: openDialog } = useOpenDialog();
 
   const handleChangeMemberRole = async (roleId: string, memberId: string) => {
     const selectedRole = roles.find((role) => role._id === roleId);
@@ -49,6 +54,39 @@ export const AllMembers = () => {
     );
   };
 
+  const handleRemoveMember = async (memberId: string, memberName: string) => {
+    openDialog({
+      id: "confirm-remove-member",
+      Component: ConfirmDialog,
+      modalProps: {
+        onSubmit: async () => {
+          await removeMember(
+            { workspaceId, memberId },
+            {
+              onSuccess: () => {
+                toast({
+                  title: "Success",
+                  description: `Removed "${memberName}" successfully`,
+                });
+              },
+              onError: (error) => {
+                toast({
+                  title: "Error",
+                  description: error.message,
+                  variant: "destructive",
+                });
+              },
+            },
+          );
+        },
+        title: `Remove "${memberName}"`,
+        description: `Are you sure you want to remove that member? This action will cause unassigning that member from related task and cannot be undone.`,
+        confirmText: "Remove",
+        cancelText: "Cancel",
+      },
+    });
+  };
+
   return (
     <div className="grid gap-6 pt-2">
       {membersLoading || isLoadingRoles ? <Loader className="w-8 h-8 animate-spin place-self-center flex" /> : null}
@@ -62,6 +100,7 @@ export const AllMembers = () => {
             key={member._id}
             member={member}
             onChangeMemberRole={handleChangeMemberRole}
+            onRemoveMember={handleRemoveMember}
             isCanChangeRole={isCanChangeRole}
             memberRole={myRole}
             roles={roles}

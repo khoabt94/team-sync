@@ -1,12 +1,15 @@
 import { WorkspaceMember } from "@/workspace/types/workspace.type";
+import { PermissionsGuard } from "@shared/components/permission-guard";
 import { Avatar, AvatarFallback, AvatarImage } from "@shared/components/ui/avatar";
 import { Button } from "@shared/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@shared/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@shared/components/ui/popover";
+import { Separator } from "@shared/components/ui/separator";
 import { RoleType } from "@shared/constants/role-permission.constant";
+import { Permissions } from "@shared/constants/task.constant";
 import { Role } from "@shared/types/role.type";
 import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 type MemberLineProps = {
@@ -15,9 +18,17 @@ type MemberLineProps = {
   isCanChangeRole: boolean;
   roles: Role[];
   onChangeMemberRole: (roleId: string, memberId: string) => void;
+  onRemoveMember: (memberId: string, memberName: string) => void;
 };
 
-export function MemberLine({ member, memberRole, isCanChangeRole, roles, onChangeMemberRole }: MemberLineProps) {
+export function MemberLine({
+  member,
+  memberRole,
+  isCanChangeRole,
+  roles,
+  onChangeMemberRole,
+  onRemoveMember,
+}: MemberLineProps) {
   const name = member.userId?.name;
   const initials = getAvatarFallbackText(name);
   const avatarColor = getAvatarColor(name);
@@ -76,6 +87,25 @@ export function MemberLine({ member, memberRole, isCanChangeRole, roles, onChang
                           ),
                       )}
                   </CommandGroup>
+                  <PermissionsGuard requiredPermission={Permissions.REMOVE_MEMBER}>
+                    <>
+                      <Separator />
+                      <CommandGroup>
+                        <CommandItem
+                          className="disabled:pointer-events-none gap-1 mb-1  flex flex-col items-start px-4 py-2 cursor-pointer"
+                          onSelect={() => {
+                            setOpen(false);
+                            onRemoveMember(member.userId._id, member.userId.name);
+                          }}
+                        >
+                          <div className="flex gap-x-2 items-center text-red-600">
+                            <Trash2 />
+                            <p className="capitalize">Remove member</p>
+                          </div>
+                        </CommandItem>
+                      </CommandGroup>
+                    </>
+                  </PermissionsGuard>
                 </CommandList>
               </Command>
             </PopoverContent>
