@@ -13,7 +13,7 @@ import { BaseError } from "@api/type";
 export const InviteView = () => {
   const { inviteCode } = Route.useParams();
   const navigate = useNavigate();
-  const { mutateAsync: joinWorkspace } = useJoinWorkspaceByInviteCode();
+  const { mutateAsync: joinWorkspace, isPending: isJoining } = useJoinWorkspaceByInviteCode();
 
   const { user, isFetchingUser } = useAuthStore();
 
@@ -66,11 +66,11 @@ export const InviteView = () => {
                   {user ? (
                     <div className="flex items-center justify-center my-3">
                       <Button
-                        //   disabled={isLoading}
+                        disabled={isJoining}
                         onClick={handleSubmit}
                         className="!bg-green-500 !text-white text-base !h-auto"
                       >
-                        {/* {isLoading && <Loader className="!w-6 !h-6 animate-spin" />} */}
+                        {isJoining && <Loader className="!w-6 !h-6 animate-spin" />}
                         Join the Workspace
                       </Button>
                     </div>

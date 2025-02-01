@@ -7,11 +7,13 @@ import {
   DialogTitle,
 } from "@shared/components/ui/dialog";
 import { Button } from "@shared/components/ui/button";
+import { useState } from "react";
+import { Loader } from "lucide-react";
 
 type ConfirmDialogProps = {
   open?: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
   title?: string;
   description?: string;
   confirmText?: string;
@@ -29,6 +31,15 @@ export const ConfirmDialog = ({
   cancelText = "Cancel",
   children,
 }: ConfirmDialogProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    await onSubmit();
+    setIsSubmitting(false);
+    onClose?.();
+  };
+
   return (
     <Dialog open={open} onOpenChange={() => onClose?.()}>
       <DialogContent className="sm:max-w-md">
@@ -41,12 +52,8 @@ export const ConfirmDialog = ({
           <Button variant="outline" onClick={() => onClose?.()}>
             {cancelText}
           </Button>
-          <Button
-            onClick={() => {
-              onSubmit();
-              onClose?.();
-            }}
-          >
+          <Button disabled={isSubmitting} onClick={handleSubmit}>
+            {isSubmitting && <Loader className="animate-spin" />}
             {confirmText}
           </Button>
         </DialogFooter>

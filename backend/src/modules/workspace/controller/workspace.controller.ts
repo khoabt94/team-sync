@@ -15,6 +15,7 @@ import { StatusCodes } from "http-status-codes";
 import { UserModel, userServices } from "@/user";
 import { NotFoundException } from "@utils/app-error.util";
 import { removeMemberSchema } from "@modules/member/schema/member.schema";
+import { taskServices } from "@modules/task";
 
 const createNewWorkspace = asyncHandler(async (req: Request, res: Response) => {
   const data = createWorkspaceSchema.parse(req.body);
@@ -133,7 +134,7 @@ const removeMember = asyncHandler(async (req: Request, res: Response) => {
   const { memberId } = removeMemberSchema.parse(req.body);
 
   await memberServices.removeMember({ workspaceId, memberId });
-
+  await taskServices.unassignMemberFromTasks({ workspaceId, memberId });
   await userServices.changeWorkspace({ userId: memberId });
 
   return res.status(StatusCodes.OK).json({
