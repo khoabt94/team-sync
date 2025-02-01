@@ -1,104 +1,71 @@
-import { ChevronDown, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@shared/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@shared/components/ui/popover";
-import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
+import { MemberLine } from "@/workspace/components/members/member-line";
 import { useWorkspaceContext } from "@/workspace/providers/workspace.provider";
-import { Permissions } from "@shared/constants/task.constant";
+import { WorkspaceMember } from "@/workspace/types/workspace.type";
+import { useChangeMemberRole } from "@api/hooks/use-change-member-role";
+import { WORKSPACE_MEMBERS } from "@api/hooks/use-get-workspace-members";
 import { useGetWorkspaceRoles } from "@api/hooks/use-get-workspace-roles";
-import { Avatar, AvatarFallback, AvatarImage } from "@shared/components/ui/avatar";
-import { Button } from "@shared/components/ui/button";
-import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
+import { Permissions } from "@shared/constants/task.constant";
+import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { useAuthStore } from "@shared/stores/auth.store";
+import { useQueryClient } from "@tanstack/react-query";
+import { debounce } from "lodash";
+import { useRef } from "react";
+import { toast } from "@shared/hooks/use-toast";
 
 export const AllMembers = () => {
   const { hasPermission, membersLoading, workspaceMembers } = useWorkspaceContext();
+  const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const canChangeMemberRole = hasPermission(Permissions.CHANGE_MEMBER_ROLE);
-
+  const { mutateAsync: changeMemberRole } = useChangeMemberRole();
   const workspaceId = useGetWorkspaceId();
-  const { data: roles, isLoading: isLoadingRoles } = useGetWorkspaceRoles({ input: { workspaceId } });
+  const { data: roles = [], isLoading: isLoadingRoles } = useGetWorkspaceRoles({ input: { workspaceId } });
+  const debounceChangeMemberRole = useRef(debounce(changeMemberRole, 300));
+
+  const handleChangeMemberRole = async (roleId: string, memberId: string) => {
+    const selectedRole = roles.find((role) => role._id === roleId);
+    if (!selectedRole) return;
+    queryClient.setQueryData([WORKSPACE_MEMBERS, workspaceId], (oldData: WorkspaceMember[]) => {
+      return oldData.map((member) => {
+        if (member.userId._id === memberId) {
+          return { ...member, role: selectedRole };
+        }
+        return member;
+      });
+    });
+    await debounceChangeMemberRole.current(
+      { workspaceId, data: { memberId, roleId } },
+      {
+        onError: (error) => {
+          queryClient.invalidateQueries({ queryKey: [WORKSPACE_MEMBERS, workspaceId] });
+          toast({
+            title: "Error",
+            description: error.message ?? "Failed to change member role",
+          });
+        },
+      },
+    );
+  };
 
   return (
     <div className="grid gap-6 pt-2">
-      {membersLoading ? <Loader className="w-8 h-8 animate-spin place-self-center flex" /> : null}
-
+      {membersLoading || isLoadingRoles ? <Loader className="w-8 h-8 animate-spin place-self-center flex" /> : null}
       {workspaceMembers?.map((member) => {
-        const name = member.userId?.name;
-        const initials = getAvatarFallbackText(name);
-        const avatarColor = getAvatarColor(name);
-        return (
-          <div className="flex items-center justify-between space-x-4" key={member._id}>
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={member.userId?.profilePicture || ""} alt="Image" />
-                <AvatarFallback className={avatarColor}>{initials}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">{name}</p>
-                <p className="text-sm text-muted-foreground">{member.userId.email}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="ml-auto min-w-24 capitalize disabled:opacity-95 disabled:pointer-events-none"
-                    disabled={isLoadingRoles || !canChangeMemberRole || member.userId._id === user?._id}
-                  >
-                    {member.role.role?.toLowerCase()}{" "}
-                    {canChangeMemberRole && member.userId._id !== user?._id && (
-                      <ChevronDown className="text-muted-foreground" />
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                {canChangeMemberRole && (
-                  <PopoverContent className="p-0" align="end">
-                    <Command>
-                      {/* <CommandInput
-                        placeholder="Select new role..."
-                        disabled={isLoadingRoles}
-                        className="disabled:pointer-events-none"
-                      /> */}
-                      <CommandList>
-                        {isLoadingRoles ? (
-                          <Loader className="w-8 h-8 animate-spin place-self-center flex my-4" />
-                        ) : (
-                          <>
-                            <CommandEmpty>No roles found.</CommandEmpty>
-                            <CommandGroup>
-                              {roles?.map(
-                                (role) =>
-                                  role.role !== "OWNER" && (
-                                    <CommandItem
-                                      key={role.role}
-                                      className="disabled:pointer-events-none gap-1 mb-1  flex flex-col items-start px-4 py-2 cursor-pointer"
-                                      // onSelect={() => {
-                                      //   handleSelect(role._id, member.userId._id);
-                                      // }}
-                                    >
-                                      <p className="capitalize">{role.role?.toLowerCase()}</p>
-                                      <p className="text-sm text-muted-foreground">
-                                        {role.role === "ADMIN" &&
-                                          `Can view, create, edit tasks, project and manage settings .`}
+        const isMyself = member.userId._id === user?._id;
+        const isCanChangeRole = canChangeMemberRole && !isMyself;
+        const myRole = roles.find((role) => role.role === member.role.role)?.role ?? "MEMBER";
 
-                                        {role.role === "MEMBER" && `Can view,edit only task created by.`}
-                                      </p>
-                                    </CommandItem>
-                                  ),
-                              )}
-                            </CommandGroup>
-                          </>
-                        )}
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                )}
-              </Popover>
-            </div>
-          </div>
+        return (
+          <MemberLine
+            key={member._id}
+            member={member}
+            onChangeMemberRole={handleChangeMemberRole}
+            isCanChangeRole={isCanChangeRole}
+            memberRole={myRole}
+            roles={roles}
+          />
         );
       })}
     </div>

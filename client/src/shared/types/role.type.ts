@@ -3,5 +3,6 @@ import { PermissionType } from "@shared/constants/task.constant";
 
 export type Role = {
   role: RoleType;
+  _id: string;
   permissions: PermissionType[];
 };

@@ -41,11 +41,11 @@ const RecentMembers = () => {
               {/* Member Details */}
               <div className="flex flex-col">
                 <p className="text-sm font-medium text-gray-900">{member.userId.name}</p>
-                <p className="text-sm text-gray-500">{member.role.role}</p>
+                <p className="text-xs text-gray-500 capitalize">{member.role.role.toLowerCase()}</p>
               </div>
 
               {/* Joined Date */}
-              <div className="ml-auto text-sm text-gray-500">
+              <div className="ml-auto text-xs text-gray-500">
                 <p>Joined</p>
                 <p>{member.joinedAt ? moment(member.joinedAt).format("MMM DD, YYYY") : null}</p>
               </div>
