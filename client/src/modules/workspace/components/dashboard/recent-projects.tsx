@@ -53,7 +53,7 @@ export const RecentProjects = () => {
               className="shadow-none cursor-pointer border-0 py-2 hover:bg-gray-50 transition-colors ease-in-out "
             >
               <Link
-                to="/workspace/$workspaceId/$projectId"
+                to="/workspace/$workspaceId/project/$projectId"
                 params={{
                   workspaceId: workspaceId,
                   projectId: project._id,

@@ -85,7 +85,7 @@ export function NavProjects() {
                 <SidebarMenuItem key={item._id}>
                   <SidebarMenuButton asChild isActive={projectUrl === pathname}>
                     <Link
-                      to="/workspace/$workspaceId/$projectId"
+                      to="/workspace/$workspaceId/project/$projectId"
                       params={{
                         workspaceId: workspaceId,
                         projectId: item._id,
@@ -110,7 +110,7 @@ export function NavProjects() {
                       <DropdownMenuItem
                         onClick={() =>
                           navigate({
-                            to: "/workspace/$workspaceId/$projectId",
+                            to: "/workspace/$workspaceId/project/$projectId",
                             params: {
                               workspaceId: workspaceId,
                               projectId: item._id,

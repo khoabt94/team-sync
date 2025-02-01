@@ -23,7 +23,7 @@ import { Route as WorkspaceWorkspaceIdIndexImport } from './routes/workspace/$wo
 import { Route as WorkspaceWorkspaceIdTasksImport } from './routes/workspace/$workspaceId/tasks'
 import { Route as WorkspaceWorkspaceIdSettingsImport } from './routes/workspace/$workspaceId/settings'
 import { Route as WorkspaceWorkspaceIdMembersImport } from './routes/workspace/$workspaceId/members'
-import { Route as WorkspaceWorkspaceIdProjectIdIndexImport } from './routes/workspace/$workspaceId/$projectId/index'
+import { Route as WorkspaceWorkspaceIdProjectProjectIdImport } from './routes/workspace/$workspaceId/project/$projectId'
 import { Route as InviteWorkspaceInviteCodeJoinImport } from './routes/invite/workspace/$inviteCode/join'
 
 // Create/Update Routes
@@ -101,10 +101,10 @@ const WorkspaceWorkspaceIdMembersRoute =
     getParentRoute: () => WorkspaceWorkspaceIdRoute,
   } as any)
 
-const WorkspaceWorkspaceIdProjectIdIndexRoute =
-  WorkspaceWorkspaceIdProjectIdIndexImport.update({
-    id: '/$projectId/',
-    path: '/$projectId/',
+const WorkspaceWorkspaceIdProjectProjectIdRoute =
+  WorkspaceWorkspaceIdProjectProjectIdImport.update({
+    id: '/project/$projectId',
+    path: '/project/$projectId',
     getParentRoute: () => WorkspaceWorkspaceIdRoute,
   } as any)
 
@@ -210,11 +210,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InviteWorkspaceInviteCodeJoinImport
       parentRoute: typeof rootRoute
     }
-    '/workspace/$workspaceId/$projectId/': {
-      id: '/workspace/$workspaceId/$projectId/'
-      path: '/$projectId'
-      fullPath: '/workspace/$workspaceId/$projectId'
-      preLoaderRoute: typeof WorkspaceWorkspaceIdProjectIdIndexImport
+    '/workspace/$workspaceId/project/$projectId': {
+      id: '/workspace/$workspaceId/project/$projectId'
+      path: '/project/$projectId'
+      fullPath: '/workspace/$workspaceId/project/$projectId'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdProjectProjectIdImport
       parentRoute: typeof WorkspaceWorkspaceIdImport
     }
   }
@@ -239,7 +239,7 @@ interface WorkspaceWorkspaceIdRouteChildren {
   WorkspaceWorkspaceIdSettingsRoute: typeof WorkspaceWorkspaceIdSettingsRoute
   WorkspaceWorkspaceIdTasksRoute: typeof WorkspaceWorkspaceIdTasksRoute
   WorkspaceWorkspaceIdIndexRoute: typeof WorkspaceWorkspaceIdIndexRoute
-  WorkspaceWorkspaceIdProjectIdIndexRoute: typeof WorkspaceWorkspaceIdProjectIdIndexRoute
+  WorkspaceWorkspaceIdProjectProjectIdRoute: typeof WorkspaceWorkspaceIdProjectProjectIdRoute
 }
 
 const WorkspaceWorkspaceIdRouteChildren: WorkspaceWorkspaceIdRouteChildren = {
@@ -247,8 +247,8 @@ const WorkspaceWorkspaceIdRouteChildren: WorkspaceWorkspaceIdRouteChildren = {
   WorkspaceWorkspaceIdSettingsRoute: WorkspaceWorkspaceIdSettingsRoute,
   WorkspaceWorkspaceIdTasksRoute: WorkspaceWorkspaceIdTasksRoute,
   WorkspaceWorkspaceIdIndexRoute: WorkspaceWorkspaceIdIndexRoute,
-  WorkspaceWorkspaceIdProjectIdIndexRoute:
-    WorkspaceWorkspaceIdProjectIdIndexRoute,
+  WorkspaceWorkspaceIdProjectProjectIdRoute:
+    WorkspaceWorkspaceIdProjectProjectIdRoute,
 }
 
 const WorkspaceWorkspaceIdRouteWithChildren =
@@ -282,7 +282,7 @@ export interface FileRoutesByFullPath {
   '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
   '/invite/workspace/$inviteCode/join': typeof InviteWorkspaceInviteCodeJoinRoute
-  '/workspace/$workspaceId/$projectId': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
+  '/workspace/$workspaceId/project/$projectId': typeof WorkspaceWorkspaceIdProjectProjectIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -297,7 +297,7 @@ export interface FileRoutesByTo {
   '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdIndexRoute
   '/invite/workspace/$inviteCode/join': typeof InviteWorkspaceInviteCodeJoinRoute
-  '/workspace/$workspaceId/$projectId': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
+  '/workspace/$workspaceId/project/$projectId': typeof WorkspaceWorkspaceIdProjectProjectIdRoute
 }
 
 export interface FileRoutesById {
@@ -315,7 +315,7 @@ export interface FileRoutesById {
   '/workspace/$workspaceId/tasks': typeof WorkspaceWorkspaceIdTasksRoute
   '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
   '/invite/workspace/$inviteCode/join': typeof InviteWorkspaceInviteCodeJoinRoute
-  '/workspace/$workspaceId/$projectId/': typeof WorkspaceWorkspaceIdProjectIdIndexRoute
+  '/workspace/$workspaceId/project/$projectId': typeof WorkspaceWorkspaceIdProjectProjectIdRoute
 }
 
 export interface FileRouteTypes {
@@ -334,7 +334,7 @@ export interface FileRouteTypes {
     | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId/'
     | '/invite/workspace/$inviteCode/join'
-    | '/workspace/$workspaceId/$projectId'
+    | '/workspace/$workspaceId/project/$projectId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -348,7 +348,7 @@ export interface FileRouteTypes {
     | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId'
     | '/invite/workspace/$inviteCode/join'
-    | '/workspace/$workspaceId/$projectId'
+    | '/workspace/$workspaceId/project/$projectId'
   id:
     | '__root__'
     | '/'
@@ -364,7 +364,7 @@ export interface FileRouteTypes {
     | '/workspace/$workspaceId/tasks'
     | '/workspace/$workspaceId/'
     | '/invite/workspace/$inviteCode/join'
-    | '/workspace/$workspaceId/$projectId/'
+    | '/workspace/$workspaceId/project/$projectId'
   fileRoutesById: FileRoutesById
 }
 
@@ -437,7 +437,7 @@ export const routeTree = rootRoute
         "/workspace/$workspaceId/settings",
         "/workspace/$workspaceId/tasks",
         "/workspace/$workspaceId/",
-        "/workspace/$workspaceId/$projectId/"
+        "/workspace/$workspaceId/project/$projectId"
       ]
     },
     "/workspace/": {
@@ -463,8 +463,8 @@ export const routeTree = rootRoute
     "/invite/workspace/$inviteCode/join": {
       "filePath": "invite/workspace/$inviteCode/join.tsx"
     },
-    "/workspace/$workspaceId/$projectId/": {
-      "filePath": "workspace/$workspaceId/$projectId/index.tsx",
+    "/workspace/$workspaceId/project/$projectId": {
+      "filePath": "workspace/$workspaceId/project/$projectId.tsx",
       "parent": "/workspace/$workspaceId"
     }
   }

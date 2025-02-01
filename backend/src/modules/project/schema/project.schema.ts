@@ -9,11 +9,7 @@ const nameSchema = z
     message: 'Project name should not longer than 100 characters'
   });
 
-const descriptionSchema = z
-  .string({ message: 'Description is required' })
-  .trim()
-  .min(1, { message: 'Description is required' })
-  .max(255);
+const descriptionSchema = z.string().trim().max(255).nullable().optional();
 
 const emojiSchema = z.string().trim().optional();
 
