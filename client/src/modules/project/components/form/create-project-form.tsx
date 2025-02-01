@@ -45,6 +45,7 @@ export function CreateProjectForm({ onSubmitSuccess }: CreateProjectFormProps) {
             title: "Project created!",
             description: "You will be redirected to new project shortly!",
           });
+          onSubmitSuccess?.();
           navigate({
             to: "/workspace/$workspaceId/project/$projectId",
             params: { projectId: project._id, workspaceId },
@@ -59,7 +60,6 @@ export function CreateProjectForm({ onSubmitSuccess }: CreateProjectFormProps) {
         },
       },
     );
-    onSubmitSuccess?.();
   };
 
   return (

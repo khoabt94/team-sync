@@ -7,7 +7,7 @@ import { RecentProjects } from "@/workspace/components/dashboard/recent-projects
 import RecentTasks from "@/workspace/components/dashboard/recent-tasks";
 import RecentMembers from "@/workspace/components/dashboard/recent-members";
 import { useOpenDialog } from "@shared/hooks/use-open-dialog";
-import CreateProjectDialog from "@shared/components/dialogs/create-project-dialog";
+import { CreateProjectDialog } from "@shared/components/dialogs/create-project-dialog";
 
 export const WorkspaceDashboard = () => {
   const { open: openDialog } = useOpenDialog();

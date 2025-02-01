@@ -1,7 +1,7 @@
 import { useWorkspaceContext } from "@/workspace/providers/workspace.provider";
 import { useDeleteWorkspace } from "@api/hooks/use-delete-workspace";
 import { ConfirmDialog } from "@shared/components/dialogs/confirm-dialog";
-import PermissionsGuard from "@shared/components/permission-guard";
+import { PermissionsGuard } from "@shared/components/permission-guard";
 import { Button } from "@shared/components/ui/button";
 import { Permissions } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";

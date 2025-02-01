@@ -3,7 +3,7 @@ import { CheckIcon, CopyIcon, Loader } from "lucide-react";
 import { useWorkspaceContext } from "@/workspace/providers/workspace.provider";
 import { getInviteUrl } from "@shared/util/member.util";
 import { toast } from "@shared/hooks/use-toast";
-import PermissionsGuard from "@shared/components/permission-guard";
+import { PermissionsGuard } from "@shared/components/permission-guard";
 import { Permissions } from "@shared/constants/task.constant";
 import { Label } from "@shared/components/ui/label";
 import { Input } from "@shared/components/ui/input";

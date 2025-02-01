@@ -7,7 +7,11 @@ type PermissionsGuardProps = {
   showMessage?: boolean;
 };
 
-const PermissionsGuard: React.FC<PermissionsGuardProps> = ({ requiredPermission, showMessage = false, children }) => {
+export const PermissionsGuard: React.FC<PermissionsGuardProps> = ({
+  requiredPermission,
+  showMessage = false,
+  children,
+}) => {
   const { hasPermission } = useWorkspaceContext();
 
   if (!hasPermission(requiredPermission)) {
@@ -28,5 +32,3 @@ const PermissionsGuard: React.FC<PermissionsGuardProps> = ({ requiredPermission,
 
   return <>{children}</>;
 };
-
-export default PermissionsGuard;

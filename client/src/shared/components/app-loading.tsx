@@ -7,8 +7,8 @@ type AppLoadingProps = {
 
 export function AppLoading({ className }: AppLoadingProps) {
   return (
-    <div className={cn("flex items-center justify-center w-screen h-screen gap-x-4", className)}>
-      <Loader className="animate-spin size-10" />
+    <div className={cn("flex items-center justify-center w-screen h-screen gap-x-4 opacity-50", className)}>
+      <Loader className="animate-spin size-10 " />
       <p>Team sync...</p>
     </div>
   );

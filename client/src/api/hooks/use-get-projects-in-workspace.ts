@@ -25,7 +25,7 @@ export type UseGetProjectsInWorkspaceProps = QueryProps<
   GetProjectsInWorkspaceInput
 >;
 
-export const PROJECTS_WORKSPACE = "PROJECTS_WORKSPACE";
+export const WORKSPACE_PROJECTS = "WORKSPACE_PROJECTS";
 
 export async function getProjectsInWorkspaceFn({
   workspaceId,
@@ -39,7 +39,7 @@ export async function getProjectsInWorkspaceFn({
 
 export function useGetProjectsInWorkspace({ input, ...options }: UseGetProjectsInWorkspaceProps) {
   return useQuery({
-    queryKey: [PROJECTS_WORKSPACE, ...Object.values(input)],
+    queryKey: [WORKSPACE_PROJECTS, ...Object.values(input)],
     queryFn: () => getProjectsInWorkspaceFn(input),
     ...options,
   });

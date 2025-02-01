@@ -1,5 +1,3 @@
-// import CreateWorkspaceDialog from "@/components/workspace/create-workspace-dialog";
-// import CreateProjectDialog from "@/components/workspace/project/create-project-dialog";
 import { SidebarInset, SidebarProvider } from "@shared/components/ui/sidebar";
 import { WorkspaceProvider } from "@/workspace/providers/workspace.provider";
 import { TopSideBar } from "@shared/components/sidebar/top-side-bar";
@@ -16,8 +14,6 @@ export const AppLayout = ({ children }: PropsWithChildren) => {
         <SidebarInset className="overflow-x-hidden w-full">
           <Header />
           <div className="px-3 lg:px-20 py-3">{children}</div>
-          {/* <CreateWorkspaceDialog /> */}
-          {/* <CreateProjectDialog /> */}
         </SidebarInset>
       </SidebarProvider>
     </WorkspaceProvider>

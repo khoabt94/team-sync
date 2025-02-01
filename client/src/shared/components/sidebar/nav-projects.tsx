@@ -16,13 +16,13 @@ import {
 } from "@shared/components/ui/sidebar";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Folder, Loader, MoreHorizontal, Plus, Trash2 } from "lucide-react";
-import PermissionsGuard from "@shared/components/permission-guard";
+import { PermissionsGuard } from "@shared/components/permission-guard";
 import { Button } from "@shared/components/ui/button";
 import { Permissions } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { useGetProjectsInWorkspace } from "@api/hooks/use-get-projects-in-workspace";
 import { useOpenDialog } from "@shared/hooks/use-open-dialog";
-import CreateProjectDialog from "@shared/components/dialogs/create-project-dialog";
+import { CreateProjectDialog } from "@shared/components/dialogs/create-project-dialog";
 import { ConfirmDialog } from "@shared/components/dialogs/confirm-dialog";
 import { toast } from "@shared/hooks/use-toast";
 import { Project } from "@/project/types/project.type";
@@ -194,17 +194,6 @@ export function NavProjects() {
           )}
         </SidebarMenu>
       </SidebarGroup>
-
-      {/* <ConfirmDialog
-        isOpen={open}
-        isLoading={isLoading}
-        onClose={onCloseDialog}
-        onConfirm={handleConfirm}
-        title="Delete Project"
-        description={`Are you sure you want to delete ${context?.name || "this item"}? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
-      /> */}
     </>
   );
 }
