@@ -6,13 +6,64 @@ export const TaskStatusEnum = {
   DONE: "DONE",
 } as const;
 
+export type TaskStatusEnumType = keyof typeof TaskStatusEnum;
+
+export const TaskStatusConfig: Record<
+  TaskStatusEnumType,
+  {
+    label: string;
+    value: string;
+  }
+> = {
+  [TaskStatusEnum.BACKLOG]: {
+    label: "BACKLOG",
+    value: TaskStatusEnum.BACKLOG,
+  },
+  [TaskStatusEnum.TODO]: {
+    label: "TODO",
+    value: TaskStatusEnum.TODO,
+  },
+  [TaskStatusEnum.IN_PROGRESS]: {
+    label: "IN PROGRESS",
+    value: TaskStatusEnum.IN_PROGRESS,
+  },
+  [TaskStatusEnum.IN_REVIEW]: {
+    label: "IN REVIEW",
+    value: TaskStatusEnum.IN_REVIEW,
+  },
+  [TaskStatusEnum.DONE]: {
+    label: "DONE",
+    value: TaskStatusEnum.DONE,
+  },
+};
+
 export const TaskPriorityEnum = {
   LOW: "LOW",
   MEDIUM: "MEDIUM",
   HIGH: "HIGH",
 } as const;
-export type TaskStatusEnumType = keyof typeof TaskStatusEnum;
 export type TaskPriorityEnumType = keyof typeof TaskPriorityEnum;
+
+export const TaskPriorityConfig: Record<
+  TaskPriorityEnumType,
+  {
+    label: string;
+    value: string;
+  }
+> = {
+  [TaskPriorityEnum.HIGH]: {
+    label: "HIGH",
+    value: TaskPriorityEnum.HIGH,
+  },
+  [TaskPriorityEnum.MEDIUM]: {
+    label: "MEDIUM",
+    value: TaskPriorityEnum.MEDIUM,
+  },
+  [TaskPriorityEnum.LOW]: {
+    label: "LOW",
+    value: TaskPriorityEnum.LOW,
+  },
+};
 
 export const Permissions = {
   CREATE_WORKSPACE: "CREATE_WORKSPACE",

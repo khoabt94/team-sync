@@ -1,18 +1,18 @@
-import { CreateProjectForm } from "@/project/components/form/create-project-form";
+import { CreateTaskForm } from "@/task/components/form/create-task-form";
 import { Dialog, DialogContent, DialogTitle } from "@shared/components/ui/dialog";
 
-type CreateProjectDialogProps = {
+type CreateTaskDialogProps = {
   open?: boolean;
   onClose?: () => void;
 };
 
-export const CreateProjectDialog = ({ open = true, onClose }: CreateProjectDialogProps) => {
+export const CreateTaskDialog = ({ open = true, onClose }: CreateTaskDialogProps) => {
   return (
     <div>
       <Dialog open={open} onOpenChange={() => onClose?.()}>
-        <DialogContent className="sm:max-w-lg border-0">
+        <DialogContent className="max-h-auto my-5 border-0 w-[90vw] max-w-[1280px]">
           <DialogTitle className="hidden" />
-          <CreateProjectForm onSubmitSuccess={() => onClose?.()} />
+          <CreateTaskForm onSubmitSuccess={() => onClose?.()} />
         </DialogContent>
       </Dialog>
     </div>

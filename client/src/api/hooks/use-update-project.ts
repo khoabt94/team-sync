@@ -3,14 +3,14 @@ import { axiosClient } from "@shared/util/axios.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { WORKSPACE_PROJECTS } from "@api/hooks/use-get-projects-in-workspace";
 import { z } from "zod";
-import { editProjectSchema } from "@/project/schemas/project.schema";
+import { projectFormSchema } from "@/project/schemas/project.schema";
 import { Project } from "@/project/types/project.type";
 import { PROJECT_DETAIL } from "@api/hooks/use-get-project-detail";
 
 export type UpdateProjectInput = {
   workspaceId: string;
   projectId: string;
-  data: z.infer<typeof editProjectSchema>;
+  data: z.infer<typeof projectFormSchema>;
 };
 
 export type UpdateProjectResponse = {

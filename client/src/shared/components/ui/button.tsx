@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { cn } from "@shared/util/cn.util";
+import { type VariantProps } from "class-variance-authority";
 import { buttonVariants } from "@shared/constants/variants.constant";
-import { VariantProps } from "class-variance-authority";
+import { cn } from "@shared/util/cn.util";
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-  };
+export type ButtonProps = {
+  asChild?: boolean;
+} & React.ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants>;
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
