@@ -4,7 +4,7 @@ import { axiosClient } from "@shared/util/axios.util";
 import { useQuery } from "@tanstack/react-query";
 import queryString from "query-string";
 
-export type GetProjectsInWorkspaceInput = {
+export type GetWorkspaceProjectsInput = {
   workspaceId: string;
   filters?: {
     sort?: string;
@@ -13,34 +13,31 @@ export type GetProjectsInWorkspaceInput = {
   };
 };
 
-export type GetProjectsInWorkspaceResponse = {
+export type GetWorkspaceProjectsResponse = {
   projects: Project[];
   message: string;
 };
 
-export type UseGetProjectsInWorkspaceReturnType = Project[];
+export type UseGetWorkspaceProjectsReturnType = Project[];
 
-export type UseGetProjectsInWorkspaceProps = QueryProps<
-  UseGetProjectsInWorkspaceReturnType,
-  GetProjectsInWorkspaceInput
->;
+export type UseGetWorkspaceProjectsProps = QueryProps<UseGetWorkspaceProjectsReturnType, GetWorkspaceProjectsInput>;
 
 export const WORKSPACE_PROJECTS = "WORKSPACE_PROJECTS";
 
-export async function getProjectsInWorkspaceFn({
+export async function getWorkspaceProjectsFn({
   workspaceId,
   filters = {},
-}: GetProjectsInWorkspaceInput): Promise<UseGetProjectsInWorkspaceReturnType> {
-  const response: GetProjectsInWorkspaceResponse = await axiosClient.get(
+}: GetWorkspaceProjectsInput): Promise<UseGetWorkspaceProjectsReturnType> {
+  const response: GetWorkspaceProjectsResponse = await axiosClient.get(
     `/project/workspace/${workspaceId}/all?${queryString.stringify(filters)}`,
   );
   return response.projects;
 }
 
-export function useGetProjectsInWorkspace({ input, ...options }: UseGetProjectsInWorkspaceProps) {
+export function useGetWorkspaceProjects({ input, ...options }: UseGetWorkspaceProjectsProps) {
   return useQuery({
     queryKey: [WORKSPACE_PROJECTS, ...Object.values(input)],
-    queryFn: () => getProjectsInWorkspaceFn(input),
+    queryFn: () => getWorkspaceProjectsFn(input),
     ...options,
   });
 }

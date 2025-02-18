@@ -1,17 +1,21 @@
-import { useGetWorkspacTasks } from "@api/hooks/use-get-workspace-tasks";
+import { useGetWorkspaceTasks } from "@api/hooks/use-get-workspace-tasks";
 import { Avatar, AvatarFallback, AvatarImage } from "@shared/components/ui/avatar";
 import { Badge } from "@shared/components/ui/badge";
-import { TaskPriorityEnum, TaskStatusEnum } from "@shared/constants/task.constant";
+import {
+  TaskPriorityConfig,
+  TaskPriorityEnum,
+  TaskStatusConfig,
+  TaskStatusEnum,
+} from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
-import { transformStatusEnum } from "@shared/util/status.util";
 import { Loader } from "lucide-react";
 import moment from "moment";
 
 const RecentTasks = () => {
   const workspaceId = useGetWorkspaceId();
 
-  const { data: tasks = [], isLoading } = useGetWorkspacTasks({
+  const { data, isLoading } = useGetWorkspaceTasks({
     input: {
       workspaceId,
       filters: {
@@ -22,6 +26,8 @@ const RecentTasks = () => {
     },
     enabled: !!workspaceId,
   });
+
+  const { tasks = [] } = data ?? {};
 
   return (
     <div className="flex flex-col space-y-6">
@@ -45,51 +51,56 @@ const RecentTasks = () => {
       )}
 
       <ul role="list" className="divide-y divide-gray-200">
-        {tasks.map((task) => {
-          const name = task?.assignedTo?.name || "";
-          const initials = getAvatarFallbackText(name);
-          const avatarColor = getAvatarColor(name);
+        {tasks.map(({ assignedTo, _id, taskCode, title, status, dueDate, priority }) => {
           return (
             <li
-              key={task._id}
+              key={_id}
               className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
             >
               {/* Task Info */}
               <div className="flex flex-col space-y-1 flex-grow">
-                <span className="text-sm capitalize text-gray-600 font-medium">{task.taskCode}</span>
-                <p className="text-md font-semibold text-gray-800 truncate">{task.title}</p>
+                <span className="text-sm capitalize text-gray-600 font-medium">{taskCode}</span>
+                <p className="text-md font-semibold text-gray-800 truncate">{title}</p>
                 <span className="text-sm text-gray-500">
-                  Due: {task.dueDate ? moment(task.createdAt).format("MMM DD, YYYY") : null}
+                  Due: {dueDate ? moment(dueDate).format("MMM DD, YYYY") : null}
                 </span>
               </div>
 
               {/* Task Status */}
               <div className="text-sm font-medium ">
                 <Badge
-                  variant={TaskStatusEnum[task.status]}
+                  variant={TaskStatusEnum[status]}
                   className="flex w-auto p-1 px-2 gap-1 font-medium shadow-sm uppercase border-0"
                 >
-                  <span>{transformStatusEnum(task.status)}</span>
+                  <span>{TaskStatusConfig[status].label}</span>
                 </Badge>
               </div>
 
               {/* Task Priority */}
               <div className="text-sm ml-2">
                 <Badge
-                  variant={TaskPriorityEnum[task.priority]}
+                  variant={TaskPriorityEnum[priority]}
                   className="flex w-auto p-1 px-2 gap-1 font-medium shadow-sm uppercase border-0"
                 >
-                  <span>{transformStatusEnum(task.priority)}</span>
+                  <span>{TaskPriorityConfig[priority].label}</span>
                 </Badge>
               </div>
 
               {/* Assignee */}
-              <div className="flex items-center space-x-2 ml-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={task.assignedTo?.profilePicture || ""} alt={task.assignedTo?.name} />
-                  <AvatarFallback className={avatarColor}>{initials}</AvatarFallback>
-                </Avatar>
-              </div>
+              {assignedTo && (
+                <div className="flex items-center space-x-2 ml-2">
+                  {assignedTo.map(({ name, _id, profilePicture }) => {
+                    const initials = getAvatarFallbackText(name);
+                    const avatarColor = getAvatarColor(name);
+                    return (
+                      <Avatar className="h-8 w-8" key={_id}>
+                        <AvatarImage src={profilePicture || ""} alt={name} />
+                        <AvatarFallback className={avatarColor}>{initials}</AvatarFallback>
+                      </Avatar>
+                    );
+                  })}
+                </div>
+              )}
             </li>
           );
         })}

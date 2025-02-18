@@ -1,7 +1,7 @@
 import { MutationProps } from "@api/type";
 import { axiosClient } from "@shared/util/axios.util";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { WORKSPACE_PROJECTS } from "@api/hooks/use-get-projects-in-workspace";
+import { WORKSPACE_PROJECTS } from "@api/hooks/use-get-workspace-projects";
 import { z } from "zod";
 import { projectFormSchema } from "@/project/schemas/project.schema";
 import { Project } from "@/project/types/project.type";

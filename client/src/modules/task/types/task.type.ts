@@ -10,7 +10,7 @@ export type Task = {
   project: Project;
   workspace: Workspace;
   createdBy: User;
-  assignedTo: User | null;
+  assignedTo: User[];
   status: TaskStatusEnumType;
   priority: TaskPriorityEnumType;
   dueDate: string | null;

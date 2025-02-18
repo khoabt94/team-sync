@@ -1,13 +1,13 @@
+import { CreateTaskButton } from "@/task/components/common/create-task-button";
 import { useGetProjectDetail } from "@api/hooks/use-get-project-detail";
 import { Route } from "@routes/workspace/$workspaceId/project/$projectId";
-import { CreateTaskDialog } from "@shared/components/dialogs/create-task-dialog";
 import { EditProjectDialog } from "@shared/components/dialogs/edit-project-dialog";
 import { PermissionsGuard } from "@shared/components/permission-guard";
 import { Button } from "@shared/components/ui/button";
 import { Permissions } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { useOpenDialog } from "@shared/hooks/use-open-dialog";
-import { Edit3, Plus } from "lucide-react";
+import { Edit3 } from "lucide-react";
 
 export const ProjectHeader = () => {
   const { projectId } = Route.useParams();
@@ -30,14 +30,6 @@ export const ProjectHeader = () => {
     });
   };
 
-  const onOpenCreateTaskDialog = () => {
-    openDialog({
-      id: "create-task",
-      Component: CreateTaskDialog,
-      modalProps: {},
-    });
-  };
-
   return (
     <div className="flex items-center justify-between space-y-2">
       <div className="flex items-center gap-2">
@@ -51,10 +43,7 @@ export const ProjectHeader = () => {
           </Button>
         </PermissionsGuard>
       </div>
-      <Button onClick={onOpenCreateTaskDialog}>
-        <Plus />
-        New Task
-      </Button>
+      <CreateTaskButton />
     </div>
   );
 };

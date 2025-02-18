@@ -20,7 +20,7 @@ import { PermissionsGuard } from "@shared/components/permission-guard";
 import { Button } from "@shared/components/ui/button";
 import { Permissions } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
-import { useGetProjectsInWorkspace } from "@api/hooks/use-get-projects-in-workspace";
+import { useGetWorkspaceProjects } from "@api/hooks/use-get-workspace-projects";
 import { useOpenDialog } from "@shared/hooks/use-open-dialog";
 import { CreateProjectDialog } from "@shared/components/dialogs/create-project-dialog";
 import { ConfirmDialog } from "@shared/components/dialogs/confirm-dialog";
@@ -39,7 +39,7 @@ export function NavProjects() {
 
   const { isMobile } = useSidebar();
   const { mutateAsync: deleteProject, isPending: isDeletingProject } = useDeleteProject();
-  const { data: projects = [], isLoading: isLoadingProjects } = useGetProjectsInWorkspace({
+  const { data: projects = [], isLoading: isLoadingProjects } = useGetWorkspaceProjects({
     input: { workspaceId, filters: { sort: "-createdAt" } },
   });
 
