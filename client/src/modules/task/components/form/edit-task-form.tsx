@@ -1,29 +1,31 @@
 import { TaskForm, TaskFormType } from "@/task/components/form/task-form";
-import { useCreateTask } from "@api/hooks/use-create-task";
-import { useGetProjectId } from "@shared/hooks/use-get-projectId";
+import { Task } from "@/task/types/task.type";
+import { useUpdateTask } from "@api/hooks/use-update-task";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { toast } from "@shared/hooks/use-toast";
 
-type CreateTaskFormProps = {
+type EditTaskFormProps = {
   onSubmitSuccess?: () => void;
+  task: Task;
 };
 
-export function CreateTaskForm({ onSubmitSuccess }: CreateTaskFormProps) {
-  const { mutateAsync: createTask, isPending: isCreatingTask } = useCreateTask();
+export function EditTaskForm({ onSubmitSuccess, task }: EditTaskFormProps) {
+  const { mutateAsync: updateTask, isPending: isUpdatingTask } = useUpdateTask();
+
   const workspaceId = useGetWorkspaceId();
-  const projectId = useGetProjectId();
   const onSubmit = async (data: TaskFormType) => {
-    await createTask(
+    await updateTask(
       {
         workspaceId,
-        projectId: projectId!,
+        projectId: data.projectId,
+        taskId: task._id,
         data,
       },
       {
         onSuccess: () => {
           toast({
             title: "Success",
-            description: "Task created successfully",
+            description: "Task updated successfully",
             variant: "success",
           });
           onSubmitSuccess?.();
@@ -39,5 +41,5 @@ export function CreateTaskForm({ onSubmitSuccess }: CreateTaskFormProps) {
     );
   };
 
-  return <TaskForm onSubmit={onSubmit} isPending={isCreatingTask} projectId={projectId} />;
+  return <TaskForm onSubmit={onSubmit} isPending={isUpdatingTask} task={task} />;
 }

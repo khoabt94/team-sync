@@ -3,13 +3,12 @@ import { generateTaskCode } from '@utils/text.util';
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface TaskDocument extends Document {
-  taskCode: string;
   title: string;
   description: string;
   project: mongoose.Types.ObjectId;
   workspace: mongoose.Types.ObjectId;
   createdBy: mongoose.Types.ObjectId;
-  assignedTo: mongoose.Types.ObjectId | null;
+  assignedTo: mongoose.Types.ObjectId[];
   status: TaskStatusEnumType;
   priority: TaskPriorityEnumType;
   dueDate: Date | null;
@@ -20,12 +19,6 @@ export interface TaskDocument extends Document {
 
 const TaskSchema = new Schema<TaskDocument>(
   {
-    taskCode: {
-      type: String,
-      required: true,
-      trim: true,
-      default: generateTaskCode()
-    },
     title: {
       type: String,
       required: true

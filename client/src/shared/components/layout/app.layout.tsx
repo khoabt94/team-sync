@@ -13,7 +13,7 @@ export const AppLayout = ({ children }: PropsWithChildren) => {
         <TopSideBar />
         <SidebarInset className="overflow-x-hidden w-full">
           <Header />
-          <div className="px-3 lg:px-20 py-3">{children}</div>
+          <div className="px-3 lg:px-6 xl:px-10 py-3">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </WorkspaceProvider>

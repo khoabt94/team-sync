@@ -57,7 +57,7 @@ async function getWorkspaceProjects(workspaceId: string, query: z.infer<typeof g
 
 async function getProjectAnalytics({ workspaceId, projectId }: BaseProjectParams) {
   const currentDate = new Date();
-  const totalTasks = await TaskModel.countDocuments({ workspace: workspaceId, project: projectId });
+  const totalTasks = await TaskModel.countDocuments({ workspace: workspaceId, project: projectId, deleted: false });
   const overdueTasks = await TaskModel.countDocuments({
     workspace: workspaceId,
     project: projectId,

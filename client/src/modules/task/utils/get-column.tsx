@@ -15,6 +15,7 @@ import {
   TaskStatusEnumType,
 } from "@shared/constants/task.constant";
 import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
+import { cn } from "@shared/util/cn.util";
 
 export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
   const columns: ColumnDef<Task>[] = [
@@ -45,9 +46,6 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
       cell: ({ row }) => {
         return (
           <div className="flex flex-wrap space-x-2">
-            <Badge variant="outline" className="capitalize shrink-0 h-[25px]">
-              {row.original.taskCode}
-            </Badge>
             <span className="block lg:max-w-[220px] max-w-[200px] font-medium">{row.original.title}</span>
           </div>
         );
@@ -69,8 +67,8 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
               }
 
               return (
-                <div className="flex items-center gap-1">
-                  <span className="rounded-full border">{project.emoji}</span>
+                <div className="flex flex-col items-center">
+                  <span className="rounded-full border shrink-0">{project.emoji}</span>
                   <span className="block capitalize truncate w-[100px] text-ellipsis">{project.name}</span>
                 </div>
               );
@@ -81,7 +79,7 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
       accessorKey: "assignedTo",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Assigned To" />,
       cell: ({ row }) => {
-        const assignees = row.original.assignedTo || null;
+        const assignees = row.original.assignedTo ?? [];
 
         return assignees.map((assignee) => {
           const name = assignee?.name || "";
@@ -91,12 +89,12 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
 
           return (
             name && (
-              <div className="flex items-center gap-1" key={assignee._id}>
+              <div className="flex justify-center gap-1" key={assignee._id}>
                 <Avatar className="h-6 w-6">
                   <AvatarImage src={assignee?.profilePicture || ""} alt={name} />
-                  <AvatarFallback className={avatarColor}>{initials}</AvatarFallback>
+                  <AvatarFallback className={cn(avatarColor, "text-[10px]")}>{initials}</AvatarFallback>
                 </Avatar>
-                <span className="block text-ellipsis w-[100px] truncate">{assignee?.name}</span>
+                {/* <span className="block text-ellipsis w-[100px] truncate">{assignee?.name}</span> */}
               </div>
             )
           );
@@ -125,7 +123,7 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
         }
 
         return (
-          <div className="flex lg:w-[120px] items-center">
+          <div className="flex items-center">
             <Badge
               variant={status.value as TaskStatusEnumType}
               className="flex w-auto p-1 px-2 gap-1 font-medium shadow-sm uppercase border-0"
@@ -152,7 +150,7 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
           <div className="flex items-center">
             <Badge
               variant={priority.value as TaskPriorityEnumType}
-              className="flex lg:w-[110px] p-1 gap-1 !bg-transparent font-medium !shadow-none uppercase border-0"
+              className="flex p-1 gap-1 !bg-transparent font-medium !shadow-none uppercase border-0"
             >
               <span>{priority.label}</span>
             </Badge>
@@ -163,11 +161,7 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
     {
       id: "actions",
       cell: ({ row }) => {
-        return (
-          <>
-            <DataTableRowActions row={row} />
-          </>
-        );
+        return <DataTableRowActions row={row} />;
       },
     },
   ];

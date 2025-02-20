@@ -12,7 +12,7 @@ export const TaskStatusConfig: Record<
   TaskStatusEnumType,
   {
     label: string;
-    value: string;
+    value: TaskStatusEnumType;
   }
 > = {
   [TaskStatusEnum.BACKLOG]: {
@@ -48,7 +48,7 @@ export const TaskPriorityConfig: Record<
   TaskPriorityEnumType,
   {
     label: string;
-    value: string;
+    value: TaskPriorityEnumType;
   }
 > = {
   [TaskPriorityEnum.HIGH]: {

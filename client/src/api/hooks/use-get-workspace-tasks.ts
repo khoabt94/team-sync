@@ -24,10 +24,10 @@ export const WORKSPACE_TASKS = "WORKSPACE_TASKS";
 
 export async function getWorkspaceTasksFn({
   workspaceId,
-  filters = {},
+  filters,
 }: GetWorkspaceTasksInput): Promise<GetWorkspaceTasksResponse> {
   const response: GetWorkspaceTasksResponse = await axiosClient.get(
-    `/task/workspace/${workspaceId}/all?${queryString.stringify(filters, {
+    `/task/workspace/${workspaceId}/all?${queryString.stringify(filters!, {
       arrayFormat: "bracket",
     })}`,
   );

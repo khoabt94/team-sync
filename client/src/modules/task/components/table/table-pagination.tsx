@@ -36,25 +36,21 @@ export function DataTablePagination<TData>({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
       {/* Showing X to Y of Z Rows */}
       <div className="flex-1 text-sm text-muted-foreground">
         Showing {(pageNumber - 1) * pageSize + 1}-{Math.min(pageNumber * pageSize, totalCount)} of {totalCount}
       </div>
-      <div className="flex flex-col lg:flex-row lg:items-center space-y-2 lg:space-x-8 lg:space-y-0">
+      <div className="flex items-center space-y-2 lg:space-x-8 lg:space-y-0">
         {/* Rows Per Page Selector */}
 
         {/* Page Info */}
         <div className="flex items-center">
-          <div className="flex lg:w-[100px] items-center justify-center text-sm text-muted-foreground">
-            Page {pageIndex + 1} of {pageCount}
-          </div>
-
           {/* Pagination Controls */}
           <div className="flex items-center gap-x-2">
             <Button
               variant="outline"
-              className="hidden size-8 p-0 lg:flex"
+              className="size-8 p-0"
               onClick={() => handlePageChange(0)}
               disabled={pageIndex === 0}
             >
@@ -70,6 +66,9 @@ export function DataTablePagination<TData>({
               <span className="sr-only">Go to previous page</span>
               <ChevronLeft />
             </Button>
+            <div className="text-sm text-muted-foreground">
+              {pageIndex + 1} / {pageCount}
+            </div>
             <Button
               variant="outline"
               className="size-8 p-0"
@@ -81,7 +80,7 @@ export function DataTablePagination<TData>({
             </Button>
             <Button
               variant="outline"
-              className="hidden size-8 p-0 lg:flex"
+              className="size-8 p-0"
               onClick={() => handlePageChange(pageCount - 1)}
               disabled={pageIndex >= pageCount - 1}
             >

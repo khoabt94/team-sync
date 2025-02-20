@@ -24,6 +24,7 @@ import { ChevronDown, Columns3, ListRestart } from "lucide-react";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@shared/components/ui/tooltip";
+import { DataTableProjectFilter } from "@/task/components/table/table-project-filter";
 
 type DataTableFilterToolbarProps<TData> = {
   isLoading?: boolean;
@@ -34,13 +35,13 @@ type DataTableFilterToolbarProps<TData> = {
 
 export function TaskTableToolbar<TData>({
   isLoading,
-  projectId,
+  projectId = "",
   onChangeFilter,
   columns,
 }: DataTableFilterToolbarProps<TData>) {
   const filterForm = useFormContext<TaskFilterType>();
   const filters = filterForm.watch();
-  const { keyword = "", assigneeId = [], priority = [], projectId: filterProjectId = [], status = [] } = filters;
+  const { keyword = "", assigneeId = [], priority = [], project: filterProjectId = projectId, status = [] } = filters;
   const workspaceId = useGetWorkspaceId();
 
   const { data: projects = [] } = useGetWorkspaceProjects({
@@ -62,6 +63,7 @@ export function TaskTableToolbar<TData>({
         </div>
       ),
       value: project._id,
+      emoji: project.emoji!,
     };
   });
 
@@ -91,8 +93,6 @@ export function TaskTableToolbar<TData>({
     return false;
   });
 
-  console.log(Object.entries(filters), shouldShowResetButton);
-
   return (
     <div className=" w-full ">
       <div className="flex items-center justify-between">
@@ -112,7 +112,10 @@ export function TaskTableToolbar<TData>({
                 disabled={!shouldShowResetButton}
                 variant="ghost"
                 className="size-8 px-2 lg:px-3"
-                onClick={() => filterForm.reset()}
+                onClick={() => {
+                  filterForm.reset();
+                  onChangeFilter?.();
+                }}
               >
                 <ListRestart />
               </Button>
@@ -121,8 +124,9 @@ export function TaskTableToolbar<TData>({
           </Tooltip>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto w-full lg:w-auto px-2 py-1">
-                <Columns3 /> <ChevronDown />
+              <Button variant="outline" className="ml-auto h-8 w-fit  px-2 py-1">
+                <Columns3 className="size-4  opacity-50" />
+                <ChevronDown className="size-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -150,7 +154,10 @@ export function TaskTableToolbar<TData>({
           options={statusOptions}
           disabled={isLoading}
           selectedValues={status}
-          onFilterChange={(values) => filterForm.setValue("status", values as TaskStatusEnumType[])}
+          onFilterChange={(values) => {
+            filterForm.setValue("status", values as TaskStatusEnumType[]);
+            onChangeFilter?.();
+          }}
         />
 
         {/* Priority filter */}
@@ -160,7 +167,10 @@ export function TaskTableToolbar<TData>({
           options={priorityOptions}
           disabled={isLoading}
           selectedValues={priority}
-          onFilterChange={(values) => filterForm.setValue("priority", values as TaskPriorityEnumType[])}
+          onFilterChange={(values) => {
+            filterForm.setValue("priority", values as TaskPriorityEnumType[]);
+            onChangeFilter?.();
+          }}
         />
 
         {/* Assigned To filter */}
@@ -170,17 +180,22 @@ export function TaskTableToolbar<TData>({
           options={assigneesOptions}
           disabled={isLoading}
           selectedValues={assigneeId}
-          onFilterChange={(values) => filterForm.setValue("assigneeId", values)}
+          onFilterChange={(values) => {
+            filterForm.setValue("assigneeId", values);
+            onChangeFilter?.();
+          }}
         />
 
         {!projectId && (
-          <DataTableFacetedFilter
+          <DataTableProjectFilter
             title="Projects"
-            multiSelect={false}
             options={projectOptions}
             disabled={isLoading}
-            selectedValues={filterProjectId}
-            onFilterChange={(values) => filterForm.setValue("projectId", values)}
+            selectedValue={filterProjectId}
+            onFilterChange={(values) => {
+              filterForm.setValue("project", values);
+              onChangeFilter?.();
+            }}
           />
         )}
       </div>

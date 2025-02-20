@@ -20,12 +20,10 @@ const createNewTask = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const getTasks = asyncHandler(async (req: Request, res: Response) => {
-  const { workspaceId, projectId } = parseParamsId(req);
+  const { workspaceId } = parseParamsId(req);
   const query = getTasksSchema.parse(req.query);
-  const { tasks, total, page, limit } = await taskServices.getTasks(
-    { workspaceId, ...(projectId && { projectId }) },
-    query
-  );
+  if (!query.project) { delete query.project; }
+  const { tasks, total, page, limit } = await taskServices.getTasks({ workspaceId }, query);
   return res.status(StatusCodes.OK).json({
     tasks,
     total,

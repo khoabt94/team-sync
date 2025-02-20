@@ -73,7 +73,7 @@ async function getUserWorkspaces(userId: string) {
 
 async function getWorkspaceAnalytics(workspaceId: string) {
   const currentDate = new Date();
-  const totalTasks = await TaskModel.countDocuments({ workspace: workspaceId });
+  const totalTasks = await TaskModel.countDocuments({ workspace: workspaceId, deleted: false });
   const overdueTasks = await TaskModel.countDocuments({
     workspace: workspaceId,
     dueDate: { $lt: currentDate },

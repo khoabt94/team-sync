@@ -10,7 +10,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@shared/components/ui/p
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
 import { Textarea } from "@shared/components/ui/textarea";
 import { TaskPriorityConfig, TaskStatusConfig } from "@shared/constants/task.constant";
-import { useGetProjectId } from "@shared/hooks/use-get-projectId";
 import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
 import { cn } from "@shared/util/cn.util";
 import { CalendarIcon, Loader } from "lucide-react";
@@ -22,24 +21,32 @@ import { Calendar } from "@shared/components/ui/calendar";
 import { useGetWorkspaceMembers } from "@api/hooks/use-get-workspace-members";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { Badge } from "@shared/components/ui/badge";
+import { Task } from "@/task/types/task.type";
 
 export type TaskFormType = z.infer<typeof taskSchema>;
 
 type TaskFormProps = {
   onSubmit: (data: TaskFormType) => void;
   isPending: boolean;
+  task?: Task;
+  projectId?: string;
 };
 
-export function TaskForm({ onSubmit, isPending }: TaskFormProps) {
+export function TaskForm({ onSubmit, isPending, task, projectId }: TaskFormProps) {
+  console.log("🚀 ~ TaskForm ~ task:", task);
   const workspaceId = useGetWorkspaceId();
-  const projectId = useGetProjectId();
+  const isEditting = !!task;
   const { data: workspaceMembers = [], isLoading: membersLoading } = useGetWorkspaceMembers({ input: { workspaceId } });
   const form = useForm<TaskFormType>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      projectId: projectId ? projectId : "",
+      title: task?.title ?? "",
+      description: task?.description ?? "",
+      projectId: task ? task.project._id : (projectId ?? ""),
+      assignedTo: task?.assignedTo.map((member) => member._id) ?? [],
+      dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
+      priority: task?.priority ?? TaskPriorityConfig.MEDIUM.value,
+      status: task?.status ?? TaskStatusConfig.TODO.value,
     },
   });
 
@@ -232,7 +239,7 @@ export function TaskForm({ onSubmit, isPending }: TaskFormProps) {
 
           <Button className="flex col-start-2 h-[40px] text-white font-semibold" type="submit" disabled={isPending}>
             {isPending && <Loader className="animate-spin" />}
-            Create
+            {isEditting ? "Update" : "Create"}
           </Button>
         </form>
       </Form>

@@ -13,7 +13,7 @@ export type Task = {
   assignedTo: User[];
   status: TaskStatusEnumType;
   priority: TaskPriorityEnumType;
-  dueDate: string | null;
+  dueDate?: string;
   createdAt: string;
   updatedAt: string;
   deleted: boolean;

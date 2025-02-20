@@ -24,26 +24,20 @@ export const TaskTable = ({ projectId }: TaskTableProps) => {
   const form = useForm<TaskFilterType>({
     defaultValues: {
       ...searchParams,
+      project: projectId ?? "",
     },
     resolver: zodResolver(taskFilterSchema),
   });
   const filters = form.watch();
   const { page = 1, limit = 10 } = filters;
   const columns = useMemo(() => getColumns(projectId), [projectId]);
-  const [debounced, setDebouncedFilters] = useDebounceValue(searchParams, 500);
-  const {
-    data,
-    isLoading: isLoadingTasks,
-    // refetch,
-  } = useGetWorkspaceTasks({
+  const [debounced, setDebouncedFilters] = useDebounceValue(searchParams, 300);
+  const { data, isLoading: isLoadingTasks } = useGetWorkspaceTasks({
     input: {
       workspaceId,
       filters: debounced,
     },
-    // enabled: false,
   });
-
-  // const debounceRefetch = useRef(debounce(refetch, 500));
 
   const { total: totalCount = 0, tasks = [] } = data ?? {};
 
@@ -53,7 +47,6 @@ export const TaskTable = ({ projectId }: TaskTableProps) => {
     navigate({
       search,
     });
-    // debounceRefetch.current();
   };
 
   const handlePageChange = (page: number) => {

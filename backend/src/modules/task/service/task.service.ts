@@ -23,7 +23,7 @@ type CreateNewProjectPayload = {
 
 async function createNewTask({ workspaceId, projectId, userId, data }: CreateNewProjectPayload): Promise<TaskDocument> {
   // check project Id
-  const project = await projectServices.getProjectDetail({ workspaceId, projectId });
+  await projectServices.getProjectDetail({ workspaceId, projectId });
 
   // check assignedTo member in the workspace
   if (data.assignedTo) {
@@ -48,17 +48,21 @@ async function createNewTask({ workspaceId, projectId, userId, data }: CreateNew
   return task;
 }
 
-async function getTasks({ workspaceId, projectId }: BaseTaskParams, query: z.infer<typeof getTasksSchema>) {
+async function getTasks({ workspaceId }: BaseTaskParams, query: z.infer<typeof getTasksSchema>) {
   const { queryObject, filterObject, page, limit } = new QueryPipeline(TaskModel, {
     workspace: workspaceId,
     deleted: false,
-    ...(projectId && { project: projectId }),
     ...query
   })
     .filter()
     .sort()
     .paginate();
-  const tasks = await queryObject.populate('workspace', 'name slug').exec();
+
+  const tasks = await queryObject
+    .populate('workspace', 'name slug')
+    .populate('project', 'name slug emoji')
+    .populate('assignedTo', 'name')
+    .exec();
   const total = await TaskModel.countDocuments(filterObject);
 
   return { tasks, total, page, limit };

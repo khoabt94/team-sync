@@ -69,6 +69,7 @@ export const getTasksSchema = z.object({
   assignedTo: z.array(z.string().trim()).optional(),
   dueDate: z.string().trim().optional(),
   sort: z.string().trim().optional(),
+  project: z.string().trim().optional(),
   page: z.string().trim().optional(),
   limit: z.string().trim().optional()
 });
