@@ -1,4 +1,3 @@
-import { CreateTaskButton } from "@/task/components/common/create-task-button";
 import { TaskTable } from "@/task/components/table/task-table";
 
 export function WorkspaceTaskList() {
@@ -9,7 +8,6 @@ export function WorkspaceTaskList() {
           <h2 className="text-2xl font-bold tracking-tight">All Tasks</h2>
           <p className="text-muted-foreground">Here&apos;s the list of tasks for this workspace!</p>
         </div>
-        <CreateTaskButton />
       </div>
       <TaskTable />
     </div>

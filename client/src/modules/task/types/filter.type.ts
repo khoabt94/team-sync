@@ -1,12 +1,4 @@
-import { TaskPriorityEnumType, TaskStatusEnumType } from "@shared/constants/task.constant";
+import { taskFilterSchema } from "@/task/schemas/task.schema";
+import { z } from "zod";
 
-export type TaskFilterType = {
-  status?: TaskStatusEnumType[];
-  priority?: TaskPriorityEnumType[];
-  keyword?: string;
-  projectId?: string[];
-  assigneeId?: string[];
-  page?: number;
-  limit?: number;
-  sort?: string;
-};
+export type TaskFilterType = z.infer<typeof taskFilterSchema>;

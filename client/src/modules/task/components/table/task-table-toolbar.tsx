@@ -6,6 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@shared/components/ui/avata
 import { Button } from "@shared/components/ui/button";
 import { Input } from "@shared/components/ui/input";
 import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@shared/components/ui/dropdown-menu";
+import {
   TaskPriorityConfig,
   TaskPriorityEnumType,
   TaskStatusConfig,
@@ -13,16 +19,25 @@ import {
 } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
-import { X } from "lucide-react";
+import { Column } from "@tanstack/react-table";
+import { ChevronDown, Columns3, ListRestart } from "lucide-react";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@shared/components/ui/tooltip";
 
-type DataTableFilterToolbarProps = {
+type DataTableFilterToolbarProps<TData> = {
   isLoading?: boolean;
   projectId?: string;
+  onChangeFilter?: () => void;
+  columns: Column<TData>[];
 };
 
-export const TaskTableToolbar = ({ isLoading, projectId }: DataTableFilterToolbarProps) => {
+export function TaskTableToolbar<TData>({
+  isLoading,
+  projectId,
+  onChangeFilter,
+  columns,
+}: DataTableFilterToolbarProps<TData>) {
   const filterForm = useFormContext<TaskFilterType>();
   const filters = filterForm.watch();
   const { keyword = "", assigneeId = [], priority = [], projectId: filterProjectId = [], status = [] } = filters;
@@ -69,64 +84,106 @@ export const TaskTableToolbar = ({ isLoading, projectId }: DataTableFilterToolba
       value: member.userId._id,
     };
   });
+  const shouldShowResetButton = Object.entries(filters).some(([key, value]) => {
+    if (key === "page" || key === "limit" || key === "sort") return false;
+    if (Array.isArray(value)) return value.length !== 0;
+    if (key === "keyword") return value !== "";
+    return false;
+  });
 
-  const showResetButton = Object.values(filters).some((value) => value !== null && value !== "");
+  console.log(Object.entries(filters), shouldShowResetButton);
 
   return (
-    <div className="flex flex-col lg:flex-row w-full items-start space-y-2 mb-2 lg:mb-0 lg:space-x-2  lg:space-y-0">
-      <Input
-        placeholder="Filter tasks..."
-        value={keyword}
-        onChange={(e) => filterForm.setValue("keyword", e.target.value)}
-        className="h-8 w-full lg:w-[250px]"
-      />
-      {/* Status filter */}
-      <DataTableFacetedFilter
-        title="Status"
-        multiSelect={true}
-        options={statusOptions}
-        disabled={isLoading}
-        selectedValues={status}
-        onFilterChange={(values) => filterForm.setValue("status", values as TaskStatusEnumType[])}
-      />
-
-      {/* Priority filter */}
-      <DataTableFacetedFilter
-        title="Priority"
-        multiSelect={true}
-        options={priorityOptions}
-        disabled={isLoading}
-        selectedValues={priority}
-        onFilterChange={(values) => filterForm.setValue("priority", values as TaskPriorityEnumType[])}
-      />
-
-      {/* Assigned To filter */}
-      <DataTableFacetedFilter
-        title="Assigned To"
-        multiSelect={true}
-        options={assigneesOptions}
-        disabled={isLoading}
-        selectedValues={assigneeId}
-        onFilterChange={(values) => filterForm.setValue("assigneeId", values)}
-      />
-
-      {!projectId && (
-        <DataTableFacetedFilter
-          title="Projects"
-          multiSelect={false}
-          options={projectOptions}
-          disabled={isLoading}
-          selectedValues={filterProjectId}
-          onFilterChange={(values) => filterForm.setValue("projectId", values)}
+    <div className=" w-full ">
+      <div className="flex items-center justify-between">
+        <Input
+          placeholder="Filter tasks..."
+          value={keyword}
+          onChange={(e) => {
+            filterForm.setValue("keyword", e.target.value);
+            onChangeFilter?.();
+          }}
+          className="h-8 w-full max-w-[250px]"
         />
-      )}
+        <div className="flex items-center gap-x-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                disabled={!shouldShowResetButton}
+                variant="ghost"
+                className="size-8 px-2 lg:px-3"
+                onClick={() => filterForm.reset()}
+              >
+                <ListRestart />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Reset filters</TooltipContent>
+          </Tooltip>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto w-full lg:w-auto px-2 py-1">
+                <Columns3 /> <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {columns.map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <div className="mt-2 flex items-center gap-x-2 w-full overflow-x-auto overflow-y-hidden">
+        {/* Status filter */}
+        <DataTableFacetedFilter
+          title="Status"
+          multiSelect={true}
+          options={statusOptions}
+          disabled={isLoading}
+          selectedValues={status}
+          onFilterChange={(values) => filterForm.setValue("status", values as TaskStatusEnumType[])}
+        />
 
-      {showResetButton && (
-        <Button disabled={isLoading} variant="ghost" className="h-8 px-2 lg:px-3" onClick={() => filterForm.reset()}>
-          Reset
-          <X />
-        </Button>
-      )}
+        {/* Priority filter */}
+        <DataTableFacetedFilter
+          title="Priority"
+          multiSelect={true}
+          options={priorityOptions}
+          disabled={isLoading}
+          selectedValues={priority}
+          onFilterChange={(values) => filterForm.setValue("priority", values as TaskPriorityEnumType[])}
+        />
+
+        {/* Assigned To filter */}
+        <DataTableFacetedFilter
+          title="Assigned To"
+          multiSelect={true}
+          options={assigneesOptions}
+          disabled={isLoading}
+          selectedValues={assigneeId}
+          onFilterChange={(values) => filterForm.setValue("assigneeId", values)}
+        />
+
+        {!projectId && (
+          <DataTableFacetedFilter
+            title="Projects"
+            multiSelect={false}
+            options={projectOptions}
+            disabled={isLoading}
+            selectedValues={filterProjectId}
+            onFilterChange={(values) => filterForm.setValue("projectId", values)}
+          />
+        )}
+      </div>
     </div>
   );
-};
+}

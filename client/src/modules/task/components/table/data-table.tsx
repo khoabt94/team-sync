@@ -1,3 +1,7 @@
+import { DataTablePagination } from "@/task/components/table/table-pagination";
+import { TaskTableToolbar } from "@/task/components/table/task-table-toolbar";
+import { TableSkeleton } from "@shared/components/skeleton-loaders/table-skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/components/ui/table";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,17 +14,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@shared/components/ui/dropdown-menu";
-import { Button } from "@shared/components/ui/button";
-import { ChevronDown } from "lucide-react";
-import { TableSkeleton } from "@shared/components/skeleton-loaders/table-skeleton";
-import { DataTablePagination } from "@/task/components/table/table-pagination";
 import { useState } from "react";
 
 type PaginationProps = {
@@ -37,16 +30,19 @@ type DataTableProps<TData, TValue> = {
   pagination?: PaginationProps;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
+  onChangeFilter?: () => void;
+  projectId?: string;
 };
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading,
-  filtersToolbar,
+  projectId,
   pagination,
   onPageChange,
   onPageSizeChange,
+  onChangeFilter,
 }: DataTableProps<TData, TValue>) {
   const { totalCount = 0, page = 1, limit = 10 } = pagination || {};
 
@@ -78,33 +74,12 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-2">
-      <div className="block w-full lg:flex lg:items-center lg:justify-between">
-        {filtersToolbar && <div className="flex-1"> {filtersToolbar}</div>}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto w-full lg:w-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <TaskTableToolbar
+        onChangeFilter={onChangeFilter}
+        isLoading={isLoading}
+        projectId={projectId}
+        columns={table.getAllColumns().filter((column) => column.getCanHide())}
+      />
       <div className="rounded-md border">
         {isLoading ? (
           <TableSkeleton columns={6} rows={10} />

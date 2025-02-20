@@ -8,6 +8,9 @@ export const Route = createFileRoute("/")({
         to: "/workspace/$workspaceId",
         params: { workspaceId: context.authentication.user.currentWorkspace },
       });
+    } else {
+      // TODO: Redirect to /home
+      return redirect({ to: "/login" });
     }
   },
   component: RouteComponent,

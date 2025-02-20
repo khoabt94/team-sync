@@ -20,3 +20,14 @@ export const taskSchema = z.object({
     required_error: "A due date is required.",
   }),
 });
+
+export const taskFilterSchema = z.object({
+  status: z.array(z.enum(Object.values(TaskStatusEnum) as [keyof typeof TaskStatusEnum])).optional(),
+  priority: z.array(z.enum(Object.values(TaskPriorityEnum) as [keyof typeof TaskPriorityEnum])).optional(),
+  keyword: z.string().optional(),
+  projectId: z.array(z.string()).optional(),
+  assigneeId: z.array(z.string()).optional(),
+  page: z.number().optional().default(1),
+  limit: z.number().optional().default(10),
+  sort: z.string().optional().default("createdAt"),
+});
