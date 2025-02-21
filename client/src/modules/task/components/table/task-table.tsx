@@ -1,82 +1,50 @@
 import { DataTable } from "@/task/components/table/data-table";
-import { getColumns } from "@/task/utils/get-column";
-import { FormProvider, useForm } from "react-hook-form";
 import { TaskFilterType } from "@/task/types/filter.type";
-import { useGetWorkspaceTasks } from "@api/hooks/use-get-workspace-tasks";
-import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
-import { useNavigate, useSearch } from "@tanstack/react-router";
-import { Route } from "@routes/workspace/$workspaceId/tasks";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { taskFilterSchema } from "@/task/schemas/task.schema";
-import { useDebounceValue } from "usehooks-ts";
+import { Task } from "@/task/types/task.type";
+import { getColumns } from "@/task/utils/get-column";
 import { useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
 type TaskTableProps = {
   projectId?: string;
+  onChangeFilter?: () => void;
+  isLoadingTasks?: boolean;
+  totalCount?: number;
+  tasks: Task[];
 };
 
-export const TaskTable = ({ projectId }: TaskTableProps) => {
-  const workspaceId = useGetWorkspaceId();
-  const navigate = useNavigate({ from: Route.fullPath });
-  const searchParams = useSearch({
-    from: Route.fullPath,
-  });
-  const form = useForm<TaskFilterType>({
-    defaultValues: {
-      ...searchParams,
-      project: projectId ?? "",
-    },
-    resolver: zodResolver(taskFilterSchema),
-  });
+export const TaskTable = ({ projectId, onChangeFilter, isLoadingTasks, tasks, totalCount = 0 }: TaskTableProps) => {
+  const form = useFormContext<TaskFilterType>();
+
   const filters = form.watch();
   const { page = 1, limit = 10 } = filters;
   const columns = useMemo(() => getColumns(projectId), [projectId]);
-  const [debounced, setDebouncedFilters] = useDebounceValue(searchParams, 300);
-  const { data, isLoading: isLoadingTasks } = useGetWorkspaceTasks({
-    input: {
-      workspaceId,
-      filters: debounced,
-    },
-  });
-
-  const { total: totalCount = 0, tasks = [] } = data ?? {};
-
-  const handleSearchParams = () => {
-    const search = form.getValues();
-    setDebouncedFilters(search);
-    navigate({
-      search,
-    });
-  };
 
   const handlePageChange = (page: number) => {
     form.setValue("page", page);
-    handleSearchParams();
+    onChangeFilter?.();
   };
 
   const handleLimitChange = (size: number) => {
+    form.setValue("page", 1);
     form.setValue("limit", size);
-    handleSearchParams();
+    onChangeFilter?.();
   };
 
   return (
-    <FormProvider {...form}>
-      <div className="w-full relative">
-        <DataTable
-          isLoading={isLoadingTasks}
-          data={tasks}
-          columns={columns}
-          projectId={projectId}
-          onPageChange={handlePageChange}
-          onChangeFilter={handleSearchParams}
-          onPageSizeChange={handleLimitChange}
-          pagination={{
-            totalCount,
-            page,
-            limit,
-          }}
-        />
-      </div>
-    </FormProvider>
+    <div className="w-full relative">
+      <DataTable
+        isLoading={isLoadingTasks}
+        data={tasks}
+        columns={columns}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handleLimitChange}
+        pagination={{
+          totalCount,
+          page,
+          limit,
+        }}
+      />
+    </div>
   );
 };

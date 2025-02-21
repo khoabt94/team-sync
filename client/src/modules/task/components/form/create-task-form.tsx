@@ -1,5 +1,7 @@
 import { TaskForm, TaskFormType } from "@/task/components/form/task-form";
 import { useCreateTask } from "@api/hooks/use-create-task";
+import { BaseError } from "@api/type";
+import { ErrorCodeEnum } from "@shared/enums/error-code.enum";
 import { useGetProjectId } from "@shared/hooks/use-get-projectId";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { toast } from "@shared/hooks/use-toast";
@@ -29,9 +31,14 @@ export function CreateTaskForm({ onSubmitSuccess }: CreateTaskFormProps) {
           onSubmitSuccess?.();
         },
         onError: (error) => {
+          const baseError = error as unknown as BaseError;
+
           toast({
-            title: "Error",
-            description: error.message,
+            title: baseError?.errorCode === ErrorCodeEnum.VALIDATION_ERROR ? "Validation Error" : "Error",
+            description:
+              baseError?.errorCode === ErrorCodeEnum.VALIDATION_ERROR
+                ? (baseError.errors?.[0]?.message ?? error.message)
+                : error.message,
             variant: "destructive",
           });
         },

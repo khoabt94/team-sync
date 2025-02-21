@@ -33,7 +33,6 @@ type TaskFormProps = {
 };
 
 export function TaskForm({ onSubmit, isPending, task, projectId }: TaskFormProps) {
-  console.log("🚀 ~ TaskForm ~ task:", task);
   const workspaceId = useGetWorkspaceId();
   const isEditting = !!task;
   const { data: workspaceMembers = [], isLoading: membersLoading } = useGetWorkspaceMembers({ input: { workspaceId } });

@@ -123,14 +123,12 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
         }
 
         return (
-          <div className="flex items-center">
-            <Badge
-              variant={status.value as TaskStatusEnumType}
-              className="flex w-auto p-1 px-2 gap-1 font-medium shadow-sm uppercase border-0"
-            >
-              <span>{status.label}</span>
-            </Badge>
-          </div>
+          <Badge
+            variant={status.value as TaskStatusEnumType}
+            className="flex w-fit p-1 px-2 gap-1 font-medium shadow-sm uppercase border-0"
+          >
+            <span>{status.label}</span>
+          </Badge>
         );
       },
     },
@@ -147,14 +145,12 @@ export const getColumns = (projectId?: string): ColumnDef<Task>[] => {
         }
 
         return (
-          <div className="flex items-center">
-            <Badge
-              variant={priority.value as TaskPriorityEnumType}
-              className="flex p-1 gap-1 !bg-transparent font-medium !shadow-none uppercase border-0"
-            >
-              <span>{priority.label}</span>
-            </Badge>
-          </div>
+          <Badge
+            variant={priority.value as TaskPriorityEnumType}
+            className="flex p-1 gap-1 !bg-transparent font-medium !shadow-none uppercase border-0"
+          >
+            <span>{priority.label}</span>
+          </Badge>
         );
       },
     },

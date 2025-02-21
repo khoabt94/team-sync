@@ -18,4 +18,5 @@ export type Task = {
   updatedAt: string;
   deleted: boolean;
   _id: string;
+  columnId?: string;
 };

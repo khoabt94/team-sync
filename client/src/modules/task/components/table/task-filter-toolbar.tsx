@@ -5,12 +5,7 @@ import { useGetWorkspaceProjects } from "@api/hooks/use-get-workspace-projects";
 import { Avatar, AvatarFallback, AvatarImage } from "@shared/components/ui/avatar";
 import { Button } from "@shared/components/ui/button";
 import { Input } from "@shared/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@shared/components/ui/dropdown-menu";
+
 import {
   TaskPriorityConfig,
   TaskPriorityEnumType,
@@ -19,26 +14,19 @@ import {
 } from "@shared/constants/task.constant";
 import { useGetWorkspaceId } from "@shared/hooks/use-get-workspaceId";
 import { getAvatarColor, getAvatarFallbackText } from "@shared/util/avatar.util";
-import { Column } from "@tanstack/react-table";
-import { ChevronDown, Columns3, ListRestart } from "lucide-react";
+import { ListRestart } from "lucide-react";
 import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@shared/components/ui/tooltip";
 import { DataTableProjectFilter } from "@/task/components/table/table-project-filter";
 
-type DataTableFilterToolbarProps<TData> = {
+type DataTableFilterToolbarProps = {
   isLoading?: boolean;
   projectId?: string;
   onChangeFilter?: () => void;
-  columns: Column<TData>[];
 };
 
-export function TaskTableToolbar<TData>({
-  isLoading,
-  projectId = "",
-  onChangeFilter,
-  columns,
-}: DataTableFilterToolbarProps<TData>) {
+export function TaskFilterToolbar({ isLoading, projectId = "", onChangeFilter }: DataTableFilterToolbarProps) {
   const filterForm = useFormContext<TaskFilterType>();
   const filters = filterForm.watch();
   const { keyword = "", assigneeId = [], priority = [], project: filterProjectId = projectId, status = [] } = filters;
@@ -122,28 +110,6 @@ export function TaskTableToolbar<TData>({
             </TooltipTrigger>
             <TooltipContent>Reset filters</TooltipContent>
           </Tooltip>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto h-8 w-fit  px-2 py-1">
-                <Columns3 className="size-4  opacity-50" />
-                <ChevronDown className="size-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {columns.map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
       <div className="mt-2 flex items-center gap-x-2 w-full overflow-x-auto overflow-y-hidden">

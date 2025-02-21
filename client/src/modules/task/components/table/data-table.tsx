@@ -1,5 +1,10 @@
 import { DataTablePagination } from "@/task/components/table/table-pagination";
-import { TaskTableToolbar } from "@/task/components/table/task-table-toolbar";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@shared/components/ui/dropdown-menu";
 import { TableSkeleton } from "@shared/components/skeleton-loaders/table-skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/components/ui/table";
 import {
@@ -15,6 +20,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
+import { Button } from "@shared/components/ui/button";
+import { ChevronDown, Columns3 } from "lucide-react";
 
 type PaginationProps = {
   totalCount: number;
@@ -30,19 +37,15 @@ type DataTableProps<TData, TValue> = {
   pagination?: PaginationProps;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
-  onChangeFilter?: () => void;
-  projectId?: string;
 };
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading,
-  projectId,
   pagination,
   onPageChange,
   onPageSizeChange,
-  onChangeFilter,
 }: DataTableProps<TData, TValue>) {
   const { totalCount = 0, page = 1, limit = 10 } = pagination || {};
 
@@ -74,12 +77,28 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-2">
-      <TaskTableToolbar
-        onChangeFilter={onChangeFilter}
-        isLoading={isLoading}
-        projectId={projectId}
-        columns={table.getAllColumns().filter((column) => column.getCanHide())}
-      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="ml-auto h-8 w-fit  px-2 py-1">
+            <Columns3 className="size-4  opacity-50" />
+            <ChevronDown className="size-4 opacity-50" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {table.getAllColumns().map((column) => {
+            return (
+              <DropdownMenuCheckboxItem
+                key={column.id}
+                className="capitalize"
+                checked={column.getIsVisible?.()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              >
+                {column.id}
+              </DropdownMenuCheckboxItem>
+            );
+          })}
+        </DropdownMenuContent>
+      </DropdownMenu>
       <div className="rounded-md border">
         {isLoading ? (
           <TableSkeleton columns={6} rows={10} />
