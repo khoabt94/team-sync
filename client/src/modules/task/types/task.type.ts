@@ -19,4 +19,7 @@ export type Task = {
   deleted: boolean;
   _id: string;
   columnId?: string;
+  boardView?: {
+    index: number;
+  };
 };
