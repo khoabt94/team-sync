@@ -11,7 +11,7 @@ type KanbanItemProps<T> = PropsWithChildren & {
 };
 
 export function KanbanItem<T>({ children, itemId, item }: KanbanItemProps<T>) {
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+  const { setNodeRef, attributes, listeners, transform, isDragging } = useSortable({
     id: itemId,
     data: {
       type: "Item",
@@ -20,7 +20,6 @@ export function KanbanItem<T>({ children, itemId, item }: KanbanItemProps<T>) {
   });
 
   const style = {
-    transition,
     transform: CSS.Transform.toString(transform),
   };
 

@@ -22,9 +22,9 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
+import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { TaskStatusConfig, TaskStatusEnumType } from "@shared/constants/task.constant";
-import { Dictionary, groupBy } from "lodash";
+import { Dictionary } from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -40,8 +40,22 @@ type TaskBoardProps = {
 export type Items = Dictionary<Task[]>;
 
 export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskBoardProps) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const columns = useMemo(() => Object.values(initialColumns), []);
-  const [items, setItems] = useState<Items>(groupBy(initialTask, "columnId"));
+  const [items, setItems] = useState<Items>(() => {
+    const grouped: Items = {};
+    Object.values(initialColumns).forEach((column) => {
+      grouped[column] = [];
+    });
+    initialTask.forEach((task) => {
+      if (!grouped[task.columnId!]) {
+        grouped[task.columnId!] = [];
+      }
+      grouped[task.columnId!].push(task);
+      return grouped;
+    });
+    return grouped;
+  });
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
   const recentlyMovedToNewContainer = useRef(false);
@@ -60,7 +74,7 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
 
       if (overId != null) {
         if (overId in items) {
-          const containerItems = items[overId];
+          const containerItems = items[overId] ?? [];
 
           // If a container is matched and it contains items (columns 'A', 'B', 'C')
           if (containerItems.length > 0) {
@@ -90,7 +104,7 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
       // If no droppable is matched, return the last match
       return lastOverId.current ? [{ id: lastOverId.current }] : [];
     },
-    [activeTask, items],
+    [activeTask?._id, items],
   );
 
   const sensors = useSensors(
@@ -160,7 +174,6 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
 
     const overContainer = findContainer(overId, items);
     const activeContainer = findContainer(active.id, items);
-    console.log("object", { overContainer, activeContainer });
     if (
       !overContainer ||
       !activeContainer ||
@@ -228,13 +241,16 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
       }}
     >
       <div className="w-full overflow-x-auto flex h-full gap-4 p-4">
-        {columns.map((column) => (
-          <KanbanColumn
-            key={column}
-            columnTitle={TaskStatusConfig[column as TaskStatusEnumType].label}
-            tasks={items[column]}
-          />
-        ))}
+        <SortableContext items={columns}>
+          {columns.map((column) => (
+            <KanbanColumn
+              key={column}
+              columnTitle={TaskStatusConfig[column as TaskStatusEnumType].label}
+              tasks={items[column] ?? []}
+              columnId={column}
+            />
+          ))}
+        </SortableContext>
         {createPortal(<DragOverlay>{activeTask && <TaskCard task={activeTask} />}</DragOverlay>, document.body)}
       </div>
     </DndContext>

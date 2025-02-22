@@ -1,4 +1,5 @@
 import { TaskBoard } from "@/task/components/board/task-board";
+import { TaskCalendar } from "@/task/components/calendar/task-calendar";
 import { TaskFilterToolbar } from "@/task/components/table/task-filter-toolbar";
 import { TaskTable } from "@/task/components/table/task-table";
 import { ViewList, ViewListType } from "@/task/constants/view.constant";
@@ -95,6 +96,16 @@ export function TaskList({ projectId }: TaskListProps) {
             <TabsContent value={ViewList.Board}>
               <TaskBoard
                 tasks={tasks.map((task) => ({ ...task, columnId: task.status }))}
+                isLoadingTasks={isLoadingTasks}
+                columns={Object.values(TaskStatusEnum)}
+                onChangeFilter={handleSearchParams}
+                projectId={projectId}
+                totalCount={totalCount}
+              />
+            </TabsContent>
+            <TabsContent value={ViewList.Calendar}>
+              <TaskCalendar
+                tasks={tasks}
                 isLoadingTasks={isLoadingTasks}
                 columns={Object.values(TaskStatusEnum)}
                 onChangeFilter={handleSearchParams}
