@@ -1,13 +1,22 @@
-import { MemberModel } from '@/member';
-import { createTaskSchema, getTasksSchema, TaskDocument, TaskModel, updateTaskSchema } from '@/task';
-import { projectServices } from '@/project';
-import { BadRequestException, NotFoundException } from '@utils/app-error.util';
-import { assign } from 'lodash';
-import { z } from 'zod';
-import { QueryPipeline } from '@utils/filter.util';
+import { MemberModel } from "@/member";
+import {
+  bulkUpdateTasksSchema,
+  createTaskSchema,
+  getTasksSchema,
+  TaskDocument,
+  TaskModel,
+  updateTaskSchema,
+} from "@/task";
+import { projectServices } from "@/project";
+import { BadRequestException, NotFoundException } from "@utils/app-error.util";
+import { assign } from "lodash";
+import { z } from "zod";
+import { QueryPipeline } from "@utils/filter.util";
+import mongoose from "mongoose";
 
 type TaskCreatePayload = z.infer<typeof createTaskSchema>;
 type TaskUpdatePayload = z.infer<typeof updateTaskSchema>;
+type TaskBulkUpdatePayload = z.infer<typeof bulkUpdateTasksSchema>;
 
 type BaseTaskParams = {
   workspaceId: string;
@@ -29,11 +38,11 @@ async function createNewTask({ workspaceId, projectId, userId, data }: CreateNew
   if (data.assignedTo) {
     const isAssignedUserMember = await MemberModel.exists({
       userId: data.assignedTo,
-      workspaceId
+      workspaceId,
     });
 
     if (!isAssignedUserMember) {
-      throw new BadRequestException('Assigned user is not a member of this workspace.');
+      throw new BadRequestException("Assigned user is not a member of this workspace.");
     }
   }
 
@@ -41,7 +50,7 @@ async function createNewTask({ workspaceId, projectId, userId, data }: CreateNew
     project: projectId,
     workspace: workspaceId,
     createdBy: userId,
-    ...data
+    ...data,
   });
 
   await task.save();
@@ -52,51 +61,44 @@ async function getTasks({ workspaceId }: BaseTaskParams, query: z.infer<typeof g
   const { queryObject, filterObject, page, limit } = new QueryPipeline(TaskModel, {
     workspace: workspaceId,
     deleted: false,
-    ...query
+    ...query,
   })
     .filter()
     .sort()
     .paginate();
 
   const tasks = await queryObject
-    .populate('workspace', 'name slug')
-    .populate('project', 'name slug emoji')
-    .populate('assignedTo', 'name')
+    .populate("workspace", "name slug")
+    .populate("project", "name slug emoji")
+    .populate("assignedTo", "name")
     .exec();
   const total = await TaskModel.countDocuments(filterObject);
 
   return { tasks, total, page, limit };
 }
 
-async function getTaskDetail({ workspaceId, projectId, taskId }: BaseTaskParams & { taskId: string }) {
+async function getTaskDetail({ taskId }: { taskId: string }) {
   const task = await TaskModel.findOne({
-    workspace: workspaceId,
-    project: projectId,
     _id: taskId,
-    deleted: false
+    deleted: false,
   })
-    .populate('workspace')
-    .populate('project')
+    .populate("workspace")
+    .populate("project")
     .exec();
   if (!task) {
-    throw new NotFoundException('Task not found');
+    throw new NotFoundException("Task not found");
   }
   return task;
 }
 
-async function updateTask(
-  { workspaceId, projectId, taskId }: BaseTaskParams & { taskId: string },
-  data: TaskUpdatePayload
-) {
+async function updateTask({ taskId }: { taskId: string }, data: TaskUpdatePayload) {
   let task = await TaskModel.findOne({
     _id: taskId,
-    project: projectId,
-    workspace: workspaceId,
-    deleted: false
+    deleted: false,
   });
 
   if (!task) {
-    throw new NotFoundException('Task not found');
+    throw new NotFoundException("Task not found");
   }
   task = assign(task, data);
 
@@ -105,15 +107,13 @@ async function updateTask(
   return task;
 }
 
-async function deleteTask({ workspaceId, projectId, taskId }: BaseTaskParams & { taskId: string }) {
+async function deleteTask({ taskId }: { taskId: string }) {
   let task = await TaskModel.findOne({
     _id: taskId,
-    project: projectId,
-    workspace: workspaceId,
-    deleted: false
+    deleted: false,
   });
   if (!task) {
-    throw new NotFoundException('Task not found');
+    throw new NotFoundException("Task not found");
   }
   task.deleted = true;
   await task.save();
@@ -133,10 +133,45 @@ async function unassignMemberFromTasks({ workspaceId, projectId, memberId }: Una
       workspace: workspaceId,
       ...(projectId && { project: projectId }),
       assignedTo: { $in: [memberId] },
-      deleted: false
+      deleted: false,
     },
-    { $pull: { assignedTo: memberId } }
+    { $pull: { assignedTo: memberId } },
   );
+}
+
+async function bulkUpdateTask(data: TaskBulkUpdatePayload) {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const { tasks } = data;
+    const response: TaskDocument[] = [];
+
+    await Promise.all(
+      tasks.map(async (task) => {
+        let newTask = await TaskModel.findById({
+          _id: task.id,
+          deleted: false,
+        }).session(session);
+
+        if (!newTask) {
+          throw new NotFoundException("Task not found");
+        }
+        newTask = assign(newTask, task);
+
+        await newTask.save({ session });
+
+        response.push(newTask);
+      }),
+    );
+
+    await session.commitTransaction();
+    return response;
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 }
 
 export const taskServices = {
@@ -145,5 +180,6 @@ export const taskServices = {
   getTaskDetail,
   updateTask,
   deleteTask,
-  unassignMemberFromTasks
+  unassignMemberFromTasks,
+  bulkUpdateTask,
 };
