@@ -142,29 +142,30 @@ async function unassignMemberFromTasks({ workspaceId, projectId, memberId }: Una
 async function bulkUpdateTask(data: TaskBulkUpdatePayload) {
   const session = await mongoose.startSession();
   try {
-    session.startTransaction();
     const { tasks } = data;
     const response: TaskDocument[] = [];
+    await session.withTransaction(async () => {
+      await Promise.all(
+        tasks.map(async (task) => {
+          let newTask = await TaskModel.findById({
+            _id: task.id,
+            deleted: false,
+          }).session(session);
 
-    await Promise.all(
-      tasks.map(async (task) => {
-        let newTask = await TaskModel.findById({
-          _id: task.id,
-          deleted: false,
-        }).session(session);
+          if (!newTask) {
+            throw new NotFoundException("Task not found");
+          }
+          newTask = assign(newTask, task);
 
-        if (!newTask) {
-          throw new NotFoundException("Task not found");
-        }
-        newTask = assign(newTask, task);
+          await newTask.save({ session });
 
-        await newTask.save({ session });
+          response.push(newTask);
+        }),
+      );
 
-        response.push(newTask);
-      }),
-    );
+      await session.commitTransaction();
+    });
 
-    await session.commitTransaction();
     return response;
   } catch (error) {
     await session.abortTransaction();

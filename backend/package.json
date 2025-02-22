@@ -4,11 +4,11 @@
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --files -r tsconfig-paths/register src/index.ts",
+    "dev": "node init && ts-node-dev --files -r tsconfig-paths/register src/index.ts",
     "seed-roles": "ts-node --files -r tsconfig-paths/register src/seeds/role.seed.ts",
     "reset-users": "ts-node --files -r tsconfig-paths/register src/seeds/reset-users.seed.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
+    "build": "node init && tsc",
+    "start": "node init && node dist/index.js",
     "lint": "tslint 'src/**/*.ts' --fix"
   },
   "dependencies": {

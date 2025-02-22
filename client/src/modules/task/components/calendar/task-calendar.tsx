@@ -11,6 +11,7 @@ import "@/task/components/calendar/task-calendar.styles.css";
 import { EventCalendar } from "@/task/types/calendar.type";
 import { EventCard } from "@/task/components/calendar/event-card";
 import { CalendarToolbar } from "@/task/components/calendar/calendar-toolbar";
+import { Loader } from "lucide-react";
 
 const localizer = momentLocalizer(moment);
 
@@ -23,7 +24,7 @@ type TaskCalendarProps = {
   columns: UniqueIdentifier[];
 };
 
-export function TaskCalendar({ tasks }: TaskCalendarProps) {
+export function TaskCalendar({ tasks, isLoadingTasks }: TaskCalendarProps) {
   const [value, setValue] = useState(new Date());
 
   const events: EventCalendar<Task>[] = useMemo(() => {
@@ -53,7 +54,12 @@ export function TaskCalendar({ tasks }: TaskCalendarProps) {
   };
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 relative">
+      {isLoadingTasks && (
+        <div className="w-full h-full bg-white bg-opacity-80 absolute inset-0 z-50 flex items-center justify-center">
+          <Loader className="animate-spin" />
+        </div>
+      )}
       {/* @ts-expect-error */}
       <BigCalendar
         localizer={localizer}
