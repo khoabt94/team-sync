@@ -73,6 +73,11 @@ export const bulkUpdateTasksSchema = z.object({
       status: statusSchema,
       assignedTo: assignedToSchema,
       dueDate: dueDateSchema,
+      boardView: z
+        .object({
+          index: z.number().int(),
+        })
+        .optional(),
     }),
   ),
 });
