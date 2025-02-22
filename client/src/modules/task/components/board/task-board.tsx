@@ -25,6 +25,7 @@ import {
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import { TaskStatusConfig, TaskStatusEnumType } from "@shared/constants/task.constant";
 import { Dictionary } from "lodash";
+import { Loader } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -35,11 +36,17 @@ type TaskBoardProps = {
   totalCount?: number;
   tasks: Task[];
   columns: UniqueIdentifier[];
+  onItemsChange?: (items: Task[]) => void;
 };
 
 export type Items = Dictionary<Task[]>;
 
-export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskBoardProps) {
+export function TaskBoard({
+  tasks: initialTask,
+  columns: initialColumns,
+  onItemsChange,
+  isLoadingTasks,
+}: TaskBoardProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const columns = useMemo(() => Object.values(initialColumns), []);
   const [items, setItems] = useState<Items>(() => {
@@ -148,17 +155,20 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
     }
 
     const overContainer = findContainer(overId, items);
-
     if (overContainer) {
       const activeIndex = items[activeContainer].findIndex((item) => item._id === active.id);
       const overIndex = items[overContainer].findIndex((item) => item._id === overId);
-
-      if (activeIndex !== overIndex) {
-        setItems((items) => ({
-          ...items,
-          [overContainer]: arrayMove(items[overContainer], activeIndex, overIndex),
+      setItems((prev) => {
+        const newItemsOverContainer = arrayMove(items[overContainer], activeIndex, overIndex).map((item, index) => ({
+          ...item,
+          boardView: { index },
         }));
-      }
+        onItemsChange?.(newItemsOverContainer);
+        return {
+          ...prev,
+          [overContainer]: newItemsOverContainer,
+        };
+      });
     }
 
     setActiveTask(null);
@@ -208,14 +218,20 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
 
       recentlyMovedToNewContainer.current = true;
 
+      const newItemsActiveContainer = items[activeContainer]
+        .filter((item) => item._id !== active.id)
+        .map((item, index) => ({ ...item, boardView: { index } }));
+
+      const newItemsOverContainer = [
+        ...items[overContainer].slice(0, newIndex),
+        items[activeContainer][activeIndex],
+        ...items[overContainer].slice(newIndex, items[overContainer].length),
+      ].map((item, index) => ({ ...item, boardView: { index }, columnId: overContainer as string }));
+
       return {
         ...items,
-        [activeContainer]: items[activeContainer].filter((item) => item._id !== active.id),
-        [overContainer]: [
-          ...items[overContainer].slice(0, newIndex),
-          items[activeContainer][activeIndex],
-          ...items[overContainer].slice(newIndex, items[overContainer].length),
-        ],
+        [activeContainer]: newItemsActiveContainer,
+        [overContainer]: newItemsOverContainer,
       };
     });
   };
@@ -240,7 +256,12 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
         },
       }}
     >
-      <div className="w-full overflow-x-auto flex h-full gap-4 p-4">
+      <div className="w-full overflow-x-auto flex h-full min-h-[300px] gap-4 p-4 relative">
+        {isLoadingTasks && (
+          <div className="w-full h-full bg-white bg-opacity-80 absolute inset-0 z-50 flex items-center justify-center">
+            <Loader className="animate-spin" />
+          </div>
+        )}
         <SortableContext items={columns}>
           {columns.map((column) => (
             <KanbanColumn
@@ -251,6 +272,7 @@ export function TaskBoard({ tasks: initialTask, columns: initialColumns }: TaskB
             />
           ))}
         </SortableContext>
+
         {createPortal(<DragOverlay>{activeTask && <TaskCard task={activeTask} />}</DragOverlay>, document.body)}
       </div>
     </DndContext>
