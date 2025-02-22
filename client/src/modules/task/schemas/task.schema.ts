@@ -21,6 +21,13 @@ export const taskSchema = z.object({
   }),
 });
 
+export const bulkUpdateTaskSchema = z.object({
+  status: z.enum(Object.values(TaskStatusEnum) as [keyof typeof TaskStatusEnum], {
+    required_error: "Status is required",
+  }),
+  id: z.string().trim(),
+});
+
 export const taskFilterSchema = z.object({
   status: z.array(z.enum(Object.values(TaskStatusEnum) as [keyof typeof TaskStatusEnum])).optional(),
   priority: z.array(z.enum(Object.values(TaskPriorityEnum) as [keyof typeof TaskPriorityEnum])).optional(),

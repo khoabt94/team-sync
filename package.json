@@ -7,11 +7,11 @@
   "scripts": {
     "backend": "npm run dev --prefix backend",
     "client": "npm run dev --prefix client",
-    "build-backend": "npm run build --prefix backend",
-    "build-client": "npm run build --prefix client",
+    "build-backend": "node init && npm run build --prefix backend",
+    "build-client": "node init && npm run build --prefix client",
     "preview-client": "npm run build-client & npm run preview --prefix client",
-    "dev": "concurrently --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run backend\" \"npm run client\"",
-    "build-all": "npm run build-backend & npm run build-client",
+    "dev": "node init && concurrently --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run backend\" \"npm run client\"",
+    "build-all": "node init && npm run build-backend & npm run build-client",
     "install-all": "npm i && concurrently \"cd ./client & npm i\" \"cd ./backend & npm i\"",
     "preview-all": "concurrently \"npm run preview-backend\" \"npm run preview-client\"",
     "client-fix": "npm run lint --prefix client"
